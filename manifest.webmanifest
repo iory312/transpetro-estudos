@@ -1,0 +1,18 @@
+{
+ "name": "Transpetro 2026 · Ênfase 7",
+ "short_name": "Transpetro E7",
+ "lang": "pt-BR",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#f4f6f9",
+ "theme_color": "#0b6e8a",
+ "icons": [
+  {
+   "src": "icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any maskable"
+  }
+ ]
+}
