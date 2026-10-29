@@ -1,4 +1,4 @@
-// Service worker do app (só em http/https). O nome do cache muda a cada build.
+// Service worker do app (só em http/https). Cache rev visual-2: o nome muda a cada build.
 // Página, manifest e ícone: rede primeiro, para um deploy novo não ficar na versão antiga.
 // Áudios: cache primeiro. Pedidos de outro site (Supabase, CDN) não são interceptados.
 const C = '__CACHE__';

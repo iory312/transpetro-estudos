@@ -60,7 +60,7 @@ const NAV = [['home','Início','home'],['questoes','Questões','q'],['simulado',
 const MORE = [['erros','Caderno de erros','err','Revisão em +1/+7/+14 dias'],['bizus','BIZUs','bizu','Biblioteca pesquisável'],['resumos','Resumos','book','Por tópico do edital'],
  ['leitura','Leitura em Inglês','gloss','12 textos reais · 36 questões'],['glossario','Glossário EN','gloss','Termos, conectores, falsos cognatos'],['cronograma','Cronograma','cal','29/10 → 06/12'],['prova','Dia da prova','check','Checklist do edital'],
  ['ouvir','Ouvir','audio','Áudios de BIZUs'],['sobre','Sobre a prova','info','Edital, perfil da banca'],['backup','Progresso','save','Exportar / importar'],['sincronizar','Sincronizar','cloud','Conta na nuvem (opcional)']];
-function theme(t){ if(t){ S.settings.theme = t; save(); } const th = S.settings.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.dataset.theme = th; const b = $('#themeBtn'); if(b) b.innerHTML = th === 'dark' ? ic('sun') : ic('moon'); }
+function theme(t){ if(t){ S.settings.theme = t; save(); } const th = S.settings.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.dataset.theme = th; const b = $('#themeBtn'); if(b) b.innerHTML = th === 'dark' ? ic('sun') : ic('moon'); const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', th === 'dark' ? '#0c141c' : '#f3f6f8'); }
 
 /* ---------- estatísticas ---------- */
 function lastAns(id){ const a = S.answers[id]; return a && a.length ? a[a.length-1] : null; }

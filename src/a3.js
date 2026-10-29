@@ -63,8 +63,11 @@ function simResult(m, sim, att, idx){
    + `<tr><td><b>Conhecimentos Específicos</b></td><td class="n"><b>${r.esp}/50</b></td><td><b>≥ ${me.especificosMin}</b></td></tr><tr><td><b>Nota final</b></td><td class="n"><b>${r.total}/70</b></td><td></td></tr>`;
   const faixa = r.esp < 25 ? 'eliminado — rever a base, começando pelos tópicos de prioridade ALTA' : r.esp <= 32 ? 'aprovado no corte, mas dificilmente entre os primeiros — atacar fracos' : r.esp <= 39 ? 'competitivo — lapidar detalhes' : 'muito competitivo — manter ritmo e revisar erros';
   const list = sim.questions.filter(q => filt === 'todas' || (filt === 'erradas' ? att.ans[q.n] !== q.ans : att.ans[q.n] === q.ans));
+  const blocks = [['Português', r.area.PT, 'pt'], ['Inglês', r.area.EN, 'en'], ['Ofensiva', r.area.OF, 'of'], ['Defensiva', r.area.DF, 'df'], ['Compliance', r.area.CP, 'cp']];
+  const bars = `<div class="blkchart">${blocks.map(([name, a, slug]) => `<div class="blk m-${slug}"><div class="blk-t"><span>${name}</span><b>${a.ok}/${a.n}</b></div><div class="bar"><i style="width:${pct(a.ok, a.n)}%"></i></div></div>`).join('')}</div>`;
   m.innerHTML = `<div class="card"><div class="alert ${r.elim.length ? 'bad' : 'ok'}" style="margin-top:0"><b style="font-size:17px">${r.elim.length ? 'ELIMINADO' : 'APROVADO nos cortes do edital'}</b>${r.elim.length ? '<br>' + r.elim.map(esc).join(' · ') : ''}</div>
    <div class="stat"><div><b>${r.total}</b><span>acertos / 70</span></div><div><b>${r.esp}</b><span>Específicos / 50</span></div><div><b>${r.ger}</b><span>Gerais / 20</span></div></div>
+   ${bars}
    <table class="sc" style="margin-top:10px"><thead><tr><th>Bloco</th><th style="text-align:right">Acertos</th><th>Mínimo</th></tr></thead><tbody>${rows}</tbody></table>
    <div class="small mut" style="margin-top:8px">Tempo usado: ${Math.floor(dur / 60)}h${pad(dur % 60)} · em branco: ${r.blank} · Faixa pessoal (não é corte oficial): ${faixa}. Ranqueamento = Específicos; nota final = Específicos + Gerais. Erradas e em branco já foram para o caderno de erros.</div></div>
    <div class="card"><h3>Gabarito comentado</h3><div class="chips" style="margin-bottom:8px">${[['erradas', 'Erradas/branco'], ['certas', 'Certas'], ['todas', 'Todas']].map(([v, l]) => `<a class="chip ${filt === v ? 'on' : ''}" href="#/simulado/${sim.id}/r/${idx}/${v}">${l}</a>`).join('')}</div>

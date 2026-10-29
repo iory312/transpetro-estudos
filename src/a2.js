@@ -1,9 +1,10 @@
 /* ---------- Início ---------- */
 function cronoToday(){ const t = dk(); let c = D.cronograma.find(x => x.date === t); if(!c && t < D.cronograma[0].date) c = D.cronograma[0]; return c; }
+function modSlug(m){ return {Ofensiva:'of', Defensiva:'df', Compliance:'cp', 'Português':'pt', 'Inglês':'en'}[m] || 'x'; }
 function chartHTML(st){
-  return '<div class="chart">' + MODS.map(m => { const s = st[m], p = pct(s.ok, s.n); const col = !s.n ? 'var(--line)' : p >= 70 ? 'var(--ok)' : p >= 50 ? 'var(--warn)' : 'var(--bad)';
-    return `<div class="it"><div class="lab"><span>${m}</span><span class="mut">${s.n ? `<b style="color:var(--fg)">${p}%</b> · ${s.ok}/${s.n}` : 'sem respostas'}</span></div><div class="bar"><i style="width:${p}%;background:${col}"></i><span class="cut" title="corte 50%"></span></div></div>`; }).join('')
-   + '<div class="small mut">Linha vertical = 50% (referência dos cortes do edital).</div></div>';
+  return '<div class="chart">' + MODS.map(m => { const s = st[m], p = pct(s.ok, s.n); const tone = !s.n ? '' : p >= 70 ? 'tone-ok' : p >= 50 ? 'tone-warn' : 'tone-bad';
+    return `<div class="it m-${modSlug(m)}"><div class="ring" style="--p:${s.n ? p : 0}" aria-hidden="true"><b>${s.n ? p : '–'}</b></div><div class="grow"><div class="lab"><span><i class="mdot"></i>${m}</span><span class="mut">${s.n ? `<b class="${tone}">${p}%</b> · ${s.ok}/${s.n}` : 'sem respostas'}</span></div><div class="bar"><i style="width:${p}%"></i><span class="cut" title="corte 50%"></span></div></div></div>`; }).join('')
+   + '<div class="small mut">A marca na barra é o corte de 50%.</div></div>';
 }
 function lastSimResult(){ let best = null; D.simulados.forEach(s => { ((S.sims[s.id] || {}).hist || []).forEach(a => { if(!best || a.end > best.a.end) best = {sim:s, a}; }); }); if(best) best.r = scoreSim(best.sim, best.a.ans); return best; }
 function cutAlerts(st){
@@ -23,22 +24,27 @@ VIEWS.home = m => {
   const de = dueErrors().length + dueRod().length, dc = dueCards().length;
   let heat = ''; for(let i = 13; i >= 0; i--){ const k = addDays(dk(), -i); heat += `<i class="${S.days[k] ? 'on' : ''} ${i === 0 ? 'today' : ''}" title="${fmtD(k)}"></i>`; }
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
-  m.innerHTML = `
-  <div class="card hero"><div class="row sp"><div><div class="mut">Prova: domingo, 06/12/2026 · 4h30 · 70 questões</div>
-   <div class="big" id="cd">${n > 0 ? n : n === 0 ? 'HOJE' : '—'}</div><div>${n > 1 ? 'dias para a prova' : n === 1 ? 'dia para a prova — amanhã!' : n === 0 ? 'Boa prova, Allan!' : 'prova realizada'}</div></div>
-   <div style="text-align:right"><div class="mut">Sequência</div><div class="big" style="font-size:34px" id="streak">🔥${sk}</div><div class="mut">${sk === 1 ? 'dia seguido' : 'dias seguidos'}</div></div></div>
-   <div class="heat">${heat}</div></div>
-  <div class="grid g2">
+  m.innerHTML = `<div class="home">
+  <div class="home-top">
+   <div class="card hero"><div class="eyebrow">Prova · domingo, 06/12/2026 · 4h30 · 70 questões</div>
+    <div class="hero-row"><div><div class="big" id="cd">${n > 0 ? n : n === 0 ? 'HOJE' : '—'}</div><div class="hero-sub">${n > 1 ? 'dias para a prova' : n === 1 ? 'dia para a prova — amanhã!' : n === 0 ? 'Boa prova, Allan!' : 'prova realizada'}</div></div>
+    <div class="streak-box"><div class="mut">Sequência</div><div class="big" id="streak">${sk}</div><div class="mut">${sk === 1 ? 'dia seguido' : 'dias seguidos'}</div></div></div>
+    <div class="heat" aria-label="Dias estudados nas últimas duas semanas">${heat}</div></div>
+   <div class="card kpi"><h3>Para revisar hoje</h3><div class="stat"><div><b>${de}</b><span>erros pendentes</span></div><div><b>${dc}</b><span>flashcards</span></div><div><b>${Object.keys(S.answers).length}</b><span>questões feitas</span></div></div>
+    <div class="row" style="margin-top:14px"><a class="btn sm ${de ? 'p' : ''}" href="#/erros/revisar">Revisar erros</a><a class="btn sm ${dc ? 'p' : ''}" href="#/flashcards">Flashcards</a><a class="btn sm" href="#/questoes">Questões</a></div></div>
+  </div>
+  <div class="home-mid">
    <div class="card"><h3>Tarefa de hoje ${c ? `<span class="r">${fmtD(c.date)} ${c.dow}</span>` : ''}</h3>${c ? `
     <label class="li ${S.crono[c.i] ? 'done' : ''}" style="border:0"><input type="checkbox" data-cr="${c.i}" ${S.crono[c.i] ? 'checked' : ''}><div class="f1"><div class="t">${esc(c.task)}</div>${c.rev.length ? `<div class="s">${c.rev.map(esc).join(' · ')}</div>` : ''}</div></label>
     <div class="row">${c.topic ? `<a class="btn sm" href="#/resumos/${c.topic}">Resumo</a><a class="btn sm p" href="#/questoes/t/${c.topic}">Praticar tópico</a>` : ''}<a class="btn sm" href="#/cronograma">Cronograma</a></div>` : '<p class="mut">Cronograma encerrado.</p>'}</div>
-   <div class="card"><h3>Para revisar hoje</h3><div class="stat"><div><b>${de}</b><span>erros pendentes</span></div><div><b>${dc}</b><span>flashcards</span></div><div><b>${Object.keys(S.answers).length}</b><span>questões feitas</span></div></div>
-    <div class="row" style="margin-top:10px"><a class="btn sm ${de ? 'p' : ''}" href="#/erros/revisar">Revisar erros</a><a class="btn sm ${dc ? 'p' : ''}" href="#/flashcards">Flashcards</a><a class="btn sm" href="#/questoes">Questões</a></div></div>
+   <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>
   </div>
-  <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>
-  <div class="card"><h3>Cortes de eliminação</h3>${cutAlerts(st)}<div class="small mut">${esc(D.meta.nota)}</div></div>
-  ${weak.length ? `<div class="card"><h3>Tópicos mais fracos</h3>${weak.map(([t, p]) => `<a class="li" href="#/questoes/t/${t}"><div class="f1"><div class="t">${esc(TOP[t].title)}</div><div class="s">${TOP[t].mod}</div></div><span class="tag ${p < 50 ? 'alta' : 'media'}">${p}%</span></a>`).join('')}</div>` : ''}
-  <div class="tiles">${MORE.slice(0, 6).map(tile).join('')}</div>`;
+  <div class="home-bot">
+   <div class="card"><h3>Cortes de eliminação</h3>${cutAlerts(st)}<div class="small mut">${esc(D.meta.nota)}</div></div>
+   ${weak.length ? `<div class="card"><h3>Tópicos mais fracos</h3>${weak.map(([t, p]) => `<a class="li" href="#/questoes/t/${t}"><div class="f1"><div class="t">${esc(TOP[t].title)}</div><div class="s">${TOP[t].mod}</div></div><span class="tag ${p < 50 ? 'alta' : 'media'}">${p}%</span></a>`).join('')}</div>` : `<div class="card empty">Quando você responder algumas questões, os tópicos mais fracos aparecem aqui.</div>`}
+  </div>
+  <div class="tiles">${MORE.slice(0, 6).map(tile).join('')}</div>
+  </div>`;
   $$('[data-cr]', m).forEach(cb => cb.onchange = () => { S.crono[cb.dataset.cr] = cb.checked; if(cb.checked) activity(); save(); render(); });
 };
 
@@ -81,7 +87,7 @@ VIEWS.questoes = m => {
 };
 function qMeta(q){
   const t = TOP[q.topic], prio = q.prio || (t && t.prio);
-  return `<div class="qmeta"><span class="tag">${q.mod}</span>${t ? `<span class="tag gray">${esc(t.title.length > 42 ? t.title.slice(0, 40) + '…' : t.title)}</span>` : ''}<span class="tag gray">${q.src === 'fix' ? 'Fixação Q' + q.n : q.src === 'leit' ? 'Leitura · ' + esc(TOP[q.topic].title.split(' — ')[0]) + ' · Q' + q.n : esc((SIM[q.src] || {}).nome || '') + ' · Q' + q.n}</span>${prio ? `<span class="tag ${prio === 'Alta' ? 'alta' : 'media'}">${prio}</span>` : ''}</div><div class="small mut" style="margin:-4px 0 6px">${q.src === 'leit' ? 'Texto real (fonte citada) · questão inédita no estilo Cesgranrio' : esc(D.meta.rotulo)}</div>`;
+  return `<div class="qmeta"><span class="tag m-${modSlug(q.mod)}">${q.mod}</span>${t ? `<span class="tag gray">${esc(t.title.length > 42 ? t.title.slice(0, 40) + '…' : t.title)}</span>` : ''}<span class="tag gray">${q.src === 'fix' ? 'Fixação Q' + q.n : q.src === 'leit' ? 'Leitura · ' + esc(TOP[q.topic].title.split(' — ')[0]) + ' · Q' + q.n : esc((SIM[q.src] || {}).nome || '') + ' · Q' + q.n}</span>${prio ? `<span class="tag ${prio === 'Alta' ? 'alta' : 'media'}">${prio}</span>` : ''}</div><div class="small mut" style="margin:-4px 0 6px">${q.src === 'leit' ? 'Texto real (fonte citada) · questão inédita no estilo Cesgranrio' : esc(D.meta.rotulo)}</div>`;
 }
 const passageHTML = (q, open) => q.passage && D.passages[q.passage] ? `<details class="passage" ${open ? 'open' : ''}><summary>Texto de apoio</summary><div class="content">${D.passages[q.passage]}</div></details>` : '';
 function bizusFor(q){

@@ -70,7 +70,13 @@ VIEWS.backup = m => {
 /* ---------- shell ---------- */
 function shell(){
   $('#bnav').innerHTML = NAV.map(([k, l, i]) => `<a href="#/${k}" data-k="${k}">${ic(i)}<span>${l}</span></a>`).join('');
-  $('#side').innerHTML = `<div class="brand">Transpetro · Ênfase 7<small>Segurança Cibernética</small></div>` + NAV.filter(n => n[0] !== 'mais').concat(MORE).map(([k, l, i]) => `<a href="#/${k}" data-k="${k}">${ic(i)}<span>${l}</span></a>`).join('');
+  const by = k => NAV.find(x => x[0] === k) || MORE.find(x => x[0] === k);
+  const link = k => { const it = by(k); return `<a href="#/${it[0]}" data-k="${it[0]}">${ic(it[2])}<span>${it[1]}</span></a>`; };
+  $('#side').innerHTML = `<div class="brand"><span class="mark" aria-hidden="true">E7</span><div>Transpetro<small>Ênfase 7 · Cibernética</small></div></div>
+   <div class="side-sec">Estudar</div>${['home','questoes','simulado','flashcards','erros'].map(link).join('')}
+   <div class="side-sec">Conteúdo</div>${['bizus','resumos','leitura','glossario','ouvir'].map(link).join('')}
+   <div class="side-sec">Plano</div>${['cronograma','prova','sobre'].map(link).join('')}
+   <div class="side-sec">Conta</div>${['backup','sincronizar'].map(link).join('')}`;
   $('#themeBtn').onclick = () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
   window.addEventListener('hashchange', render);
   window.addEventListener('storage', e => { if(e.key === Storage.prefix + SKEY){ loadState(); theme(); render(); } });

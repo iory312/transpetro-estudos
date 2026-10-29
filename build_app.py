@@ -25,7 +25,7 @@ shutil.copy(S / "icon.svg", A / "icon.svg")
 (A / "manifest.webmanifest").write_text(json.dumps({
   "name": "Transpetro 2026 · Ênfase 7", "short_name": "Transpetro E7", "lang": "pt-BR",
   "start_url": "./index.html", "scope": "./",
-  "display": "standalone", "background_color": "#f4f6f9", "theme_color": "#0b6e8a",
+  "display": "standalone", "background_color": "#f3f6f8", "theme_color": "#0c5f78",
   "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
 }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 template = (S / "sw.template.js").read_text(encoding="utf-8")
