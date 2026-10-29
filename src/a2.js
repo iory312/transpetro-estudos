@@ -77,13 +77,15 @@ VIEWS.questoes = m => {
    <div class="grid g2"><div><label class="lb">Banco</label>${chips('fsrc', [['fix', `Fixação (${D.questions.filter(q => q.src === 'fix').length})`], ['leit', `Leitura EN (${D.questions.filter(q => q.src === 'leit').length})`], ['sim', 'Dos simulados'], ['all', 'Tudo']], f.src)}</div>
    <div><label class="lb">Ordem</label>${chips('ford', [['seq', 'Sequencial'], ['rnd', 'Embaralhar']], f.order)}</div></div>
    ${f.src === 'sim' || f.src === 'all' ? '<div class="alert warn small">Dica: resolva o simulado cronometrado antes de treinar as questões dele aqui, para não “queimar” o simulado.</div>' : ''}
-   <button class="btn p w" id="go" style="margin-top:12px" ${pool.length ? '' : 'disabled'}>Começar · ${pool.length} ${pool.length === 1 ? 'questão' : 'questões'}</button></div>
+   <button class="btn p w" id="go" style="margin-top:12px" ${pool.length ? '' : 'disabled'}>Começar · ${pool.length} ${pool.length === 1 ? 'questão' : 'questões'}</button>
+   ${f.topic ? tecBtn(f.topic) : ''}</div>
    <div class="card"><h3>Por tópico</h3>${topics.map(t => { const qs = D.questions.filter(q => q.topic === t.id), done = qs.filter(q => S.answers[q.id]).length, ok = qs.filter(q => (lastAns(q.id) || {}).ok).length;
      return `<a class="li" href="#/questoes/t/${t.id}"><div class="f1"><div class="t">${esc(t.title)}</div><div class="s">${t.mod} · ${done}/${qs.length} feitas · ${ok} certas na última tentativa</div></div><span class="tag ${t.prio === 'Alta' ? 'alta' : 'media'}">${t.prio}</span></a>`; }).join('')}</div>`;
   const grp = (id, key, multi) => $$('#' + id + ' .chip', m).forEach(c => c.onclick = () => { const v = c.dataset.v; if(multi){ f[key] = f[key].includes(v) ? f[key].filter(x => x !== v) : f[key].concat(v); f.topic = ''; } else f[key] = v; save(); render(); });
   grp('fmod', 'mod', true); grp('fprio', 'prio'); grp('fonly', 'only'); grp('fsrc', 'src'); grp('ford', 'order');
   $('#ftop', m).onchange = e => { f.topic = e.target.value; save(); render(); };
   $('#go', m).onclick = () => { let ids = pool.map(q => q.id); if(f.order === 'rnd') ids = shuffle(ids); startSession(ids, 'estudo', 'Questões', '#/questoes'); };
+  tecBind(m);
 };
 function qMeta(q){
   const t = TOP[q.topic], prio = q.prio || (t && t.prio);

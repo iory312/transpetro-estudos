@@ -1,0 +1,1180 @@
+{
+  "formato_url": {
+    "assunto_publico": "https://www.tecconcursos.com.br/materias/<materia>/<assunto-slug>",
+    "filtro_questoes": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7&f[1].tipo=MATERIA&f[1].id=<idMateria>"
+  },
+  "topicos": [
+    {
+      "topic_id": "of1",
+      "topic_title": "1.1–1.3 Conceitos, ataques passivos e ativos",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Ameaças aos Sistemas Computacionais",
+      "tec_assunto_id": 2180,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ameacas-aos-sistemas-computacionais",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Não há assunto só de \"ataques passivos x ativos\"; usar o pai \"Ameaças\" + Conceitos/Princípios. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Conceitos, Princípios e Atributos da Segurança da Informação",
+          "assunto_id": 4869,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/conceitos-principios-e-atributos-da-seguranca-da-informacao",
+          "questoes_tec": 1191,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of2",
+      "topic_title": "1.4 Etapas do ataque + varredura com nmap",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Testes de Segurança (Pentest, Varreduras, etc.)",
+      "tec_assunto_id": 17460,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/testes-de-seguranca-pentest-varreduras-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "Cobre varreduras/pentest (nmap). Etapas do ataque não têm assunto próprio. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "of3",
+      "topic_title": "1.5 Ataques aos protocolos de comunicação",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Ameaças Técnicas Relacionadas a Redes e Criptografia",
+      "tec_assunto_id": 17538,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ameacas-tecnicas-relacionadas-a-redes-e-criptografia",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Ataques a protocolos ficam em Ameaças de Redes, DoS e Spoofing. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Negação de Serviço (DoS)",
+          "assunto_id": 17560,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/negacao-de-servico-dos",
+          "questoes_tec": 338,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Spoofing",
+          "assunto_id": 17537,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/spoofing",
+          "questoes_tec": 123,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of4",
+      "topic_title": "1.6 Ataques à rede Wi-Fi",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Protocolos Seguros para Redes Sem Fio e Controle de Acesso (WPA, WPA2, WEP, EAP, 802.1X)",
+      "tec_assunto_id": 3596,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/protocolos-seguros-para-redes-sem-fio-e-controle-de-acesso-wpa-wpa2-wep-eap-8021x",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Sem assunto de \"ataques Wi-Fi\"; usar Protocolos Seguros sem fio (WEP/WPA/EAP) + WLAN (TI-Redes). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Redes de Computadores > WLAN (Wireless - Redes Sem Fio)",
+          "assunto_id": 2173,
+          "url": "https://www.tecconcursos.com.br/materias/ti-redes-de-computadores/wlan-wireless-redes-sem-fio",
+          "questoes_tec": 1450,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of5",
+      "topic_title": "1.7 Man-in-the-Middle: sniffing e spoofing",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Spoofing",
+      "tec_assunto_id": 17537,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/spoofing",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Sniffing não tem assunto próprio; Spoofing + Ameaças de Redes + Análise de Tráfego. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Ameaças Técnicas Relacionadas a Redes e Criptografia",
+          "assunto_id": 17538,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ameacas-tecnicas-relacionadas-a-redes-e-criptografia",
+          "questoes_tec": 173,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Análise de Tráfego e Logs",
+          "assunto_id": 4868,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/analise-de-trafego-e-logs",
+          "questoes_tec": 163,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of6",
+      "topic_title": "1.8 Engenharia social: ciclo de ataque e técnicas",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Engenharia Social e Phishing",
+      "tec_assunto_id": 17534,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/engenharia-social-e-phishing",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "of7",
+      "topic_title": "1.9 Código malicioso (malware)",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Malware (Vírus, Worms, Trojans, etc.)",
+      "tec_assunto_id": 17536,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/malware-virus-worms-trojans-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Análise de Código Malicioso",
+          "assunto_id": 16670,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/analise-de-codigo-malicioso",
+          "questoes_tec": 82,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of8",
+      "topic_title": "1.10 MITRE ATT&CK",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > MITRE ATT&CK",
+      "tec_assunto_id": 17465,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/mitre-attck",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "of9",
+      "topic_title": "1.11 MITRE CAPEC",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Frameworks de Segurança da Informação e Segurança Cibernética",
+      "tec_assunto_id": 16672,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/frameworks-de-seguranca-da-informacao-e-seguranca-cibernetica",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "TEC não tem assunto MITRE CAPEC; usar Frameworks de SI/Cibernética (+ MITRE ATT&CK). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > MITRE ATT&CK",
+          "assunto_id": 17465,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/mitre-attck",
+          "questoes_tec": 24,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "of10",
+      "topic_title": "1.12 Ferramentas de hacking (as 24 do edital)",
+      "modulo": "Ofensiva",
+      "tec_assunto": "TI - Segurança da Informação > Testes de Segurança (Pentest, Varreduras, etc.)",
+      "tec_assunto_id": 17460,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/testes-de-seguranca-pentest-varreduras-etc",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Sem assunto \"ferramentas de hacking\"; Testes de Segurança (Pentest, Varreduras) é o mais próximo. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Análise de Tráfego e Logs",
+          "assunto_id": 4868,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/analise-de-trafego-e-logs",
+          "questoes_tec": 163,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df1",
+      "topic_title": "2.1 Defesa em profundidade e perímetro (firewalls, IDS, IPS, VPN)",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Dispositivos de Segurança de Perímetro",
+      "tec_assunto_id": 14783,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/dispositivos-de-seguranca-de-perimetro",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "Perímetro (firewall/proxy/DMZ) + IDS/IPS + VPN. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > IDS, IPS e Honeypots",
+          "assunto_id": 4862,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ids-ips-e-honeypots",
+          "questoes_tec": 660,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > VPN",
+          "assunto_id": 4860,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/vpn",
+          "questoes_tec": 576,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Conceitos de Firewall, Proxy e DMZ",
+          "assunto_id": 4861,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/conceitos-de-firewall-proxy-e-dmz",
+          "questoes_tec": 1448,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df2",
+      "topic_title": "2.2 Controle de acesso à rede (802.1X, EAP, RADIUS) e segurança em aplicações (OWASP, SAMM, CVE, CWE)",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Protocolos Seguros para Redes Sem Fio e Controle de Acesso (WPA, WPA2, WEP, EAP, 802.1X)",
+      "tec_assunto_id": 3596,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/protocolos-seguros-para-redes-sem-fio-e-controle-de-acesso-wpa-wpa2-wep-eap-8021x",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "802.1X/EAP + RADIUS + NAC + OWASP/Seg. em Aplicações. CVE/CWE/SAMM sem assunto próprio. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > RADIUS e TACACS",
+          "assunto_id": 2064,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/radius-e-tacacs",
+          "questoes_tec": 65,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Controle de Acesso à Rede (NAC)",
+          "assunto_id": 17213,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/controle-de-acesso-a-rede-nac",
+          "questoes_tec": 26,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > OWASP",
+          "assunto_id": 16667,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/owasp",
+          "questoes_tec": 157,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Segurança em Aplicações (Programação Segura)",
+          "assunto_id": 4534,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/seguranca-em-aplicacoes-programacao-segura",
+          "questoes_tec": 376,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df3",
+      "topic_title": "2.3 Propriedades da segurança da informação",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Conceitos, Princípios e Atributos da Segurança da Informação",
+      "tec_assunto_id": 4869,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/conceitos-principios-e-atributos-da-seguranca-da-informacao",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "df4",
+      "topic_title": "2.4 Mecanismos de segurança: hash, cifragem, assinatura, envelope, certificado, MFA, carimbo do tempo, redundância",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Criptografia (TI - Segurança da Informação)",
+      "tec_assunto_id": 2178,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/criptografia-ti-seguranca-da-informacao",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "Pai Criptografia + Hash, Assinatura, Certificado, MFA, Backup (redundância). Envelope digital/carimbo do tempo sem assunto próprio. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Hashes Criptográficos",
+          "assunto_id": 5785,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/hashes-criptograficos",
+          "questoes_tec": 335,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Assinatura Digital",
+          "assunto_id": 4882,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/assinatura-digital",
+          "questoes_tec": 436,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Certificado Digital",
+          "assunto_id": 4883,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/certificado-digital",
+          "questoes_tec": 811,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Autenticação Multifator (MFA)",
+          "assunto_id": 17522,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/autenticacao-multifator-mfa",
+          "questoes_tec": 97,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Backup",
+          "assunto_id": 4791,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/backup",
+          "questoes_tec": 1072,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df5",
+      "topic_title": "2.5 ICP-Brasil",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > ICP e Autoridades Certificadoras",
+      "tec_assunto_id": 4885,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/icp-e-autoridades-certificadoras",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Conceitos de Certificado Digital",
+          "assunto_id": 4884,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/conceitos-de-certificado-digital",
+          "questoes_tec": 441,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df6",
+      "topic_title": "2.6 Comunicação segura: SSL, TLS e IPsec",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Protocolos Seguros",
+      "tec_assunto_id": 4867,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/protocolos-seguros",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > TLS, SSL e HTTPS",
+          "assunto_id": 2851,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/tls-ssl-e-https",
+          "questoes_tec": 513,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > IPSec",
+          "assunto_id": 2818,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ipsec",
+          "questoes_tec": 308,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df7",
+      "topic_title": "2.7 Segurança no endpoint: antimalware e firewall pessoal",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Sistemas de Proteção Locais (Antivírus, Antispyware, etc.)",
+      "tec_assunto_id": 5358,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/sistemas-de-protecao-locais-antivirus-antispyware-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "Antimalware = Sistemas de Proteção Locais; firewall pessoal pode cair em Ferramentas de Firewall. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Ferramentas de Firewall (IPtables, Pfsense, etc.)",
+          "assunto_id": 1357,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/ferramentas-de-firewall-iptables-pfsense-etc",
+          "questoes_tec": 270,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df8",
+      "topic_title": "2.8 Segurança em sistemas operacionais: CIS Benchmarks, Linux e Windows",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Hardening",
+      "tec_assunto_id": 4887,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/hardening",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "CIS Benchmarks sem assunto próprio; Hardening + Linux/Windows (TI-Sistemas Operacionais). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Sistemas Operacionais > Linux",
+          "assunto_id": 4043,
+          "url": "https://www.tecconcursos.com.br/materias/ti-sistemas-operacionais/linux",
+          "questoes_tec": 2704,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Sistemas Operacionais > Windows",
+          "assunto_id": 2206,
+          "url": "https://www.tecconcursos.com.br/materias/ti-sistemas-operacionais/windows",
+          "questoes_tec": 2556,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df9",
+      "topic_title": "2.9 Segurança em sistemas de controle e automação industrial (ICS/OT)",
+      "modulo": "Defensiva",
+      "tec_assunto": "Direito Digital > Decreto nº 9.573/2018 - Política Nacional de Segurança de Infraestruturas Críticas (PNSIC)",
+      "tec_assunto_id": 15557,
+      "url": "https://www.tecconcursos.com.br/materias/direito-digital/decreto-n-95732018-politica-nacional-de-seguranca-de-infraestruturas-criticas-pnsic",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "TEC não tem assunto de ICS/OT/SCADA; mais próximo são as normas de Infraestruturas Críticas (Direito Digital). Dica: na tela de filtros usar a busca por enunciado com \"SCADA\" ou \"ICS\". filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Direito Digital > Decreto nº 10.569/2020 - Estratégia Nacional de Segurança de Infraestruturas Críticas (ENSIC)",
+          "assunto_id": 15556,
+          "url": "https://www.tecconcursos.com.br/materias/direito-digital/decreto-n-105692020-estrategia-nacional-de-seguranca-de-infraestruturas-criticas-ensic",
+          "questoes_tec": 37,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "df10",
+      "topic_title": "2.10 Forense digital e OSINT",
+      "modulo": "Defensiva",
+      "tec_assunto": "TI - Segurança da Informação > Computação Forense",
+      "tec_assunto_id": 7325,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/computacao-forense",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Forense ok; OSINT não tem assunto próprio. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Auditoria de TI e Forense Computacional",
+          "assunto_id": 17459,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/auditoria-de-ti-e-forense-computacional",
+          "questoes_tec": 442,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "cp1",
+      "topic_title": "3.1a ISO/IEC 27001:2022 e 27002:2022",
+      "modulo": "Compliance",
+      "tec_assunto": "TI - Segurança da Informação > SGSI, Controles e Estrutura das Normas da Família 27000 (ISO/IEC 27001, 27002, etc.)",
+      "tec_assunto_id": 4876,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/sgsi-controles-e-estrutura-das-normas-da-familia-27000-isoiec-27001-27002-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Política de Segurança da Informação (NBR ISO/IEC 27001, 27002, etc.)",
+          "assunto_id": 4871,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/politica-de-seguranca-da-informacao-nbr-isoiec-27001-27002-etc",
+          "questoes_tec": 562,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Organização da Segurança da Informação (NBR ISO/IEC 27002 e NBR ISO/IEC 17799)",
+          "assunto_id": 4890,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/organizacao-da-seguranca-da-informacao-nbr-isoiec-27002-e-nbr-isoiec-17799",
+          "questoes_tec": 317,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Gestão de Ativos e Classificação da Informação",
+          "assunto_id": 4888,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/gestao-de-ativos-e-classificacao-da-informacao",
+          "questoes_tec": 210,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Tópicos Residuais e Variados de SGSI e da Família ISO/IEC 27000",
+          "assunto_id": 4873,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/topicos-residuais-e-variados-de-sgsi-e-da-familia-isoiec-27000",
+          "questoes_tec": 169,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "cp2",
+      "topic_title": "3.1b ISO/IEC 27005:2023 (riscos) e 27035-1:2023 (incidentes)",
+      "modulo": "Compliance",
+      "tec_assunto": "TI - Segurança da Informação > Riscos em Segurança da Informação (NBR ISO/IEC 27001, 27002 e 27005)",
+      "tec_assunto_id": 3292,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/riscos-em-seguranca-da-informacao-nbr-isoiec-27001-27002-e-27005",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "27005 = Riscos; 27035 cai em Eventos e Incidentes (27001/27002 e outras). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > Eventos e Incidentes de Segurança (NBR ISO/IEC 27001, 27002 e outras)",
+          "assunto_id": 4878,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/eventos-e-incidentes-de-seguranca-nbr-isoiec-27001-27002-e-outras",
+          "questoes_tec": 225,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "cp3",
+      "topic_title": "3.1c ISO 22301:2020 e ISO 22313:2020 (continuidade de negócios)",
+      "modulo": "Compliance",
+      "tec_assunto": "TI - Segurança da Informação > Gestão de Continuidade de Negócio (NBR ISO/IEC 15999-1, 15999-2, 27002, 22313, etc.)",
+      "tec_assunto_id": 4872,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/gestao-de-continuidade-de-negocio-nbr-isoiec-159991-159992-27002-22313-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "cp4",
+      "topic_title": "3.1d Privacidade: ISO/IEC 29100:2024, 29134:2024 e 27701:2019",
+      "modulo": "Compliance",
+      "tec_assunto": "TI - Segurança da Informação > NBR ISO/IEC 27701 - Requisitos e Diretrizes",
+      "tec_assunto_id": 16674,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/nbr-isoiec-27701-requisitos-e-diretrizes",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "27701 tem assunto; 29100/29134 não. Complementar com LGPD (Segurança e Boas Práticas). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Direito Digital > Da Segurança e das Boas Práticas (arts. 46 a 51 da Lei nº 13.709/2018 - LGPD)",
+          "assunto_id": 9584,
+          "url": "https://www.tecconcursos.com.br/materias/direito-digital/da-seguranca-e-das-boas-praticas-arts-46-a-51-da-lei-n-137092018-lgpd",
+          "questoes_tec": 171,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "cp5",
+      "topic_title": "3.2 Frameworks: NIST CSF 2.0 e CIS Controls v8.1",
+      "modulo": "Compliance",
+      "tec_assunto": "TI - Segurança da Informação > NIST (National Institute of Standarts and Technology)",
+      "tec_assunto_id": 15551,
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/nist-national-institute-of-standarts-and-technology",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "NIST + CIS Controls. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "TI - Segurança da Informação > CIS (Critical Security Controls)",
+          "assunto_id": 16673,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/cis-critical-security-controls",
+          "questoes_tec": 38,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "TI - Segurança da Informação > Frameworks de Segurança da Informação e Segurança Cibernética",
+          "assunto_id": 16672,
+          "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao/frameworks-de-seguranca-da-informacao-e-seguranca-cibernetica",
+          "questoes_tec": 338,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "cp6",
+      "topic_title": "3.3a Marco Civil da Internet (Lei 12.965/2014)",
+      "modulo": "Compliance",
+      "tec_assunto": "Direito Digital > Lei nº 12.965/2014 - Marco Civil da Internet",
+      "tec_assunto_id": 5980,
+      "url": "https://www.tecconcursos.com.br/materias/direito-digital/lei-n-129652014-marco-civil-da-internet",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "cp7",
+      "topic_title": "3.3b LGPD (Lei 13.709/2018)",
+      "modulo": "Compliance",
+      "tec_assunto": "Direito Digital > Lei nº 13.709/2018 - Lei Geral de Proteção de Dados Pessoais (LGPD)",
+      "tec_assunto_id": 7498,
+      "url": "https://www.tecconcursos.com.br/materias/direito-digital/lei-n-137092018-lei-geral-de-protecao-de-dados-pessoais-lgpd",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "cp8",
+      "topic_title": "3.3c Resolução Anatel nº 740/2020 (segurança cibernética em telecom)",
+      "modulo": "Compliance",
+      "tec_assunto": "Direito Digital > Outras Normas sobre Direito Digital",
+      "tec_assunto_id": 18073,
+      "url": "https://www.tecconcursos.com.br/materias/direito-digital/outras-normas-sobre-direito-digital",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "TEC não tem assunto da Resolução Anatel 740/2020; \"Outras Normas sobre Direito Digital\" é o mais próximo (pode não ter questões dela). filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": []
+    },
+    {
+      "topic_id": "pt1",
+      "topic_title": "Português — estratégia e compreensão de textos",
+      "modulo": "Português",
+      "tec_assunto": "Língua Portuguesa (Português) > Interpretação de Textos (Compreensão)",
+      "tec_assunto_id": 348,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/interpretacao-de-textos-compreensao",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Tipologia e Gênero Textual",
+          "assunto_id": 3818,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/tipologia-e-genero-textual",
+          "questoes_tec": 10745,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "pt2",
+      "topic_title": "Português — coesão, conectivos, coordenação e subordinação",
+      "modulo": "Português",
+      "tec_assunto": "Língua Portuguesa (Português) > Coerência. Coesão (Anáfora, Catáfora, Uso dos Conectores - Pronomes Relativos, Conjunções, etc)",
+      "tec_assunto_id": 344,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/coerencia-coesao-anafora-catafora-uso-dos-conectores-pronomes-relativos-conjuncoes-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Orações Coordenadas",
+          "assunto_id": 6232,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/oracoes-coordenadas",
+          "questoes_tec": 1112,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Orações Subordinadas Substantivas",
+          "assunto_id": 6233,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/oracoes-subordinadas-substantivas",
+          "questoes_tec": 1480,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Orações Subordinadas Adjetivas",
+          "assunto_id": 6234,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/oracoes-subordinadas-adjetivas",
+          "questoes_tec": 1657,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Orações Subordinadas Adverbiais",
+          "assunto_id": 6235,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/oracoes-subordinadas-adverbiais",
+          "questoes_tec": 2586,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Conjunção",
+          "assunto_id": 5652,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/conjuncao",
+          "questoes_tec": 9799,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "pt3",
+      "topic_title": "Português — crase, regência, concordância e colocação pronominal",
+      "modulo": "Português",
+      "tec_assunto": "Língua Portuguesa (Português) > Crase",
+      "tec_assunto_id": 333,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/crase",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Regência Nominal e Verbal (Casos Gerais)",
+          "assunto_id": 332,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/regencia-nominal-e-verbal-casos-gerais",
+          "questoes_tec": 5821,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Concordância (Verbal e Nominal)",
+          "assunto_id": 335,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/concordancia-verbal-e-nominal",
+          "questoes_tec": 13207,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Colocação Pronominal",
+          "assunto_id": 330,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/colocacao-pronominal",
+          "questoes_tec": 3882,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "pt4",
+      "topic_title": "Português — pontuação, ortografia, verbos, classes e significação",
+      "modulo": "Português",
+      "tec_assunto": "Língua Portuguesa (Português) > Pontuação (Ponto, Vírgula, Travessão, Aspas, Parênteses, etc)",
+      "tec_assunto_id": 294,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/pontuacao-ponto-virgula-travessao-aspas-parenteses-etc",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Ortografia",
+          "assunto_id": 5629,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/ortografia",
+          "questoes_tec": 20434,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Verbo",
+          "assunto_id": 5641,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/verbo",
+          "questoes_tec": 12509,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Classes de Palavras",
+          "assunto_id": 303,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/classes-de-palavras",
+          "questoes_tec": 46396,
+          "status_http": 200
+        },
+        {
+          "tec_assunto": "Língua Portuguesa (Português) > Semântica",
+          "assunto_id": 338,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues/semantica",
+          "questoes_tec": 27732,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "en1",
+      "topic_title": "Inglês — estratégia, conectores e armadilhas",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "exato",
+      "status_http": 200,
+      "obs": "filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Referenciação, Anáfora e Catáfora (Língua Inglesa)",
+          "assunto_id": 15940,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/referenciacao-anafora-e-catafora-lingua-inglesa",
+          "questoes_tec": 1177,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "en2",
+      "topic_title": "Glossário de inglês técnico de segurança",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+      "tec_assunto_id": 16066,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Glossário técnico ~ Inglês e TI + Significado de Palavras. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Significado de Palavras e Expressões (Sinônimos, Antônimos, Parônimos, Denotação, Conotação, etc.)",
+          "assunto_id": 15982,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/significado-de-palavras-e-expressoes-sinonimos-antonimos-paronimos-denotacao-conotacao-etc",
+          "questoes_tec": 3791,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le1",
+      "topic_title": "Text 1 — MFA resistente a phishing",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le2",
+      "topic_title": "Text 2 — Zero Trust — abstract",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le3",
+      "topic_title": "Text 3 — ENISA Threat Landscape — ameaças principais",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le4",
+      "topic_title": "Text 4 — Resposta a incidentes (NIST SP 800-61r3)",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le5",
+      "topic_title": "Text 5 — NIST CSF 2.0",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le6",
+      "topic_title": "Text 6 — OWASP — Broken Access Control",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le7",
+      "topic_title": "Text 7 — OWASP — Injection",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le8",
+      "topic_title": "Text 8 — Ransomware — visão geral (CISA)",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le9",
+      "topic_title": "Text 9 — Ransomware — vetores (RDP, phishing, SMB)",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le10",
+      "topic_title": "Text 10 — ICS / OT — práticas CISA",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le11",
+      "topic_title": "Text 11 — Phishing e engenharia social (CISA)",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    },
+    {
+      "topic_id": "le12",
+      "topic_title": "Text 12 — Gestão de patches / vulnerabilidades (NIST SP 800-40r4)",
+      "modulo": "Inglês",
+      "tec_assunto": "Língua Inglesa (Inglês) > Interpretação de Textos (Understanding)",
+      "tec_assunto_id": 729,
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/interpretacao-de-textos-understanding",
+      "precisao": "aproximado",
+      "status_http": 200,
+      "obs": "Texto específico de leitura: TEC não classifica por tema do texto; usar Interpretação de Textos (Inglês) e Inglês e TI. filtrar banca Cesgranrio na página (Filtrar questões > Banca: CESGRANRIO).",
+      "outros_assuntos": [
+        {
+          "tec_assunto": "Língua Inglesa (Inglês) > Inglês e Tecnologia da Informação",
+          "assunto_id": 16066,
+          "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles/ingles-e-tecnologia-da-informacao",
+          "questoes_tec": 260,
+          "status_http": 200
+        }
+      ]
+    }
+  ],
+  "gerais": [
+    {
+      "titulo": "Caderno guia TEC – Conhecimentos Específicos p/ Segurança da Informação – TRANSPETRO 2026 (cobre o edital da ênfase; salvar logado)",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2026/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao/conhecimentos-especificos-transpetro-2026/id",
+      "status_http": 200,
+      "obs": "visto no sitemap e na página do guia"
+    },
+    {
+      "titulo": "Caderno guia TEC – Língua Portuguesa – Transpetro 2026 (nível superior)",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2026/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao/lingua-portuguesa-superior-transpetro-2026/id",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Caderno guia TEC – Língua Inglesa – Transpetro 2026 (nível superior)",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2026/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao/lingua-inglesa-superior-transpetro-2026/id",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Guia de estudo TEC – Transpetro 2026 – Análise de Sistemas – Segurança Cibernética e da Informação",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2026/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Concurso Transpetro 2026 – ênfase Segurança Cibernética e da Informação",
+      "url": "https://www.tecconcursos.com.br/concursos/profissional-transpetro-de-nivel-superior-transpetro-analise-de-sistemas-seguranca-cibernetica-e-da-informacao-2026",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Concurso Transpetro 2023 – ênfase Segurança Cibernética e da Informação (prova anterior)",
+      "url": "https://www.tecconcursos.com.br/concursos/profissional-transpetro-de-nivel-superior-transpetro-analise-de-sistemas-seguranca-cibernetica-e-da-informacao-2023",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Guia de estudo TEC – Transpetro 2023 – Segurança Cibernética e da Informação",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2023/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Caderno guia 2023 – Língua Portuguesa para Profissional Transpetro",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2023/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao/lingua-portuguesa-para-profissional-transpetro-transpetro-2023/id",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Caderno guia 2023 – Língua Inglesa para Profissional Transpetro",
+      "url": "https://www.tecconcursos.com.br/guias/transpetro-2023/profissional-transpetro-de-nivel-superior-transpetro/analise-de-sistemas/seguranca-cibernetica-e-da-informacao/lingua-inglesa-para-profissional-transpetro-transpetro-2023/id",
+      "status_http": 200,
+      "obs": "visto no sitemap"
+    },
+    {
+      "titulo": "Concursos com o mesmo cargo (Transpetro – Seg. Cibernética, CARGO 1857)",
+      "url": "https://www.tecconcursos.com.br/concursos?tipoBusca=buscaavancada&busca[0].id=1857&busca[0].tipo=CARGO",
+      "status_http": "302->login",
+      "obs": "link copiado da página do concurso 2023"
+    },
+    {
+      "titulo": "Questões – Órgão TRANSPETRO (todas as matérias)",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=ORGAO&f[0].id=497",
+      "status_http": "302->login",
+      "obs": "link copiado de /orgaos/transpetro; exige login"
+    },
+    {
+      "titulo": "Questões – Banca CESGRANRIO (todas)",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7",
+      "status_http": "302->login",
+      "obs": "link copiado de /bancas/cesgranrio; exige login"
+    },
+    {
+      "titulo": "Questões – CESGRANRIO + Língua Portuguesa (Português)",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7&f[1].tipo=MATERIA&f[1].id=3",
+      "status_http": "302->login",
+      "obs": "link copiado literalmente de /bancas/cesgranrio; exige login"
+    },
+    {
+      "titulo": "Questões – CESGRANRIO + Língua Inglesa (Inglês)",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7&f[1].tipo=MATERIA&f[1].id=25",
+      "status_http": "302->login",
+      "obs": "link copiado literalmente de /bancas/cesgranrio; exige login"
+    },
+    {
+      "titulo": "Questões – CESGRANRIO + TI - Segurança da Informação",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7&f[1].tipo=MATERIA&f[1].id=134",
+      "status_http": "302->login",
+      "obs": "montado com o padrão visto em /bancas/cesgranrio + id 134 visto no jsonMateria da página da matéria; exige login (não dá para confirmar o resultado sem login)"
+    },
+    {
+      "titulo": "Questões – CESGRANRIO + Direito Digital (Marco Civil/LGPD)",
+      "url": "https://www.tecconcursos.com.br/questoes/filtrar?formato=OBJETIVA&f[0].tipo=BANCA&f[0].id=7&f[1].tipo=MATERIA&f[1].id=66",
+      "status_http": "302->login",
+      "obs": "montado com o padrão visto + id 66 visto no jsonMateria; exige login"
+    },
+    {
+      "titulo": "Página da banca CESGRANRIO",
+      "url": "https://www.tecconcursos.com.br/bancas/cesgranrio",
+      "status_http": 200,
+      "obs": ""
+    },
+    {
+      "titulo": "Página do órgão TRANSPETRO",
+      "url": "https://www.tecconcursos.com.br/orgaos/transpetro",
+      "status_http": 200,
+      "obs": ""
+    },
+    {
+      "titulo": "Matéria: TI - Segurança da Informação (árvore de assuntos)",
+      "url": "https://www.tecconcursos.com.br/materias/ti-seguranca-da-informacao",
+      "status_http": 200,
+      "obs": ""
+    },
+    {
+      "titulo": "Matéria: Direito Digital",
+      "url": "https://www.tecconcursos.com.br/materias/direito-digital",
+      "status_http": 200,
+      "obs": ""
+    },
+    {
+      "titulo": "Matéria: Língua Portuguesa (Português)",
+      "url": "https://www.tecconcursos.com.br/materias/lingua-portuguesa-portugues",
+      "status_http": 200,
+      "obs": ""
+    },
+    {
+      "titulo": "Matéria: Língua Inglesa (Inglês)",
+      "url": "https://www.tecconcursos.com.br/materias/lingua-inglesa-ingles",
+      "status_http": 200,
+      "obs": ""
+    }
+  ]
+}

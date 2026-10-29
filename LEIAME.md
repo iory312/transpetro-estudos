@@ -41,6 +41,10 @@ Em Authentication → URL Configuration, se o link de confirmação ainda não a
 - Site URL: `https://iory312.github.io/transpetro-estudos/`
 - Redirect URLs: `https://iory312.github.io/transpetro-estudos/**`
 
+## TEC Concursos
+
+Mais → TEC Concursos, ou Conteúdo na barra lateral. Não há API: cada tópico abre a página pública do assunto no TEC, em outra aba. No resumo e na lista de questões do tópico, o botão é **Resolver no TEC**. A dica “No TEC, filtre a banca CESGRANRIO” aparece em todos. Se o assunto é aproximado, o app mostra o porquê. Os três cadernos guia oficiais da Transpetro 2026 ficam no topo: abra logado e clique em Salvar. O checkbox “feito no TEC” entra no progresso (`tec` no mesmo JSON) e sincroniza com o resto; no merge, marcado em qualquer aparelho continua marcado. Sem internet, o app avisa e não abre o link.
+
 ## Publicação
 
 O workflow `.github/workflows/pages.yml` publica a raiz com `actions/deploy-pages` a cada push na `main`. O arquivo `.nojekyll` impede o Jekyll de ignorar arquivos. Manifest, service worker e áudios usam caminho relativo (`./`), então funcionam na subpasta `/transpetro-estudos/`.

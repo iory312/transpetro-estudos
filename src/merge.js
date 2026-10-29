@@ -1,7 +1,7 @@
 /* União do progresso local com outro aparelho ou com a conta.
    Não descarta respostas. Por item, o registro mais recente vence.
    Tema, filtros de questão e velocidade do áudio ficam no aparelho que está mesclando. */
-function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
 function cloneState(v){ return v == null ? v : JSON.parse(JSON.stringify(v)); }
 function mergeBoolMap(a, b){
   const o = Object.assign({}, a || {});
@@ -81,6 +81,7 @@ function mergeState(a, b){
   simIds.forEach(id => { o.sims[id] = mergeSim(o.sims[id], b.sims[id]); });
   o.crono = mergeBoolMap(a.crono, b.crono);
   o.dia = mergeBoolMap(a.dia, b.dia);
+  o.tec = mergeBoolMap(a.tec, b.tec);
   o.tck = mergeTck(a.tck, b.tck);
   o.audio = mergeAudio(a.audio, b.audio);
   o.rod = mergeRod(a.rod, b.rod);

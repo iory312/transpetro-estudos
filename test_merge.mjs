@@ -27,6 +27,7 @@ local.tck = {of1:[true, false, false]};
 local.days = {'2026-10-29':2};
 local.audio = {rate:1.5, last:'01', p01:12};
 local.rod = {r1:{stage:1, last:'2026-10-02', done:false}};
+local.tec = {of1:true, of2:false};
 local.sims = {s1:{cur:{start:50, ans:{1:'A'}, flags:{}}, hist:[{start:10, end:20, ans:{1:'B'}}]}};
 
 const remote = blank();
@@ -43,6 +44,7 @@ remote.tck = {of1:[false, true, true]};
 remote.days = {'2026-10-29':5, '2026-10-28':1};
 remote.audio = {rate:1, last:'02', p01:40, p02:3};
 remote.rod = {r1:{stage:0, last:'2026-10-01', done:false}, r2:{stage:2, last:'2026-10-09', done:false}};
+remote.tec = {of2:true, df1:true};
 remote.sims = {s1:{cur:{start:40, ans:{1:'C', 2:'D'}, flags:{2:true}}, hist:[{start:10, end:20, ans:{1:'B'}}, {start:30, end:35, ans:{3:'A'}}]}};
 
 const m = mergeState(local, remote);
@@ -63,6 +65,7 @@ eq(m.sims.s1.cur.start === 50 && m.sims.s1.cur.ans[1] === 'A' && m.sims.s1.cur.a
 eq(m.settings.theme === 'dark', 'tema fica no aparelho local');
 eq(m.qf.topic === 'of1' && m.qf.src === 'fix', 'filtros de questão ficam no aparelho local');
 eq(m.created === 500 && m.updated === 30, 'created mais antigo e updated mais novo');
+eq(m.tec.of1 === true && m.tec.of2 === true && m.tec.df1 === true, 'feito no TEC é união dos dois lados');
 
 const again = mergeState(m, remote);
 eq(JSON.stringify(again.answers) === JSON.stringify(m.answers), 'mesclar de novo não duplica respostas');

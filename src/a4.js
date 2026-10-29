@@ -28,8 +28,10 @@ VIEWS.resumos = m => {
      <div class="chips" id="tck">${TCK.map((k, j) => `<span class="chip ${st[j] ? 'on' : ''}" data-j="${j}">${st[j] ? '✔ ' : ''}${k}</span>`).join('')}</div>
      <div class="content" style="margin-top:10px">${t.html}</div>
      ${qs.length ? `<a class="btn p w" style="margin-top:12px" href="#/questoes/t/${id}">Resolver as ${qs.length} questões deste tópico</a>` : ''}
+     ${tecBtn(id)}
      <div class="qnav">${i > 0 ? `<a class="btn" href="#/resumos/${list[i - 1].id}">← Anterior</a>` : '<span></span>'}${i < list.length - 1 ? `<a class="btn" href="#/resumos/${list[i + 1].id}">Próximo →</a>` : ''}</div></div>`;
     $$('#tck .chip', m).forEach(c => c.onclick = () => { const a = S.tck[id] = S.tck[id] || []; a[+c.dataset.j] = !a[+c.dataset.j]; activity(); save(); render(); });
+    tecBind(m);
     return;
   }
   setTitle('Resumos', 'Por tópico do edital');

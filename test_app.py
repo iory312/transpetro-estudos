@@ -51,7 +51,7 @@ async def run():
       ok(await pg.locator("#main .card").count() > 0, f"{name} home renders")
       if mob: await pg.screenshot(path=SH + "01_home_mobile.png", full_page=False)
       # all screens
-      for r in ["home","questoes","simulado","flashcards","mais","erros","bizus","resumos","leitura","glossario","cronograma","prova","ouvir","sobre","sobre/raiox","backup","sincronizar","resumos/of1","bizus/m/Ofensiva","resumos/le1"]:
+      for r in ["home","questoes","simulado","flashcards","mais","erros","bizus","resumos","leitura","glossario","cronograma","prova","ouvir","sobre","sobre/raiox","backup","sincronizar","tec","resumos/of1","bizus/m/Ofensiva","resumos/le1"]:
         await pg.goto(URL + "#/" + r); await pg.wait_for_timeout(150)
         t = await pg.inner_text("#main"); ok("Erro ao abrir" not in t and len(t) > 30, f"{name} #{r} ({len(t)} chars)")
       if name == "mobile":
@@ -141,6 +141,16 @@ async def run():
         ok(sw["sw"], "service worker versionado e com rede primeiro")
         ok(sw["manifest"], "manifest com caminhos relativos ao subpath")
         ok(sw["cdn"], "supabase-js disponível no CDN")
+        await pg.goto(URL + "#/tec"); await pg.wait_for_selector("a[data-tec='of1']")
+        ntec = await pg.locator("#main a.btn[data-tec]").count()
+        ok(ntec == 46, f"46 links de tópico no TEC ({ntec})")
+        ok("Abra logado e clique em Salvar" in await pg.inner_text("#main"), "cadernos guia com a dica de salvar")
+        rels = await pg.eval_on_selector_all("#main a[data-tec]", "els => els.length > 0 && els.every(a => (a.getAttribute('rel') || '').includes('noopener') && a.target === '_blank')")
+        ok(rels, "links do TEC abrem em nova aba")
+        await pg.goto(URL + "#/resumos/of1"); await pg.wait_for_selector("text=Resolver no TEC")
+        ok("No TEC, filtre a banca CESGRANRIO" in await pg.inner_text("#main"), "resumo do tópico pede o filtro Cesgranrio")
+        await pg.goto(URL + "#/questoes/t/of2"); await pg.wait_for_selector("text=Resolver no TEC")
+        ok(await pg.locator("a[data-tec='of2']").count() == 1, "lista de questões do tópico tem o botão do TEC")
       await pg.goto(URL + "#/sincronizar"); await pg.wait_for_selector("#sync-email"); await pg.wait_for_selector("#sync-in"); await pg.wait_for_selector("#sync-up")
       t = await pg.inner_text("#main")
       ok("voltar ao app e entrar" in t and "Criar conta" in t, f"{name} tela Sincronizar")
