@@ -9,7 +9,7 @@
 <title>Transpetro 2026 · Ênfase 7</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%2296%22%20fill%3D%22%230b6e8a%22/%3E%3Cpath%20d%3D%22M256%2092l140%2052v104c0%2092-60%20160-140%20188-80-28-140-96-140-188V144z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%2228%22%20stroke-linejoin%3D%22round%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22318%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-size%3D%22150%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%3E7%3C/text%3E%3C/svg%3E">
 <style>:root{
- --bg:#f3f6f8;--bg2:#e7eef2;--card:#fff;--fg:#10212b;--mut:#3d5160;--line:#d7e1e8;
+ --bg:#f6f7f9;--bg2:#e8edf1;--card:#fff;--fg:#10212b;--mut:#3d5160;--line:#d7e1e8;
  --pri:#0c5f78;--pri2:#1490b0;--pri-bg:#e5f4f8;--focus:#0b7f9c;
  --ok:#0d6b34;--ok-bg:#e5f6ec;--bad:#9a3412;--bad-bg:#fff1e8;--warn:#8a5a00;--warn-bg:#fff6e0;
  --biz:#9a4e0b;--biz-bg:#fff5e8;--peg:#9f1239;--peg-bg:#fdecef;
@@ -29,11 +29,12 @@
 html{-webkit-text-size-adjust:100%;color-scheme:light}
 [data-theme=dark]{color-scheme:dark}
 html,body{min-height:100%}
-body{margin:0;background:
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;font-size:16px;background:
  radial-gradient(1100px 420px at 100% -10%, rgba(20,144,176,.10), transparent 55%),
  radial-gradient(800px 360px at -8% -6%, rgba(12,95,120,.08), transparent 50%),
  var(--bg);
- color:var(--fg);font:15px/1.55 var(--sans);padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom));letter-spacing:-.011em}
+ color:var(--fg);font:16px/1.5 var(--sans);padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom));letter-spacing:-.011em}
 ::selection{background:rgba(20,144,176,.28)}
 a{color:var(--pri2)}button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
@@ -45,7 +46,8 @@ header.top .ttl small{display:block;font-weight:560;font-size:12px;color:var(--m
 .timerpill{background:var(--warn-bg);color:var(--warn);border-radius:999px;padding:6px 12px;font-weight:750;font-variant-numeric:tabular-nums;font-size:13px;text-decoration:none}
 main{max-width:1120px;margin:0 auto;padding:16px}
 nav.bot{position:fixed;bottom:0;left:0;right:0;z-index:30;background:color-mix(in srgb, var(--card) 90%, transparent);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
-nav.bot a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:var(--nav);text-decoration:none;color:var(--mut);font-size:11px;font-weight:600;gap:3px;position:relative}
+nav.bot a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:48px;height:auto;padding:6px 2px;text-decoration:none;color:var(--mut);font-size:10px;font-weight:650;gap:2px;position:relative}
+nav.bot a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 nav.bot a svg{width:22px;height:22px}
 nav.bot a.on{color:var(--pri)}
 nav.bot a.on::before{content:"";position:absolute;top:6px;width:18px;height:3px;border-radius:99px;background:var(--pri2)}
@@ -222,10 +224,49 @@ a.chip{text-decoration:none}a.chip:not(.on){color:inherit}#fb{scroll-margin-top:
 .ed-pct.bad{color:var(--bad)}.ed-pct.mid{color:var(--warn)}.ed-pct.ok{color:var(--ok)}
 .chip.late{border-color:var(--bad);color:var(--bad)}
 .chip small{display:block;font-weight:600;font-size:10px;opacity:.85}
-@media(max-width:700px){
- .ed-row{flex-direction:column;gap:4px;padding:12px}
- .ed-chips .chip{padding:6px 8px;font-size:12px}
-}
+.ringgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ringcard{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 6px;text-decoration:none;color:var(--fg);min-height:108px;box-shadow:var(--sh)}
+.ringcard span{font-size:12px;color:var(--mut);text-align:center;line-height:1.2}
+.ringcard .ring{width:58px;height:58px}
+.ringcard .ring b{width:42px;height:42px;font-size:12px}
+.homeheat{margin:10px 0 4px}
+.homeheat i{background:var(--bg2);height:12px}
+.homeheat i.on{background:var(--pri2)}
+.homeheat i.today{outline-color:var(--pri)}
+.ed-stick{position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:15;background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px);padding:4px 0 8px}
+.ed-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--mut);margin-top:4px}
+.ed-thin{height:6px;margin-top:6px}
+.ed-item{padding:10px 12px;border-top:1px solid var(--line)}
+.ed-top{display:flex;align-items:center;gap:8px;min-width:0}
+.ed-item .ed-num{width:auto;min-width:2.4em}
+.ed-title{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 0;font-weight:680;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ed-pill{flex:none;border-radius:999px;padding:6px 8px;background:var(--bg);font-size:12px;font-weight:700;min-height:32px;display:inline-flex;align-items:center;gap:4px}
+.ed-pill b{font-variant-numeric:tabular-nums}
+.ed-togs{display:flex;gap:6px;margin-top:2px}
+.tog{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:transparent;font-size:11px;font-weight:800;color:var(--mut)}
+.tog.on{background:var(--pri);border-color:var(--pri);color:#fff}
+[data-theme=dark] .tog.on{color:#062029}
+.tog.late{box-shadow:0 0 0 2px var(--bad)}
+.ed-full{max-height:0;overflow:hidden;margin:0;color:var(--mut);font-size:14px}
+.ed-item.open .ed-full{max-height:16em;overflow:auto;margin-top:8px}
+.sheet-back{position:fixed;inset:0;z-index:40;background:rgba(16,33,43,.45);display:flex;align-items:flex-end}
+.sheet-back[hidden]{display:none}
+.sheet{background:var(--card);color:var(--fg);width:100%;max-height:min(86vh,720px);overflow:auto;border-radius:20px 20px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:var(--sh)}
+.sheet-grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:6px auto 12px}
+.step{display:flex;align-items:center;gap:10px;margin-top:10px}
+.step b{min-width:2em;text-align:center;font-variant-numeric:tabular-nums}
+.step .btn{width:44px;height:44px;padding:0}
+.wstrip{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
+.wday{flex:0 0 48px;min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--mut);padding:4px}
+.wday b{font-size:16px;color:var(--fg)}
+.wday.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.wday.on b{color:#fff}
+[data-theme=dark] .wday.on,[data-theme=dark] .wday.on b{color:#062029}
+.wday.today{outline:2px solid var(--pri2)}
+.wday:disabled{opacity:.35}
+.daylist .li{min-height:52px}
+.bigck{width:22px;height:22px;accent-color:var(--pri)}
+@media(max-width:430px){main{padding:12px} .tiles{grid-template-columns:1fr 1fr}}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
 @media (prefers-reduced-motion: reduce){
@@ -434,11 +475,11 @@ const ICON = {
  list:'<path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>'
 };
 const ic = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
-const NAV = [['home','Início','home'],['questoes','Questões','q'],['simulado','Simulado','sim'],['flashcards','Flashcards','cards'],['mais','Mais','more']];
+const NAV = [['home','Início','home'],['edital','Edital','list'],['cronograma','Cronograma','cal'],['questoes','Questões','q'],['mais','Mais','more']];
 const MORE = [['erros','Caderno de erros','err','Revisão em +1/+7/+14 dias'],['bizus','BIZUs','bizu','Biblioteca pesquisável'],['resumos','Resumos','book','Por tópico do edital'],
  ['leitura','Leitura em Inglês','gloss','12 textos reais · 36 questões'],['glossario','Glossário EN','gloss','Termos, conectores, falsos cognatos'],['cronograma','Cronograma','cal','03/11 → 06/12'],['edital','Edital','list','Verticalizado · teoria e questões'],['prova','Dia da prova','check','Checklist do edital'],
- ['ouvir','Ouvir','audio','Áudios de BIZUs'],['sobre','Sobre a prova','info','Edital, perfil da banca'],['tec','TEC Concursos','ext','Cadernos guia e assuntos'],['backup','Progresso','save','Exportar / importar'],['sincronizar','Sincronizar','cloud','Conta na nuvem (opcional)']];
-function theme(t){ if(t){ S.settings.theme = t; save(); } const th = S.settings.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.dataset.theme = th; const b = $('#themeBtn'); if(b) b.innerHTML = th === 'dark' ? ic('sun') : ic('moon'); const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', th === 'dark' ? '#0c141c' : '#f3f6f8'); }
+ ['ouvir','Ouvir','audio','Áudios de BIZUs'],['sobre','Sobre a prova','info','Edital, perfil da banca'],['simulado','Simulado','sim','70 questões · 4h30'],['flashcards','Flashcards','cards','Repetição espaçada'],['tec','TEC Concursos','ext','Cadernos guia e assuntos'],['backup','Progresso','save','Exportar / importar'],['sincronizar','Sincronizar','cloud','Conta na nuvem (opcional)']];
+function theme(t){ if(t){ S.settings.theme = t; save(); } const th = S.settings.theme || 'light'; document.documentElement.dataset.theme = th; const b = $('#themeBtn'); if(b) b.innerHTML = th === 'dark' ? ic('sun') : ic('moon'); const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', th === 'dark' ? '#0c141c' : '#f6f7f9'); }
 
 /* ---------- estatísticas ---------- */
 function lastAns(id){ const a = S.answers[id]; return a && a.length ? a[a.length-1] : null; }
@@ -525,15 +566,18 @@ VIEWS.home = m => {
   const de = dueErrors().length + dueRod().length, dc = dueCards().length;
   let heat = ''; for(let i = 13; i >= 0; i--){ const k = addDays(dk(), -i); heat += `<i class="${S.days[k] ? 'on' : ''} ${i === 0 ? 'today' : ''}" title="${fmtD(k)}"></i>`; }
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
+  const ed = editalSum(), lateN = editalLateCount(), hj = hojeResumo();
+  const ac = ed.pct == null ? '—' : ed.pct + '%';
   m.innerHTML = `<div class="home">
-  <div class="home-top">
-   <div class="card hero"><div class="eyebrow">Prova · domingo, 06/12/2026 · 4h30 · 70 questões</div>
-    <div class="hero-row"><div><div class="big" id="cd">${n > 0 ? n : n === 0 ? 'HOJE' : '—'}</div><div class="hero-sub">${n > 1 ? 'dias para a prova' : n === 1 ? 'dia para a prova — amanhã!' : n === 0 ? 'Boa prova, Allan!' : 'prova realizada'}</div></div>
-    <div class="streak-box"><div class="mut">Sequência</div><div class="big" id="streak">${sk}</div><div class="mut">${sk === 1 ? 'dia seguido' : 'dias seguidos'}</div></div></div>
-    <div class="heat" aria-label="Dias estudados nas últimas duas semanas">${heat}</div></div>
-   <div class="card kpi"><h3>Para revisar hoje</h3><div class="stat"><div><b>${de}</b><span>erros pendentes</span></div><div><b>${dc}</b><span>flashcards</span></div><div><b>${Object.keys(S.answers).length}</b><span>questões feitas</span></div></div>
-    <div class="row" style="margin-top:14px"><a class="btn sm ${de ? 'p' : ''}" href="#/erros/revisar">Revisar erros</a><a class="btn sm ${dc ? 'p' : ''}" href="#/flashcards">Flashcards</a><a class="btn sm" href="#/questoes">Questões</a></div></div>
+  <div class="ringgrid">
+   <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${n > 0 ? Math.max(4, Math.min(100, Math.round(100 * (34 - Math.min(n, 34)) / 34))) : 100}"><b id="cd">${n > 0 ? n : n === 0 ? '0' : '—'}</b></div><span>dias para a prova</span></a>
+   <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${hj.n ? Math.round(100 * hj.ok / hj.n) : 0}"><b>${hj.ok}/${hj.n || 0}</b></div><span>hoje</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${lateN ? Math.min(100, lateN * 8) : 0}"><b>${lateN}</b></div><span>revisões atrasadas</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${ed.teoria}"><b>${ed.teoria}%</b></div><span>edital concluído</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${ed.pct || 0}"><b>${ac}</b></div><span>% acerto</span></a>
+   <a class="ringcard" href="#/home"><div class="ring" style="--p:${Math.min(100, sk * 14)}"><b id="streak">${sk}</b></div><span>dias seguidos</span></a>
   </div>
+  <div class="heat homeheat" aria-label="Dias estudados nas últimas duas semanas">${heat}</div>
   <div class="home-mid">
    ${hojeCardHTML()}
    <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>
@@ -1164,7 +1208,7 @@ function planoLinks(b){
 function planoItem(b, today){
   const on = planoFeito(b.id);
   const min = b.tipo === 'marco' ? '' : `<span class="mut">${b.min} min</span>`;
-  return `<label class="li ${on ? 'done' : ''} ${b.date === today ? 'today' : ''}" style="align-items:flex-start"><input type="checkbox" data-plano="${esc(b.id)}" ${on ? 'checked' : ''} aria-label="Feito: ${esc(b.title)}"><div class="f1"><div class="t"><span class="tipo ${TIPO_C[b.tipo] || ''}">${TIPO_L[b.tipo] || ''}</span> ${min ? ' · ' + min : ''} · ${esc(b.title)}</div>${b.note ? `<div class="s">${esc(b.note)}</div>` : ''}<div class="row" style="margin-top:6px">${planoLinks(b)}</div></div></label>`;
+  return `<label class="li ${on ? 'done' : ''} ${b.date === today ? 'today' : ''}" style="align-items:flex-start"><input class="bigck" type="checkbox" data-plano="${esc(b.id)}" ${on ? 'checked' : ''} aria-label="Feito: ${esc(b.title)}"><div class="f1"><div class="t"><span class="tipo ${TIPO_C[b.tipo] || ''}">${TIPO_L[b.tipo] || ''}</span> ${min ? ' · ' + min : ''} · ${esc(b.title)}</div>${b.note ? `<div class="s">${esc(b.note)}</div>` : ''}<div class="row" style="margin-top:6px">${planoLinks(b)}</div></div></label>`;
 }
 function bindPlano(root){
   $$('[data-plano]', root).forEach(cb => cb.onchange = () => {
@@ -1178,7 +1222,13 @@ function bindPlano(root){
   });
   if(typeof tecBind === 'function') tecBind(root);
 }
-let planoSem = '';
+let planoSem = '', planoDia = '';
+function hojeResumo(){
+  const today = (typeof dk === 'function') ? dk() : pISO(new Date());
+  const day = buildPlano(planoHoras(), (typeof S !== 'undefined' && S.planoMove) || {ids:{}}).find(d => d.date === today);
+  const blocks = day ? day.blocks : [];
+  return {n:blocks.length, ok:blocks.filter(b => planoFeito(b.id)).length};
+}
 function hojeCardHTML(){
   const today = (typeof dk === 'function') ? dk() : pISO(new Date());
   const horas = planoHoras();
@@ -1205,19 +1255,26 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
   const wok = wall.filter(b => planoFeito(b.id)).length;
   const fase = shown.length ? FASE_L[shown[0].fase] : '';
   setTitle('Cronograma', pFmt(week[0] || planoSem) + ' – ' + pFmt(week[week.length - 1] || planoSem));
-  m.innerHTML = `<div class="card"><h3>Progresso</h3>
-    <div class="bar" style="height:12px"><i id="planoBar" style="width:${pct(st.ok, st.n)}%"></i></div>
-    <div class="small" id="planoLab" style="margin-top:6px">${st.ok} de ${st.n} blocos · ${pct(st.ok, st.n)}% no total</div>
-    <div class="small mut">Esta semana: ${wok} de ${wall.length} · ${pct(wok, wall.length)}%. ${esc(fase)}</div>
-    <div class="small mut">Prova em 06/12, em Manaus. Gabarito em 07/12 e recursos em 07–08/12.</div></div>
-   <div class="card"><h3>Horas por dia</h3>
-    <p class="small mut">Padrão: 3h nos dias úteis e 5h no sábado e no domingo. Os blocos do dia crescem ou encolhem junto com essas horas. A ordem dos tópicos fica.</p>
+  if(!planoDia || !shown.some(d => d.date === planoDia)) planoDia = (shown.find(d => d.date === today) || shown[0] || {}).date || today;
+  const day = days.find(d => d.date === planoDia) || shown[0];
+  const strip = pRange(planoSem, pAdd(planoSem, 6)).map(k => {
+    const has = days.some(d => d.date === k);
+    return `<button type="button" class="wday ${k === planoDia ? 'on' : ''} ${k === today ? 'today' : ''}" data-day="${k}" ${has ? '' : 'disabled'}>${pWd(k)}<b>${pFmt(k).slice(0, 2)}</b></button>`;
+  }).join('');
+  m.innerHTML = `<div class="card"><h3>Semana</h3>
+    <div class="bar" style="height:8px"><i id="planoBar" style="width:${pct(wok, wall.length)}%"></i></div>
+    <div class="small" id="planoLab" style="margin-top:6px">Esta semana: ${wok} de ${wall.length} · ${pct(wok, wall.length)}% · plano ${pct(st.ok, st.n)}%</div>
+    <div class="small mut">${esc(fase)}. Prova em 06/12, em Manaus.</div>
+    <div class="wstrip" id="wStrip">${strip}</div>
+    <div class="weeknav"><button class="btn sm" id="wPrev" type="button">← Semana</button><button class="btn sm" id="wNext" type="button">Semana →</button></div></div>
+   <div class="card" id="cd${day ? day.date : ''}"><h3>${day ? pWd(day.date) + ' ' + pFmt(day.date) : ''}${day && day.date === today ? ' · HOJE' : ''} <span class="r">${day ? day.blocks.reduce((s, b) => s + (b.min || 0), 0) + ' min' : ''}</span></h3>
+    <div class="daylist">${day && day.blocks.length ? day.blocks.map(b => planoItem(b, today)).join('') : '<p class="mut">Nenhum bloco neste dia.</p>'}</div></div>
+   <div class="row" style="margin-bottom:12px"><button class="btn sm" id="reprog" type="button">Reprogramar atrasados</button></div>
+   <details class="card"><summary><b>Horas por dia</b></summary>
+    <p class="small mut">Padrão: 3h nos dias úteis e 5h no sábado e no domingo. Os blocos crescem ou encolhem com essas horas.</p>
     <div class="row"><label class="lb" style="margin:0">Dia útil</label><input id="hSem" type="number" min="1" max="12" step="0.5" value="${horas.sem}" aria-label="Horas por dia útil">
      <label class="lb" style="margin:0">Sábado e domingo</label><input id="hFim" type="number" min="1" max="12" step="0.5" value="${horas.fim}" aria-label="Horas no fim de semana">
-     <button class="btn sm p" id="hApply" type="button">Atualizar tempos</button></div></div>
-   <div class="weeknav"><button class="btn sm" id="wPrev" type="button">← Semana</button><div class="small"><b>${pFmt(planoSem)} – ${pFmt(pAdd(planoSem, 6))}</b></div><button class="btn sm" id="wNext" type="button">Semana →</button></div>
-   <div class="row" style="margin:-4px 0 12px"><button class="btn sm" id="reprog" type="button">Reprogramar atrasados</button><span class="small mut">Leva o que ficou sem “feito” para hoje em diante, sem passar de 4 blocos no dia.</span></div>
-   ${shown.map(d => `<div class="card" id="cd${d.date}"><h3>${pWd(d.date)} ${pFmt(d.date)}${d.date === today ? ' · HOJE' : ''} <span class="r">${d.blocks.reduce((s, b) => s + (b.min || 0), 0)} min</span></h3>${d.blocks.map(b => planoItem(b, today)).join('') || '<p class="mut">Nenhum bloco neste dia.</p>'}</div>`).join('')}`;
+     <button class="btn sm p" id="hApply" type="button">Atualizar tempos</button></div></details>`;
   bindPlano(m);
   $('#hApply', m).onclick = () => {
     let sem = Number($('#hSem', m).value), fim = Number($('#hFim', m).value);
@@ -1225,8 +1282,9 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     S.planoH = {sem:sem, fim:fim, t:Date.now()};
     save(); toast('Tempos atualizados.'); render();
   };
-  $('#wPrev', m).onclick = () => { const n = pAdd(planoSem, -7); if(n >= pMonday('2026-11-03')){ planoSem = n; render(); } };
-  $('#wNext', m).onclick = () => { const n = pAdd(planoSem, 7); if(n <= '2026-12-08'){ planoSem = n; render(); } };
+  $$('#wStrip .wday', m).forEach(b => b.onclick = () => { if(b.disabled) return; planoDia = b.dataset.day; render(); });
+  $('#wPrev', m).onclick = () => { const n = pAdd(planoSem, -7); if(n >= pMonday('2026-11-03')){ planoSem = n; planoDia = ''; render(); } };
+  $('#wNext', m).onclick = () => { const n = pAdd(planoSem, 7); if(n <= '2026-12-08'){ planoSem = n; planoDia = ''; render(); } };
   $('#reprog', m).onclick = () => {
     const r = planoReprogramar(planoHoras(), S.planoMove, S.plano || {}, today);
     if(!r.n){ toast('Nenhum bloco atrasado.'); return; }
@@ -1235,7 +1293,6 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     planoSem = pMonday(today);
     render();
   };
-  const td = document.getElementById('cd' + today); if(td) setTimeout(() => td.scrollIntoView({block:'start'}), 30);
 };
 
 /* Edital verticalizado — texto do Anexo IV (ênfase 7), sem parafrasear o item. */
@@ -1353,23 +1410,33 @@ function editalLinks(it){
   });
   return h;
 }
+function editalShort(it){
+  const t = it.txt.replace(/^–\s*/, '');
+  const cut = t.split(':')[0];
+  return cut.length > 42 ? cut.slice(0, 40) + '…' : cut;
+}
+function editalLateCount(){
+  let n = 0;
+  EDITAL_ITENS.forEach(it => { const e = editalRead(it.id); if([0,1,2].some(i => editalLate(e, i))) n++; });
+  return n;
+}
+function editalToggles(it){
+  const e = editalRead(it.id);
+  const dates = e.t ? [1, 7, 30].map(n => editalRevDate(e.te, n)) : ['','',''];
+  const tgl = (label, on, late, attr) => `<button type="button" class="tog ${on ? 'on' : ''} ${late ? 'late' : ''}" ${attr} aria-pressed="${on ? 'true' : 'false'}" aria-label="${esc(label)}">${label}</button>`;
+  return tgl('T', e.t, false, `data-ed-t="${esc(it.id)}"`) + [0,1,2].map(i => tgl('R' + (i + 1), e.r[i], editalLate(e, i), `data-ed-r="${esc(it.id)}" data-i="${i}" title="${dates[i] ? (typeof fmtD === 'function' ? fmtD(dates[i]) : dates[i]) : ''}"`)).join('');
+}
 function editalRow(it){
   const e = editalRead(it.id);
   const p = editalPct(e);
-  const dates = e.t ? [1, 7, 30].map(n => editalRevDate(e.te, n)) : ['','',''];
-  const chips = `<button type="button" class="chip ${e.t ? 'on' : ''}" data-ed-t="${esc(it.id)}" aria-pressed="${e.t ? 'true' : 'false'}">Teoria</button>`
-    + [0,1,2].map(i => `<button type="button" class="chip ${e.r[i] ? 'on' : ''} ${editalLate(e, i) ? 'late' : ''}" data-ed-r="${esc(it.id)}" data-i="${i}" aria-pressed="${e.r[i] ? 'true' : 'false'}">Rev. ${i + 1}${dates[i] ? `<small>${typeof fmtD === 'function' ? fmtD(dates[i]) : dates[i]}${editalLate(e, i) ? ' · atrasada' : ''}</small>` : ''}</button>`).join('');
-  return `<div class="ed-row" data-ed-row="${esc(it.id)}"><div class="ed-num">${esc(it.num)}</div><div class="ed-body"><p class="ed-txt">${esc(it.txt)}</p><div class="ed-chips">${chips}</div>
-    <div class="ed-q"><label class="lb" style="margin:0">Feitas</label><input data-ed-q="${esc(it.id)}" type="number" min="0" inputmode="numeric" value="${e.q}" aria-label="Questões feitas em ${esc(it.num)}">
-     <label class="lb" style="margin:0">Acertos</label><input data-ed-ok="${esc(it.id)}" type="number" min="0" inputmode="numeric" value="${e.ok}" aria-label="Acertos em ${esc(it.num)}">
-     <span class="ed-pct ${editalPctClass(p)}">${p == null ? '—' : p + '%'}</span></div>
-    <div class="small mut" style="margin-top:6px">Último estudo: ${e.u && typeof fmtD === 'function' ? fmtD(e.u) : (e.u || '—')}</div>
-    <input class="ed-note" data-ed-n="${esc(it.id)}" type="text" maxlength="180" placeholder="Anotação curta" value="${esc(e.n)}" aria-label="Anotação de ${esc(it.num)}">
-    <div class="ed-links" style="margin-top:8px">${editalLinks(it)}</div></div></div>`;
+  return `<article class="ed-item" data-ed-open="${esc(it.id)}"><div class="ed-top"><span class="ed-num">${esc(it.num)}</span><button type="button" class="ed-title" data-ed-exp="${esc(it.id)}">${esc(editalShort(it))}</button><span class="ed-pill ${editalPctClass(p)}" data-ed-open="${esc(it.id)}">${e.ok}/${e.q} <b>${p == null ? '—' : p + '%'}</b></span></div>
+   <div class="ed-togs">${editalToggles(it)}</div>
+   <p class="ed-full">${esc(it.txt)}</p></article>`;
 }
 function editalBars(sum){
-  return `<div class="small" style="margin-top:6px">Teoria ${sum.teoria}% · revisões ${sum.revPct}% · ${sum.q} questões · acerto ${sum.pct == null ? '—' : sum.pct + '%'}</div>
-    <div class="bar" style="margin-top:6px"><i style="width:${sum.teoria}%"></i></div>`;
+  const ac = sum.pct == null ? '—' : sum.pct + '%';
+  return `<div class="ed-meta"><span>${sum.teoria}% concluído</span><span class="ed-pct ${editalPctClass(sum.pct)}">${ac} acerto</span></div>
+    <div class="bar ed-thin"><i style="width:${sum.teoria}%"></i></div>`;
 }
 function editalOnAnswer(q, ok){
   if(!q || !q.topic) return;
@@ -1406,31 +1473,56 @@ function editalDraw(root){
     if(grupos) html += `<h2 class="ed-sec">${esc(sec.titulo)}</h2>${grupos}`;
   });
   box.innerHTML = html || '<div class="card empty">Nenhum item com esse filtro.</div>';
-  $$('[data-ed-t]', box).forEach(b => b.onclick = () => {
-    const e = editalGet(b.dataset.edT); e.t = !e.t; if(e.t && !e.te) e.te = dk(); e.u = dk(); save(); editalDraw(root);
+  $$('[data-ed-t]', box).forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const e = editalGet(b.dataset.edT); e.t = !e.t; if(e.t && !e.te) e.te = dk(); e.u = dk(); save(); editalDraw(root); if(editalOpen === b.dataset.edT) editalSheet(b.dataset.edT);
   });
-  $$('[data-ed-r]', box).forEach(b => b.onclick = () => {
-    const e = editalGet(b.dataset.edR); e.r[+b.dataset.i] = !e.r[+b.dataset.i]; e.u = dk(); save(); editalDraw(root);
+  $$('[data-ed-r]', box).forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const e = editalGet(b.dataset.edR); e.r[+b.dataset.i] = !e.r[+b.dataset.i]; e.u = dk(); save(); editalDraw(root); if(editalOpen === b.dataset.edR) editalSheet(b.dataset.edR);
   });
-  $$('[data-ed-q]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edQ); e.q = Math.max(0, parseInt(inp.value, 10) || 0); if(e.ok > e.q) e.ok = e.q; e.u = dk(); save(); editalDraw(root);
-  });
-  $$('[data-ed-ok]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edOk); e.ok = Math.max(0, parseInt(inp.value, 10) || 0); if(e.ok > e.q) e.q = e.ok; e.u = dk(); save(); editalDraw(root);
-  });
-  $$('[data-ed-n]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edN); e.n = inp.value.slice(0, 180); e.u = dk(); save();
-  });
+  $$('[data-ed-exp]', box).forEach(b => b.onclick = ev => { ev.stopPropagation(); b.closest('.ed-item').classList.toggle('open'); });
+  $$('[data-ed-open]', box).forEach(el => { if(el.classList.contains('tog')) return; el.addEventListener('click', ev => { if(ev.target.closest('.tog, .ed-title')) return; editalSheet(el.dataset.edOpen); }); });
   if(typeof tecBind === 'function') tecBind(box);
   const s = editalSum();
   const lab = $('#edTot', root); if(lab) lab.innerHTML = editalBars(s);
 }
+let editalOpen = '';
+function editalSheet(id){
+  const it = EDITAL_ITENS.find(x => x.id === id); if(!it) return;
+  editalOpen = id;
+  const e = editalRead(id);
+  const host = document.getElementById('edSheet'); if(!host) return;
+  host.hidden = false;
+  host.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(it.num)}"><div class="sheet-grab"></div>
+    <div class="row sp"><b>${esc(it.num)}</b><button type="button" class="btn sm" id="edClose">Fechar</button></div>
+    <p class="ed-txt">${esc(it.txt)}</p>
+    <div class="ed-togs" style="margin:8px 0">${editalToggles(it)}</div>
+    <div class="step"><span>Feitas</span><button type="button" class="btn" data-step="q" data-d="-1" aria-label="Menos feitas">−</button><b id="edQv">${e.q}</b><button type="button" class="btn" data-step="q" data-d="1" aria-label="Mais feitas">+</button></div>
+    <div class="step"><span>Acertos</span><button type="button" class="btn" data-step="ok" data-d="-1" aria-label="Menos acertos">−</button><b id="edOv">${e.ok}</b><button type="button" class="btn" data-step="ok" data-d="1" aria-label="Mais acertos">+</button></div>
+    <div class="small mut" style="margin-top:8px">Último estudo: ${e.u && typeof fmtD === 'function' ? fmtD(e.u) : (e.u || '—')}</div>
+    <label class="lb" for="edNote">Anotação</label><input id="edNote" type="text" maxlength="180" value="${esc(e.n)}">
+    <div class="ed-links" style="margin-top:12px">${editalLinks(it)}</div></div>`;
+  host.onclick = ev => { if(ev.target === host) editalClose(); };
+  $('#edClose').onclick = editalClose;
+  $$('[data-step]', host).forEach(b => b.onclick = () => {
+    const row = editalGet(id); const k = b.dataset.step; const d = +b.dataset.d;
+    if(k === 'q'){ row.q = Math.max(0, row.q + d); if(row.ok > row.q) row.ok = row.q; }
+    else { row.ok = Math.max(0, row.ok + d); if(row.ok > row.q) row.q = row.ok; }
+    row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main'));
+  });
+  $('#edNote').onchange = () => { const row = editalGet(id); row.n = $('#edNote').value.slice(0, 180); row.u = dk(); save(); };
+  $$('[data-ed-t]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.t = !row.t; if(row.t && !row.te) row.te = dk(); row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
+  $$('[data-ed-r]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.r[+b.dataset.i] = !row.r[+b.dataset.i]; row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
+  if(typeof tecBind === 'function') tecBind(host);
+}
+function editalClose(){ editalOpen = ''; const host = document.getElementById('edSheet'); if(host){ host.hidden = true; host.innerHTML = ''; } }
 if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
   setTitle('Edital', 'Ênfase 7 · verticalizado');
   const sum = editalSum();
-  m.innerHTML = `<div class="card"><h3>Ênfase 7 · Análise de Sistemas – Segurança Cibernética e da Informação</h3><div id="edTot">${editalBars(sum)}</div>
-    <input id="edBusca" type="search" placeholder="Buscar no edital" value="${esc(editalBusca)}" style="margin-top:10px" aria-label="Buscar no edital">
-    <div class="chips" id="edFilt" style="margin-top:8px">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div></div><div id="edList"></div>`;
+  m.innerHTML = `<div class="ed-stick"><input id="edBusca" type="search" placeholder="Buscar no edital" value="${esc(editalBusca)}" aria-label="Buscar no edital">
+    <div class="chips" id="edFilt">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div>
+    <div id="edTot">${editalBars(sum)}</div></div><div id="edList"></div><div id="edSheet" class="sheet-back" hidden></div>`;
   editalDraw(m);
   $('#edBusca', m).oninput = e => { editalBusca = e.target.value; editalDraw(m); };
   $$('#edFilt .chip', m).forEach(c => c.onclick = () => { editalFilt = c.dataset.f; $$('#edFilt .chip', m).forEach(x => x.classList.toggle('on', x === c)); editalDraw(m); });

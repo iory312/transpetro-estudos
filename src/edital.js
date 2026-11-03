@@ -113,23 +113,33 @@ function editalLinks(it){
   });
   return h;
 }
+function editalShort(it){
+  const t = it.txt.replace(/^–\s*/, '');
+  const cut = t.split(':')[0];
+  return cut.length > 42 ? cut.slice(0, 40) + '…' : cut;
+}
+function editalLateCount(){
+  let n = 0;
+  EDITAL_ITENS.forEach(it => { const e = editalRead(it.id); if([0,1,2].some(i => editalLate(e, i))) n++; });
+  return n;
+}
+function editalToggles(it){
+  const e = editalRead(it.id);
+  const dates = e.t ? [1, 7, 30].map(n => editalRevDate(e.te, n)) : ['','',''];
+  const tgl = (label, on, late, attr) => `<button type="button" class="tog ${on ? 'on' : ''} ${late ? 'late' : ''}" ${attr} aria-pressed="${on ? 'true' : 'false'}" aria-label="${esc(label)}">${label}</button>`;
+  return tgl('T', e.t, false, `data-ed-t="${esc(it.id)}"`) + [0,1,2].map(i => tgl('R' + (i + 1), e.r[i], editalLate(e, i), `data-ed-r="${esc(it.id)}" data-i="${i}" title="${dates[i] ? (typeof fmtD === 'function' ? fmtD(dates[i]) : dates[i]) : ''}"`)).join('');
+}
 function editalRow(it){
   const e = editalRead(it.id);
   const p = editalPct(e);
-  const dates = e.t ? [1, 7, 30].map(n => editalRevDate(e.te, n)) : ['','',''];
-  const chips = `<button type="button" class="chip ${e.t ? 'on' : ''}" data-ed-t="${esc(it.id)}" aria-pressed="${e.t ? 'true' : 'false'}">Teoria</button>`
-    + [0,1,2].map(i => `<button type="button" class="chip ${e.r[i] ? 'on' : ''} ${editalLate(e, i) ? 'late' : ''}" data-ed-r="${esc(it.id)}" data-i="${i}" aria-pressed="${e.r[i] ? 'true' : 'false'}">Rev. ${i + 1}${dates[i] ? `<small>${typeof fmtD === 'function' ? fmtD(dates[i]) : dates[i]}${editalLate(e, i) ? ' · atrasada' : ''}</small>` : ''}</button>`).join('');
-  return `<div class="ed-row" data-ed-row="${esc(it.id)}"><div class="ed-num">${esc(it.num)}</div><div class="ed-body"><p class="ed-txt">${esc(it.txt)}</p><div class="ed-chips">${chips}</div>
-    <div class="ed-q"><label class="lb" style="margin:0">Feitas</label><input data-ed-q="${esc(it.id)}" type="number" min="0" inputmode="numeric" value="${e.q}" aria-label="Questões feitas em ${esc(it.num)}">
-     <label class="lb" style="margin:0">Acertos</label><input data-ed-ok="${esc(it.id)}" type="number" min="0" inputmode="numeric" value="${e.ok}" aria-label="Acertos em ${esc(it.num)}">
-     <span class="ed-pct ${editalPctClass(p)}">${p == null ? '—' : p + '%'}</span></div>
-    <div class="small mut" style="margin-top:6px">Último estudo: ${e.u && typeof fmtD === 'function' ? fmtD(e.u) : (e.u || '—')}</div>
-    <input class="ed-note" data-ed-n="${esc(it.id)}" type="text" maxlength="180" placeholder="Anotação curta" value="${esc(e.n)}" aria-label="Anotação de ${esc(it.num)}">
-    <div class="ed-links" style="margin-top:8px">${editalLinks(it)}</div></div></div>`;
+  return `<article class="ed-item" data-ed-open="${esc(it.id)}"><div class="ed-top"><span class="ed-num">${esc(it.num)}</span><button type="button" class="ed-title" data-ed-exp="${esc(it.id)}">${esc(editalShort(it))}</button><span class="ed-pill ${editalPctClass(p)}" data-ed-open="${esc(it.id)}">${e.ok}/${e.q} <b>${p == null ? '—' : p + '%'}</b></span></div>
+   <div class="ed-togs">${editalToggles(it)}</div>
+   <p class="ed-full">${esc(it.txt)}</p></article>`;
 }
 function editalBars(sum){
-  return `<div class="small" style="margin-top:6px">Teoria ${sum.teoria}% · revisões ${sum.revPct}% · ${sum.q} questões · acerto ${sum.pct == null ? '—' : sum.pct + '%'}</div>
-    <div class="bar" style="margin-top:6px"><i style="width:${sum.teoria}%"></i></div>`;
+  const ac = sum.pct == null ? '—' : sum.pct + '%';
+  return `<div class="ed-meta"><span>${sum.teoria}% concluído</span><span class="ed-pct ${editalPctClass(sum.pct)}">${ac} acerto</span></div>
+    <div class="bar ed-thin"><i style="width:${sum.teoria}%"></i></div>`;
 }
 function editalOnAnswer(q, ok){
   if(!q || !q.topic) return;
@@ -166,31 +176,56 @@ function editalDraw(root){
     if(grupos) html += `<h2 class="ed-sec">${esc(sec.titulo)}</h2>${grupos}`;
   });
   box.innerHTML = html || '<div class="card empty">Nenhum item com esse filtro.</div>';
-  $$('[data-ed-t]', box).forEach(b => b.onclick = () => {
-    const e = editalGet(b.dataset.edT); e.t = !e.t; if(e.t && !e.te) e.te = dk(); e.u = dk(); save(); editalDraw(root);
+  $$('[data-ed-t]', box).forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const e = editalGet(b.dataset.edT); e.t = !e.t; if(e.t && !e.te) e.te = dk(); e.u = dk(); save(); editalDraw(root); if(editalOpen === b.dataset.edT) editalSheet(b.dataset.edT);
   });
-  $$('[data-ed-r]', box).forEach(b => b.onclick = () => {
-    const e = editalGet(b.dataset.edR); e.r[+b.dataset.i] = !e.r[+b.dataset.i]; e.u = dk(); save(); editalDraw(root);
+  $$('[data-ed-r]', box).forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const e = editalGet(b.dataset.edR); e.r[+b.dataset.i] = !e.r[+b.dataset.i]; e.u = dk(); save(); editalDraw(root); if(editalOpen === b.dataset.edR) editalSheet(b.dataset.edR);
   });
-  $$('[data-ed-q]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edQ); e.q = Math.max(0, parseInt(inp.value, 10) || 0); if(e.ok > e.q) e.ok = e.q; e.u = dk(); save(); editalDraw(root);
-  });
-  $$('[data-ed-ok]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edOk); e.ok = Math.max(0, parseInt(inp.value, 10) || 0); if(e.ok > e.q) e.q = e.ok; e.u = dk(); save(); editalDraw(root);
-  });
-  $$('[data-ed-n]', box).forEach(inp => inp.onchange = () => {
-    const e = editalGet(inp.dataset.edN); e.n = inp.value.slice(0, 180); e.u = dk(); save();
-  });
+  $$('[data-ed-exp]', box).forEach(b => b.onclick = ev => { ev.stopPropagation(); b.closest('.ed-item').classList.toggle('open'); });
+  $$('[data-ed-open]', box).forEach(el => { if(el.classList.contains('tog')) return; el.addEventListener('click', ev => { if(ev.target.closest('.tog, .ed-title')) return; editalSheet(el.dataset.edOpen); }); });
   if(typeof tecBind === 'function') tecBind(box);
   const s = editalSum();
   const lab = $('#edTot', root); if(lab) lab.innerHTML = editalBars(s);
 }
+let editalOpen = '';
+function editalSheet(id){
+  const it = EDITAL_ITENS.find(x => x.id === id); if(!it) return;
+  editalOpen = id;
+  const e = editalRead(id);
+  const host = document.getElementById('edSheet'); if(!host) return;
+  host.hidden = false;
+  host.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(it.num)}"><div class="sheet-grab"></div>
+    <div class="row sp"><b>${esc(it.num)}</b><button type="button" class="btn sm" id="edClose">Fechar</button></div>
+    <p class="ed-txt">${esc(it.txt)}</p>
+    <div class="ed-togs" style="margin:8px 0">${editalToggles(it)}</div>
+    <div class="step"><span>Feitas</span><button type="button" class="btn" data-step="q" data-d="-1" aria-label="Menos feitas">−</button><b id="edQv">${e.q}</b><button type="button" class="btn" data-step="q" data-d="1" aria-label="Mais feitas">+</button></div>
+    <div class="step"><span>Acertos</span><button type="button" class="btn" data-step="ok" data-d="-1" aria-label="Menos acertos">−</button><b id="edOv">${e.ok}</b><button type="button" class="btn" data-step="ok" data-d="1" aria-label="Mais acertos">+</button></div>
+    <div class="small mut" style="margin-top:8px">Último estudo: ${e.u && typeof fmtD === 'function' ? fmtD(e.u) : (e.u || '—')}</div>
+    <label class="lb" for="edNote">Anotação</label><input id="edNote" type="text" maxlength="180" value="${esc(e.n)}">
+    <div class="ed-links" style="margin-top:12px">${editalLinks(it)}</div></div>`;
+  host.onclick = ev => { if(ev.target === host) editalClose(); };
+  $('#edClose').onclick = editalClose;
+  $$('[data-step]', host).forEach(b => b.onclick = () => {
+    const row = editalGet(id); const k = b.dataset.step; const d = +b.dataset.d;
+    if(k === 'q'){ row.q = Math.max(0, row.q + d); if(row.ok > row.q) row.ok = row.q; }
+    else { row.ok = Math.max(0, row.ok + d); if(row.ok > row.q) row.q = row.ok; }
+    row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main'));
+  });
+  $('#edNote').onchange = () => { const row = editalGet(id); row.n = $('#edNote').value.slice(0, 180); row.u = dk(); save(); };
+  $$('[data-ed-t]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.t = !row.t; if(row.t && !row.te) row.te = dk(); row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
+  $$('[data-ed-r]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.r[+b.dataset.i] = !row.r[+b.dataset.i]; row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
+  if(typeof tecBind === 'function') tecBind(host);
+}
+function editalClose(){ editalOpen = ''; const host = document.getElementById('edSheet'); if(host){ host.hidden = true; host.innerHTML = ''; } }
 if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
   setTitle('Edital', 'Ênfase 7 · verticalizado');
   const sum = editalSum();
-  m.innerHTML = `<div class="card"><h3>Ênfase 7 · Análise de Sistemas – Segurança Cibernética e da Informação</h3><div id="edTot">${editalBars(sum)}</div>
-    <input id="edBusca" type="search" placeholder="Buscar no edital" value="${esc(editalBusca)}" style="margin-top:10px" aria-label="Buscar no edital">
-    <div class="chips" id="edFilt" style="margin-top:8px">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div></div><div id="edList"></div>`;
+  m.innerHTML = `<div class="ed-stick"><input id="edBusca" type="search" placeholder="Buscar no edital" value="${esc(editalBusca)}" aria-label="Buscar no edital">
+    <div class="chips" id="edFilt">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div>
+    <div id="edTot">${editalBars(sum)}</div></div><div id="edList"></div><div id="edSheet" class="sheet-back" hidden></div>`;
   editalDraw(m);
   $('#edBusca', m).oninput = e => { editalBusca = e.target.value; editalDraw(m); };
   $$('#edFilt .chip', m).forEach(c => c.onclick = () => { editalFilt = c.dataset.f; $$('#edFilt .chip', m).forEach(x => x.classList.toggle('on', x === c)); editalDraw(m); });
