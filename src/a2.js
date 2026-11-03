@@ -20,7 +20,7 @@ function cutAlerts(st){
 const tile = ([k, t, i, s]) => `<a class="tile" href="#/${k}">${ic(i)}<b>${t}</b><span>${s}</span></a>`;
 VIEWS.home = m => {
   setTitle('Transpetro 2026 · Ênfase 7', 'Segurança Cibernética · Cesgranrio');
-  const n = diffDays(D.meta.prova, dk()), st = modStats(), c = cronoToday(), sk = streak();
+  const n = diffDays(D.meta.prova, dk()), st = modStats(), sk = streak();
   const de = dueErrors().length + dueRod().length, dc = dueCards().length;
   let heat = ''; for(let i = 13; i >= 0; i--){ const k = addDays(dk(), -i); heat += `<i class="${S.days[k] ? 'on' : ''} ${i === 0 ? 'today' : ''}" title="${fmtD(k)}"></i>`; }
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
@@ -34,9 +34,7 @@ VIEWS.home = m => {
     <div class="row" style="margin-top:14px"><a class="btn sm ${de ? 'p' : ''}" href="#/erros/revisar">Revisar erros</a><a class="btn sm ${dc ? 'p' : ''}" href="#/flashcards">Flashcards</a><a class="btn sm" href="#/questoes">Questões</a></div></div>
   </div>
   <div class="home-mid">
-   <div class="card"><h3>Tarefa de hoje ${c ? `<span class="r">${fmtD(c.date)} ${c.dow}</span>` : ''}</h3>${c ? `
-    <label class="li ${S.crono[c.i] ? 'done' : ''}" style="border:0"><input type="checkbox" data-cr="${c.i}" ${S.crono[c.i] ? 'checked' : ''}><div class="f1"><div class="t">${esc(c.task)}</div>${c.rev.length ? `<div class="s">${c.rev.map(esc).join(' · ')}</div>` : ''}</div></label>
-    <div class="row">${c.topic ? `<a class="btn sm" href="#/resumos/${c.topic}">Resumo</a><a class="btn sm p" href="#/questoes/t/${c.topic}">Praticar tópico</a>` : ''}<a class="btn sm" href="#/cronograma">Cronograma</a></div>` : '<p class="mut">Cronograma encerrado.</p>'}</div>
+   ${hojeCardHTML()}
    <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>
   </div>
   <div class="home-bot">
@@ -45,7 +43,7 @@ VIEWS.home = m => {
   </div>
   <div class="tiles">${MORE.slice(0, 6).map(tile).join('')}</div>
   </div>`;
-  $$('[data-cr]', m).forEach(cb => cb.onchange = () => { S.crono[cb.dataset.cr] = cb.checked; if(cb.checked) activity(); save(); render(); });
+  bindPlano(m);
 };
 
 /* ---------- Questões ---------- */
