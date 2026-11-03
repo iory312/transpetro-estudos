@@ -299,6 +299,16 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .corte-card.mid .corte-pct{color:var(--warn)}
 .corte-card.ok .corte-pct{color:var(--ok)}
 a.teoria{background:var(--pri-bg);border-color:transparent;color:var(--pri);font-weight:750}
+.leitor{font-size:16px;line-height:1.55}
+.leitor h2{font-size:1.45rem;letter-spacing:-.03em;margin:0 0 10px}
+.leitor h3{font-size:1.05rem;margin:18px 0 8px}
+.leitor ul,.leitor ol{margin:8px 0 8px 1.1em;padding:0}
+.leitor li{margin:4px 0}
+.leitor .scroll{overflow-x:auto;max-width:100%}
+.leitor table{width:100%;border-collapse:collapse;font-size:14px}
+.leitor th,.leitor td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+.leitor .bizu{background:var(--pri-bg);border-radius:14px;padding:12px 14px;margin-top:8px}
+.leitor .fontes{color:var(--mut);font-size:14px}
 .teoria-linha{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:8px}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
@@ -587,7 +597,7 @@ function render(){
   }
   route = (location.hash.replace(/^#\/?/, '') || 'home').split('/');
   const v = route[0], main = $('#main');
-  const navKey = NAV.some(n => n[0] === v) ? v : (MORE.some(m => m[0] === v) ? 'mais' : 'home');
+  const navKey = v === 'resumo-lory' ? 'cronograma' : (NAV.some(n => n[0] === v) ? v : (MORE.some(m => m[0] === v) ? 'mais' : 'home'));
   $$('nav.bot a').forEach(a => a.classList.toggle('on', a.dataset.k === navKey));
   $$('aside.side a').forEach(a => a.classList.toggle('on', a.dataset.k === (VIEWS[v] ? v : 'home')));
   const fn = VIEWS[v] || VIEWS.home; main.innerHTML = ''; window.scrollTo(0, 0);
@@ -1422,13 +1432,19 @@ function teoriaDoBloco(b){
   if(b.topic === 'en1') return /conect|conjun/i.test(title) ? T['en-gram'] : T['en-leit'];
   return b.topic && T[b.topic] || null;
 }
+function teoriaPorResumo(id){
+  const T = teoriaCatalogo() || {};
+  return Object.keys(T).map(k => T[k]).find(r => r && r.resumo === id) || null;
+}
 function teoriaRotulo(r){
+  if(r.resumo) return '📖 Resumo Lory · 5 min';
   const ico = r.tipo === 'artigo' ? '📄 Leitura' : '▶ Teoria rápida';
   return ico + ' · ' + r.tempo + (r.lang === 'en' ? ' 🇺🇸' : '');
 }
 function teoriaChip(r, itemId){
   if(!r) return '';
   const ed = itemId ? ` data-ed="${esc(itemId)}"` : '';
+  if(r.resumo) return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="#/resumo-lory/${esc(r.resumo)}" title="${esc(r.titulo)}">📖 Resumo Lory · 5 min</a> `;
   return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" title="${esc(r.titulo + ' · ' + r.fonte)}">${teoriaRotulo(r)}</a> `;
 }
 function marcarTeoria(rec, itemId){
@@ -1551,6 +1567,20 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     planoSem = pMonday(today);
     render();
   };
+};
+if(typeof VIEWS !== 'undefined') VIEWS['resumo-lory'] = m => {
+  const id = route[1];
+  const pack = globalThis.TP7_LORY && TP7_LORY[id];
+  const rec = typeof teoriaPorResumo === 'function' ? teoriaPorResumo(id) : null;
+  if(!pack){ setTitle('Resumo', ''); m.innerHTML = '<div class="card empty">Esse resumo não está disponível.</div>'; return; }
+  setTitle(pack.titulo, 'Resumo Lory · 5 min');
+  if(rec) marcarTeoria(rec, '');
+  const alt = rec && rec.alt;
+  const fonte = alt ? `<a class="btn sm" href="${esc(alt.url)}" target="_blank" rel="noopener noreferrer">${alt.lang === 'en' ? 'Fonte oficial 🇺🇸' : 'Fonte oficial'}</a>` : '';
+  m.innerHTML = `<article class="card leitor"><p class="eyebrow">Resumo Lory · leitura de cerca de 5 min</p><h2>${esc(pack.titulo)}</h2>${pack.html}</article>
+    <div class="row">${fonte}<button type="button" class="btn p" id="loryDone">Concluí a leitura</button></div>
+    <div class="row"><a class="btn sm" href="#/cronograma">Cronograma</a><a class="btn sm" href="#/edital">Edital</a></div>`;
+  $('#loryDone', m).onclick = () => { if(rec) marcarTeoria(rec); toast('Leitura concluída. A teoria do item está marcada.'); };
 };
 
 /* Edital verticalizado — texto do Anexo IV (ênfase 7), sem parafrasear o item. */
@@ -2160,6 +2190,7 @@ function loadContent(){
       indexStudy();
     }
     if(!globalThis.TP7_TEORIA){ try { await loadScript('./teoria.js'); } catch(e){} }
+    if(!globalThis.TP7_LORY){ try { await loadScript('./resumos-lory.js'); } catch(e){} }
   })();
 }
 async function enterApp(){

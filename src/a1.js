@@ -130,7 +130,7 @@ function render(){
   }
   route = (location.hash.replace(/^#\/?/, '') || 'home').split('/');
   const v = route[0], main = $('#main');
-  const navKey = NAV.some(n => n[0] === v) ? v : (MORE.some(m => m[0] === v) ? 'mais' : 'home');
+  const navKey = v === 'resumo-lory' ? 'cronograma' : (NAV.some(n => n[0] === v) ? v : (MORE.some(m => m[0] === v) ? 'mais' : 'home'));
   $$('nav.bot a').forEach(a => a.classList.toggle('on', a.dataset.k === navKey));
   $$('aside.side a').forEach(a => a.classList.toggle('on', a.dataset.k === (VIEWS[v] ? v : 'home')));
   const fn = VIEWS[v] || VIEWS.home; main.innerHTML = ''; window.scrollTo(0, 0);

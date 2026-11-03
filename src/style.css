@@ -289,6 +289,16 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .corte-card.mid .corte-pct{color:var(--warn)}
 .corte-card.ok .corte-pct{color:var(--ok)}
 a.teoria{background:var(--pri-bg);border-color:transparent;color:var(--pri);font-weight:750}
+.leitor{font-size:16px;line-height:1.55}
+.leitor h2{font-size:1.45rem;letter-spacing:-.03em;margin:0 0 10px}
+.leitor h3{font-size:1.05rem;margin:18px 0 8px}
+.leitor ul,.leitor ol{margin:8px 0 8px 1.1em;padding:0}
+.leitor li{margin:4px 0}
+.leitor .scroll{overflow-x:auto;max-width:100%}
+.leitor table{width:100%;border-collapse:collapse;font-size:14px}
+.leitor th,.leitor td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+.leitor .bizu{background:var(--pri-bg);border-radius:14px;padding:12px 14px;margin-top:8px}
+.leitor .fontes{color:var(--mut);font-size:14px}
 .teoria-linha{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:8px}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
