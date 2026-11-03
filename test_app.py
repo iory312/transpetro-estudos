@@ -215,6 +215,7 @@ async def run():
         await pg.goto(URL + "#/cronograma"); await pg.wait_for_selector("#reprog")
         ct = await pg.inner_text("#main")
         ok("Reprogramar atrasados" in ct and "03/11" in ct and "06/12" in ct, "cronograma de 03/11 até a prova")
+        ok("Teoria rápida" in ct, "cronograma mostra a teoria rápida")
         ok("Resolver no TEC" in ct, "blocos do cronograma reusam o TEC")
         await pg.goto(URL + "#/edital"); await pg.wait_for_selector("text=Compreensão de textos")
         et = await pg.inner_text("#main")

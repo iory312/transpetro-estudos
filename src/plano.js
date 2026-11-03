@@ -235,9 +235,62 @@ function planoStats(days){
 const TIPO_L = {'questões':'Questões', 'revisão':'Revisão', 'vídeo':'Vídeo', 'simulado':'Simulado', 'marco':'Marco'};
 const TIPO_C = {'questões':'tipo-q', 'revisão':'tipo-r', 'vídeo':'tipo-v', 'simulado':'tipo-s', 'marco':'tipo-m'};
 const FASE_L = {1:'Fase 1 · específicos, do mais fraco', 2:'Fase 2 · segunda passagem', 3:'Fase 3 · revisão', 4:'Depois da prova'};
+function teoriaCatalogo(){ return globalThis.TP7_TEORIA || null; }
+function teoriaDoBloco(b){
+  const T = teoriaCatalogo(); if(!T || !b) return null;
+  const id = b.id || '';
+  if(id === 'df2a' || id === 'df2c' || id === 'p2-df2a') return T.df2a;
+  if(id === 'df2b' || id === 'df2d' || id === 'p2-df2b') return T.df2b;
+  if(id === 'cp5a' || id === 'p3-cp5') return T.cp5cis;
+  if(id === 'cp5b') return T.cp5nist;
+  const title = b.title || '';
+  if(title.indexOf('Português') === 0 || id.indexOf('pt-') === 0){
+    if(/Interpreta/.test(title)) return T['pt-interp'];
+    if(/Concord/.test(title)) return T['pt-conc'];
+    if(/Regênc/.test(title)) return T['pt-reg'];
+    if(/Crase/.test(title)) return T['pt-crase'];
+    if(/Pontua/.test(title)) return T['pt-pont'];
+  }
+  if((b.topic || '').indexOf('le') === 0) return T['en-leit'];
+  if(b.topic === 'en2' || /conect|conjun/i.test(title)) return T['en-gram'];
+  if(b.topic === 'en1') return /conect|conjun/i.test(title) ? T['en-gram'] : T['en-leit'];
+  return b.topic && T[b.topic] || null;
+}
+function teoriaRotulo(r){
+  const ico = r.tipo === 'artigo' ? '📄 Leitura' : '▶ Teoria rápida';
+  return ico + ' · ' + r.tempo + (r.lang === 'en' ? ' 🇺🇸' : '');
+}
+function teoriaChip(r, itemId){
+  if(!r) return '';
+  const ed = itemId ? ` data-ed="${esc(itemId)}"` : '';
+  return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" title="${esc(r.titulo + ' · ' + r.fonte)}">${teoriaRotulo(r)}</a> `;
+}
+function marcarTeoria(rec, itemId){
+  if(typeof editalGet !== 'function' || !rec) return;
+  const ids = itemId ? [itemId] : (rec.itens || []);
+  let mudou = false;
+  ids.forEach(id => {
+    const e = editalGet(id);
+    if(!e.t){ e.t = true; if(!e.te) e.te = dk(); mudou = true; }
+    e.u = dk(); mudou = true;
+  });
+  if(mudou) save();
+}
+function bindTeoria(root){
+  $$('a[data-teoria]', root).forEach(a => {
+    if(a.dataset.teoriaBound) return;
+    a.dataset.teoriaBound = '1';
+    a.addEventListener('click', ev => {
+      ev.stopPropagation();
+      const T = teoriaCatalogo(); const rec = T && T[a.dataset.teoria];
+      marcarTeoria(rec, a.dataset.ed || '');
+    });
+  });
+}
 function planoLinks(b){
   let h = '';
   const tec = b.topic && typeof TEC !== 'undefined' && TEC[b.topic];
+  h += teoriaChip(teoriaDoBloco(b));
   if(tec) h += `<a class="btn sm" data-tec="${esc(b.topic)}" href="${esc(tec.url)}" target="_blank" rel="noopener noreferrer">Resolver no TEC</a> `;
   if(b.href) h += `<a class="btn sm" href="${esc(b.href)}">${esc(b.hrefLabel || 'Abrir no app')}</a> `;
   else if(b.topic) h += `<a class="btn sm" href="#/questoes/t/${esc(b.topic)}">Questões no app</a> `;
@@ -259,6 +312,7 @@ function bindPlano(root){
     if(bar){ const st = planoStats(buildPlano(planoHoras(), S.planoMove)); bar.style.width = pct(st.ok, st.n) + '%'; const lab = document.getElementById('planoLab'); if(lab) lab.textContent = st.ok + ' de ' + st.n + ' blocos · ' + pct(st.ok, st.n) + '%'; }
   });
   if(typeof tecBind === 'function') tecBind(root);
+  if(typeof bindTeoria === 'function') bindTeoria(root);
 }
 let planoSem = '', planoDia = '';
 function hojeResumo(){

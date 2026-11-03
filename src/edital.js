@@ -218,6 +218,7 @@ function editalSheet(id){
   host.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(it.num)}"><div class="sheet-grab"></div>
     <div class="row sp"><b>${esc(it.num)}</b><button type="button" class="btn sm" id="edClose">Fechar</button></div>
     <p class="ed-txt">${esc(it.txt)}</p>
+    ${typeof teoriaDoItem === 'function' ? teoriaDoItem(it) : ''}
     <div class="ed-togs" style="margin:8px 0">${editalToggles(it)}</div>
     <div class="step"><span>Feitas</span><button type="button" class="btn" data-step="q" data-d="-1" aria-label="Menos feitas">−</button><b id="edQv">${e.q}</b><button type="button" class="btn" data-step="q" data-d="1" aria-label="Mais feitas">+</button></div>
     <div class="step"><span>Acertos</span><button type="button" class="btn" data-step="ok" data-d="-1" aria-label="Menos acertos">−</button><b id="edOv">${e.ok}</b><button type="button" class="btn" data-step="ok" data-d="1" aria-label="Mais acertos">+</button></div>
@@ -236,6 +237,18 @@ function editalSheet(id){
   $$('[data-ed-t]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.t = !row.t; if(row.t && !row.te) row.te = dk(); row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
   $$('[data-ed-r]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.r[+b.dataset.i] = !row.r[+b.dataset.i]; row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
   if(typeof tecBind === 'function') tecBind(host);
+  if(typeof bindTeoria === 'function') bindTeoria(host);
+}
+function teoriaDoItem(it){
+  const T = globalThis.TP7_TEORIA; if(!T) return '';
+  const vistos = {};
+  const lista = [];
+  Object.keys(T).forEach(k => {
+    const r = T[k];
+    if(r && r.itens && r.itens.indexOf(it.id) >= 0 && !vistos[r.id]){ vistos[r.id] = 1; lista.push(r); }
+  });
+  if(!lista.length) return '';
+  return `<div class="ed-links" style="margin-top:8px">${lista.map(r => `<div class="teoria-linha">${teoriaChip(r, it.id)}${r.nota ? `<span class="small mut">${esc(r.nota)}</span>` : ''}${r.alt ? `<a class="small" data-teoria="${esc(r.id)}" data-ed="${esc(it.id)}" href="${esc(r.alt.url)}" target="_blank" rel="noopener noreferrer">Alternativa: ${esc(r.alt.titulo)} · ${esc(r.alt.tempo)}</a>` : ''}</div>`).join('')}</div>`;
 }
 function editalClose(){ editalOpen = ''; const host = document.getElementById('edSheet'); if(host){ host.hidden = true; host.innerHTML = ''; } }
 if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
