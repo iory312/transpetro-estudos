@@ -79,6 +79,12 @@ eq(m.planoH.sem === 4 && m.planoH.fim === 6, 'horas do plano mais recentes vence
 eq(m.planoMove.ids.of8 === '2026-11-10' && !m.planoMove.ids.of2, 'reprogramação mais recente substitui a anterior');
 eq(m.edital['of-1.4'].t && m.edital['of-1.4'].r[0] && m.edital['of-1.4'].r[1] && m.edital['of-1.4'].q === 4 && m.edital['of-1.4'].ok === 3, 'edital une teoria, revisões e o maior total de questões');
 eq(m.edital['en-1'].ok === 5 && m.edital['of-1.4'].n === 'flags', 'item de edital só remoto entra e a anotação mais recente fica');
+local.spot = {t:10, kind:'questoes', i:1, ids:['a']};
+remote.spot = {t:20, kind:'simulado', sim:'s1', i:3};
+const withSpot = mergeState(local, remote);
+eq(withSpot.spot.t === 20 && withSpot.spot.kind === 'simulado', 'ponto de retomada mais recente vence');
+const spotBack = mergeState({spot:{t:30, kind:'flash', i:2, ids:['c']}}, {spot:{t:20, kind:'simulado', sim:'s1'}});
+eq(spotBack.spot.kind === 'flash' && spotBack.spot.i === 2, 'ponto local mais novo permanece');
 
 const again = mergeState(m, remote);
 eq(JSON.stringify(again.answers) === JSON.stringify(m.answers), 'mesclar de novo não duplica respostas');

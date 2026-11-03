@@ -108,6 +108,8 @@ async def run():
       pg.on("dialog", lambda d: asyncio.ensure_future(d.accept()))
       await pg.goto(URL); await pg.wait_for_selector("#cd", timeout=20000)
       ok(await pg.locator("#main .card").count() > 0, f"{name} home renders")
+      home_txt = await pg.inner_text("#main")
+      ok("Retomar de onde parei" in home_txt and "Revisar hoje" in home_txt and "Mais perto do corte" in home_txt, f"{name} início tem retomar, revisar e corte")
       if mob: await pg.screenshot(path=SH + "01_home_mobile.png", full_page=False)
       # all screens
       for r in ["home","questoes","simulado","flashcards","mais","erros","bizus","resumos","leitura","glossario","cronograma","edital","prova","ouvir","sobre","sobre/raiox","backup","sincronizar","tec","resumos/of1","bizus/m/Ofensiva","resumos/le1"]:

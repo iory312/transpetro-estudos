@@ -36,6 +36,7 @@ A função `mergeState` (`src/merge.js`) une os dois lados. Nada de resposta é 
 - Dias estudados: fica o maior número.
 - Posição do áudio: fica o ponto mais avançado. Tema, filtros das questões e velocidade do áudio permanecem os do aparelho que está mesclando.
 - `created` fica o mais antigo e `updated` o mais novo. A coluna `updated_at` da tabela só registra a hora do upsert; a decisão por item usa os dados acima, não essa coluna sozinha, para não apagar o que o outro aparelho fez.
+- O ponto de retomada (`spot`: quiz, simulado, flashcards ou resumo, com o índice e as respostas da sessão) fica o de timestamp mais novo.
 
 ### O que configurar no Supabase
 

@@ -283,6 +283,21 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .land-feats b{display:block}
 .land-feats span{color:var(--mut);font-size:14px}
 .land-go{width:100%;min-height:48px;margin-top:8px}
+.resume{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:var(--pri);color:#fff;border:0;border-radius:18px;padding:16px 18px;min-height:72px;box-shadow:var(--sh);cursor:pointer}
+.resume b{font-size:20px;letter-spacing:-.03em;line-height:1.2}
+.resume small{font-size:14px;font-weight:620;opacity:.92}
+[data-theme=dark] .resume{color:#062029}
+.rev-item{display:flex;justify-content:space-between;gap:10px;align-items:center;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:44px;margin-top:8px;cursor:pointer}
+.rev-item b{font-weight:700}
+.rev-item span{flex:none;font-size:12px;font-weight:750;color:var(--bad)}
+.corte-card.bad{border-color:color-mix(in srgb, var(--bad) 45%, var(--line))}
+.corte-card.mid{border-color:color-mix(in srgb, var(--warn) 45%, var(--line))}
+.corte-card.ok{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.corte-top{display:flex;align-items:center;gap:12px}
+.corte-pct{font-size:36px;line-height:1;letter-spacing:-.04em}
+.corte-card.bad .corte-pct{color:var(--bad)}
+.corte-card.mid .corte-pct{color:var(--warn)}
+.corte-card.ok .corte-pct{color:var(--ok)}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
@@ -321,7 +336,13 @@ const Storage = (() => {
 /* União do progresso local com outro aparelho ou com a conta.
    Não descarta respostas. Por item, o registro mais recente vence.
    Tema, filtros de questão e velocidade do áudio ficam no aparelho que está mesclando. */
-function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, edital:{}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, edital:{}, spot:null, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function mergeSpot(a, b){
+  const ok = x => x && typeof x === 'object' && x.t;
+  if(!ok(a)) return ok(b) ? b : null;
+  if(!ok(b)) return a;
+  return b.t >= a.t ? b : a;
+}
 function mergeEdital(a, b){
   const o = {}, ids = new Set([].concat(Object.keys(a || {}), Object.keys(b || {})));
   ids.forEach(id => {
@@ -420,6 +441,7 @@ function mergeState(a, b){
   o.tec = mergeBoolMap(a.tec, b.tec);
   o.plano = mergeBoolMap(a.plano, b.plano);
   o.edital = mergeEdital(a.edital, b.edital);
+  o.spot = mergeSpot(a.spot, b.spot);
   o.planoH = (b.planoH && (b.planoH.t || 0) >= ((a.planoH && a.planoH.t) || 0)) ? Object.assign({sem:3, fim:5, t:0}, b.planoH) : Object.assign({sem:3, fim:5, t:0}, a.planoH || {});
   const am = a.planoMove || {t:0, ids:{}}, bm = b.planoMove || {t:0, ids:{}};
   o.planoMove = (bm.t || 0) >= (am.t || 0) ? {t: bm.t || 0, ids: Object.assign({}, bm.ids || {})} : {t: am.t || 0, ids: Object.assign({}, am.ids || {})};
@@ -591,6 +613,136 @@ function cutAlerts(st){
   return out.join('');
 }
 const tile = ([k, t, i, s]) => `<a class="tile" href="#/${k}">${ic(i)}<b>${t}</b><span>${s}</span></a>`;
+function topicNick(id){
+  const t = TOP[id];
+  if(!t) return 'estudo';
+  if(/nmap/i.test(t.title)) return 'nmap';
+  const cut = t.title.replace(/^\d+(\.\d+)?([–-]\d+(\.\d+)?)?\s*/, '').split('—')[0].split('+')[0].split(':')[0].trim();
+  return cut.length > 32 ? cut.slice(0, 30) + '…' : (cut || t.title);
+}
+function putSpot(next){
+  const prev = S.spot || {};
+  const same = prev.kind === next.kind && prev.i === next.i && prev.sim === next.sim && prev.topic === next.topic && prev.show === next.show && JSON.stringify(prev.ids || []) === JSON.stringify(next.ids || []) && JSON.stringify(prev.ans || {}) === JSON.stringify(next.ans || {});
+  if(same) return;
+  next.t = Date.now();
+  S.spot = next;
+  save();
+}
+function clearSpot(){
+  if(!S.spot || S.spot.kind === 'none') return;
+  S.spot = {t:Date.now(), kind:'none'};
+  save();
+}
+function spotFromQuiz(){
+  const q = Q[QS.ids[QS.i]];
+  return {kind:'questoes', ids:QS.ids.slice(), i:QS.i, ans:JSON.parse(JSON.stringify(QS.ans || {})), ctx:QS.ctx, title:QS.title, back:QS.back, topic:q && q.topic || ''};
+}
+function hydrateSpot(){
+  const p = S.spot;
+  if(!p || p.kind === 'none') return;
+  if(p.kind === 'questoes' && Array.isArray(p.ids)){
+    const ids = p.ids.filter(id => Q[id]);
+    if(!ids.length) return;
+    QS = {ids:ids, i:Math.min(p.i || 0, ids.length - 1), ctx:p.ctx || 'estudo', title:p.title || 'Questões', back:p.back || '#/questoes', ans:Object.assign({}, p.ans || {})};
+  }
+  if(p.kind === 'flash' && Array.isArray(p.ids) && typeof D !== 'undefined' && D.flashcards){
+    const ids = p.ids.filter(id => D.flashcards.some(c => c.id === id));
+    if(!ids.length) return;
+    FQ = {ids:ids, i:Math.min(p.i || 0, ids.length), show:!!p.show, free:!!p.free, done:p.done || 0};
+  }
+}
+function proximoBloco(){
+  if(typeof buildPlano !== 'function') return null;
+  const today = dk();
+  const day = buildPlano(planoHoras(), S.planoMove || {ids:{}}).find(d => d.date === today);
+  if(!day) return null;
+  return day.blocks.find(b => b.tipo !== 'marco' && !(S.plano && S.plano[b.id])) || null;
+}
+function resumeTarget(){
+  const sim = typeof runningSim === 'function' ? runningSim() : null;
+  if(sim){
+    const cur = (S.sims[sim.id] || {}).cur || {}, n = sim.questions.length, i = Math.min(cur.i || 0, n - 1), q = sim.questions[i];
+    return {kind:'simulado', href:'#/simulado/' + sim.id + '/run', sub:sim.nome + ' — questão ' + q.n + ' de ' + n};
+  }
+  const p = S.spot;
+  if(p && p.kind === 'questoes' && p.ids && p.ids.length && (p.i || 0) < p.ids.length){
+    const q = Q[p.ids[p.i]];
+    const name = q ? topicNick(q.topic) : (p.title || 'Questões');
+    return {kind:'questoes', href:'#/questoes/run', sub:'Questões · ' + name + ' — questão ' + ((p.i || 0) + 1) + ' de ' + p.ids.length};
+  }
+  if(p && p.kind === 'flash' && p.ids && p.ids.length && (p.i || 0) < p.ids.length){
+    return {kind:'flash', href:'#/flashcards', sub:'Flashcards — cartão ' + ((p.i || 0) + 1) + ' de ' + p.ids.length};
+  }
+  if(p && p.kind === 'modulo' && p.topic && TOP[p.topic]){
+    return {kind:'modulo', href:'#/resumos/' + p.topic, sub:'Resumo · ' + topicNick(p.topic)};
+  }
+  const b = proximoBloco();
+  if(b){
+    const href = b.href || (b.topic ? '#/questoes/t/' + b.topic : '#/cronograma');
+    return {kind:'crono', href:href, sub:'Hoje · ' + b.title};
+  }
+  return {kind:'crono', href:'#/cronograma', sub:'Próximo bloco do cronograma'};
+}
+function revisarHojeHTML(){
+  const rows = editalRevisarHoje();
+  if(!rows.length) return '<div class="card"><h3>Revisar hoje</h3><p class="mut" style="margin:0">Nada pra revisar hoje 🎉</p></div>';
+  const shown = rows.slice(0, 6);
+  const more = rows.length - shown.length;
+  return `<div class="card"><h3>Revisar hoje <span class="r">${rows.length}</span></h3>${shown.map(r => {
+    const nome = ['R1', 'R2', 'R3'][r.i];
+    return `<button type="button" class="rev-item" data-rev="${esc(r.it.id)}"><b>${esc(r.it.num)} ${esc(editalShort(r.it))}</b><span>${nome} ${r.late ? 'atrasada' : 'hoje'}</span></button>`;
+  }).join('')}${more ? `<a class="small" href="#/edital">e mais ${more} no edital</a>` : ''}</div>`;
+}
+function corteFonte(){
+  const st = {};
+  MODS.forEach(m => st[m] = {ok:0, n:0});
+  const base = modStats();
+  MODS.forEach(m => { st[m].ok = base[m].ok; st[m].n = base[m].n; });
+  const map = {pt:'Português', en:'Inglês', of:'Ofensiva', df:'Defensiva', cp:'Compliance'};
+  EDITAL_ITENS.forEach(it => {
+    const mod = map[it.id.split('-')[0]];
+    if(!mod || !st[mod]) return;
+    const e = editalRead(it.id);
+    let appN = 0, appOk = 0;
+    (it.quiz || []).forEach(topic => {
+      for(const id in S.answers){
+        const q = Q[id];
+        if(!q || q.topic !== topic) continue;
+        (S.answers[id] || []).forEach(a => { appN++; if(a.ok) appOk++; });
+      }
+    });
+    const extraN = Math.max(0, e.q - appN);
+    const extraOk = Math.max(0, Math.min(extraN, e.ok - appOk));
+    st[mod].n += extraN; st[mod].ok += extraOk;
+  });
+  return st;
+}
+function corteAlvo(){
+  const d = corteFonte();
+  const sum = names => names.reduce((a, m) => ({ok:a.ok + d[m].ok, n:a.n + d[m].n}), {ok:0, n:0});
+  const child = names => {
+    const known = names.filter(m => d[m].n > 0).sort((a, b) => pct(d[a].ok, d[a].n) - pct(d[b].ok, d[b].n));
+    return known[0] || names[0];
+  };
+  const items = MODS.map(m => ({key:m, label:m, train:m, kind:'matéria', ok:d[m].ok, n:d[m].n})).concat([
+    {key:'Específicos', label:'Específicos', train:child(ESP), kind:'bloco', ok:sum(ESP).ok, n:sum(ESP).n},
+    {key:'Gerais', label:'Gerais', train:child(GER), kind:'bloco', ok:sum(GER).ok, n:sum(GER).n}
+  ]);
+  const known = items.filter(x => x.n > 0);
+  if(!known.length) return null;
+  known.forEach(x => { x.pct = pct(x.ok, x.n); x.zero = (x.key === 'Português' || x.key === 'Inglês') && x.ok === 0; });
+  known.sort((a, b) => (b.zero - a.zero) || (a.pct - b.pct) || (b.n - a.n));
+  return known[0];
+}
+function corteHTML(){
+  const x = corteAlvo();
+  if(!x) return `<div class="card"><h3>Mais perto do corte</h3><p class="mut">Ainda não dá para medir. Faça pelo menos 5 questões de uma disciplina.</p><a class="btn p" href="#/questoes/m/Ofensiva">Treinar agora</a></div>`;
+  const tone = x.zero || x.pct < 50 ? 'bad' : x.pct < 70 ? 'mid' : 'ok';
+  const gap = 50 - x.pct;
+  const dist = x.zero ? 'Nota zero em ' + x.label + ' elimina.' : (gap > 0 ? gap + ' pontos abaixo de 50%.' : (gap === 0 ? 'No limite de 50%.' : (-gap) + ' pontos acima de 50%.'));
+  const poucos = x.n < 5 ? `<p class="small mut">Por enquanto são só ${x.n} ${x.n === 1 ? 'questão' : 'questões'}. Dá para ver a direção, mas ainda é cedo para cravar.</p>` : '';
+  return `<div class="card corte-card ${tone}"><h3>Mais perto do corte</h3><div class="corte-top"><b class="corte-pct">${x.pct}%</b><div><b>${esc(x.label)}</b><div class="small">${x.kind === 'bloco' ? 'Bloco' : 'Disciplina'} · ${x.ok}/${x.n} acertos</div></div></div><p style="margin:8px 0">${dist}</p>${poucos}<a class="btn p" href="#/questoes/m/${encodeURIComponent(x.train)}">Treinar agora</a></div>`;
+}
 VIEWS.home = m => {
   setTitle('Transpetro 2026 · Ênfase 7', 'Segurança Cibernética · Cesgranrio');
   const n = diffDays(D.meta.prova, dk()), st = modStats(), sk = streak();
@@ -599,7 +751,11 @@ VIEWS.home = m => {
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
   const ed = editalSum(), lateN = editalLateCount(), hj = hojeResumo();
   const ac = ed.pct == null ? '—' : ed.pct + '%';
+  const goOn = resumeTarget();
   m.innerHTML = `<div class="home">
+  <button type="button" class="resume" id="resumeBtn"><b>Retomar de onde parei</b><small>${esc(goOn.sub)}</small></button>
+  ${revisarHojeHTML()}
+  ${corteHTML()}
   <div class="ringgrid">
    <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${n > 0 ? Math.max(4, Math.min(100, Math.round(100 * (34 - Math.min(n, 34)) / 34))) : 100}"><b id="cd">${n > 0 ? n : n === 0 ? '0' : '—'}</b></div><span>dias para a prova</span></a>
    <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${hj.n ? Math.round(100 * hj.ok / hj.n) : 0}"><b>${hj.ok}/${hj.n || 0}</b></div><span>hoje</span></a>
@@ -621,6 +777,12 @@ VIEWS.home = m => {
   <div class="tiles">${MORE.slice(0, 6).map(tile).join('')}</div>
   </div>`;
   bindPlano(m);
+  $('#resumeBtn', m).onclick = () => {
+    const t = resumeTarget();
+    if(t.kind === 'questoes' || t.kind === 'flash') hydrateSpot();
+    go(t.href);
+  };
+  $$('[data-rev]', m).forEach(b => b.onclick = () => { editalOpen = b.dataset.rev; go('#/edital'); });
 };
 
 /* ---------- Questões ---------- */
@@ -636,10 +798,11 @@ function poolFor(f){
   return pool;
 }
 function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-function startSession(ids, ctx, title, back){ if(!ids.length){ toast('Nenhuma questão com esses filtros.'); return; } QS = {ids, i:0, ctx, title, back, ans:{}}; go('#/questoes/run'); }
+function startSession(ids, ctx, title, back){ if(!ids.length){ toast('Nenhuma questão com esses filtros.'); return; } QS = {ids, i:0, ctx, title, back, ans:{}}; putSpot(spotFromQuiz()); go('#/questoes/run'); }
 VIEWS.questoes = m => {
   if(route[1] === 't' && route[2]){ S.qf = Object.assign(S.qf, {topic:route[2], mod:[], prio:'', only:'all', src:route[2].startsWith('le') ? 'leit' : 'fix'}); save(); history.replaceState(null, '', '#/questoes'); }
-  if(route[1] === 'run'){ if(!QS){ go('#/questoes'); return; } return runQ(m); }
+  if(route[1] === 'm' && route[2]){ S.qf = Object.assign(S.qf, {mod:[decodeURIComponent(route[2])], topic:'', prio:'', only:'all', src:'fix', order:'seq'}); save(); history.replaceState(null, '', '#/questoes'); }
+  if(route[1] === 'run'){ if(!QS) hydrateSpot(); if(!QS){ go('#/questoes'); return; } return runQ(m); }
   setTitle('Questões', 'Estudo reverso · correção imediata');
   const f = S.qf, pool = poolFor(f);
   const topics = D.topics.filter(t => (!f.mod.length || f.mod.includes(t.mod)) && D.questions.some(q => q.topic === t.id && (f.src === 'all' || f.src === 'sim' || q.src === f.src)));
@@ -697,12 +860,14 @@ function runQ(m){
     $('#fb', m).innerHTML = feedbackHTML(q, L, r.msg); bindReason(m); $('#next', m).classList.add('p');
     $('.prog', m).textContent = `${s.i + 1}/${s.ids.length} · ${Object.keys(s.ans).length} respondidas · ${correct + (r.ok ? 1 : 0)} certas`;
     if(!r.ok) $('#fb', m).scrollIntoView({behavior:'smooth', block:'start'});
+    putSpot(spotFromQuiz());
   });
-  $('#prev', m).onclick = () => { s.i--; render(); };
-  $('#next', m).onclick = () => { if(s.i < s.ids.length - 1){ s.i++; render(); } else summaryQ(m); };
+  $('#prev', m).onclick = () => { s.i--; putSpot(spotFromQuiz()); render(); };
+  $('#next', m).onclick = () => { if(s.i < s.ids.length - 1){ s.i++; putSpot(spotFromQuiz()); render(); } else summaryQ(m); };
 }
 function summaryQ(m){
   const s = QS, n = Object.keys(s.ans).length, ok = Object.entries(s.ans).filter(([id, a]) => Q[id].ans === a.c).length;
+  clearSpot();
   setTitle(s.title, 'Resumo da sessão');
   m.innerHTML = `<div class="card c"><h3>Sessão concluída</h3><div class="big-timer">${ok}/${n}</div><div class="mut">${pct(ok, n)}% de acerto · ${n - ok} erro(s) no caderno de erros</div>
    <div class="row" style="justify-content:center;margin-top:12px"><a class="btn p" href="${s.back || '#/questoes'}">Voltar</a><a class="btn" href="#/erros">Caderno de erros</a></div></div>`;
@@ -726,7 +891,7 @@ function submitSim(id, auto){
   const st = simSt(id), cur = st.cur; if(!cur) return;
   const att = {start:cur.start, end:Date.now(), ans:cur.ans, flags:cur.flags || {}}; st.hist.push(att); st.cur = null;
   SIM[id].questions.forEach(q => { const c = cur.ans[q.n]; if(c) (S.answers[q.id] = S.answers[q.id] || []).push({t:att.end, c, ok:c === q.ans, ctx:'simulado'}); if(c !== q.ans) addError(q.id); });
-  activity(); save(); if(auto) alert('Tempo esgotado! O simulado foi entregue automaticamente.');
+  activity(); save(); if(typeof clearSpot === 'function') clearSpot(); if(auto) alert('Tempo esgotado! O simulado foi entregue automaticamente.');
   go(`#/simulado/${id}/r/${st.hist.length - 1}`);
 }
 VIEWS.simulado = m => {
@@ -740,13 +905,14 @@ VIEWS.simulado = m => {
         ${res.length ? `<label class="lb">Tentativas</label>${res.map(([r, i]) => `<a class="li" href="#/simulado/${s.id}/r/${i}"><div class="f1"><div class="t">${new Date(st.hist[i].end).toLocaleDateString('pt-BR')} · ${r.total}/70</div><div class="s">Específicos ${r.esp}/50 · Gerais ${r.ger}/20</div></div><span class="tag ${r.elim.length ? 'alta' : ''}">${r.elim.length ? 'Eliminado' : 'Aprovado'}</span></a>`).join('')}` : ''}</div>`; }).join('') +
       `<div class="card small mut">Novos simulados (ex.: Simulado 2) entram pela lista <code>simulados</code> do <code>data.json</code> e aparecem aqui automaticamente.</div>`;
     $$('[data-start]', m).forEach(b => b.onclick = () => { if(runningSim()){ toast('Já existe um simulado em andamento.'); return; } if(!confirm('Iniciar o simulado agora? O cronômetro de 4h30 começa e não pausa (como na prova).')) return;
-      simSt(b.dataset.start).cur = {start:Date.now(), ans:{}, flags:{}, i:0}; activity(); save(); go(`#/simulado/${b.dataset.start}/run`); });
+      simSt(b.dataset.start).cur = {start:Date.now(), ans:{}, flags:{}, i:0}; activity(); save(); if(typeof putSpot === 'function') putSpot({kind:'simulado', sim:b.dataset.start, i:0}); go(`#/simulado/${b.dataset.start}/run`); });
     return;
   }
   const sim = SIM[id]; if(!sim){ go('#/simulado'); return; } const st = simSt(id);
   if(route[2] === 'r') return simResult(m, sim, st.hist[+route[3]], +route[3]);
   if(!st.cur){ go('#/simulado'); return; }
   const cur = st.cur, N = sim.questions.length, view = route[3] === 'folha' ? 'folha' : 'q', q = sim.questions[cur.i || 0];
+  if(typeof putSpot === 'function') putSpot({kind:'simulado', sim:id, i:cur.i || 0});
   setTitle(sim.nome, `Questão ${q.n} de ${N}`);
   const sheet = () => `<div class="sheet">${sim.questions.map(x => `${[1, 11, 21].includes(x.n) ? `<div class="sep">${x.n === 1 ? 'Português' : x.n === 11 ? 'Inglês' : 'Específicos'}</div>` : ''}<button data-go="${x.n - 1}" class="${cur.ans[x.n] ? 'ans' : ''} ${x.n === q.n ? 'cur' : ''} ${cur.flags[x.n] ? 'flag' : ''}">${pad(x.n)}<b>${cur.ans[x.n] || '·'}</b></button>`).join('')}</div>`;
   m.innerHTML = `<div class="card row sp"><div><div class="small mut">Tempo restante</div><div class="big-timer" id="bigtimer">${hms(remaining(cur))}</div></div><div class="c"><div class="small mut">Marcadas</div><b style="font-size:20px" id="cnt">${Object.keys(cur.ans).length}/${N}</b></div>
@@ -809,6 +975,7 @@ VIEWS.flashcards = m => {
   const learned = D.flashcards.filter(c => cs(c.id) && cs(c.id).iv >= 7).length, seen = D.flashcards.filter(c => cs(c.id)).length;
   const head = `<div class="stat" style="margin-bottom:12px"><div><b>${FQ.ids.length - FQ.i}</b><span>na fila</span></div><div><b>${seen}</b><span>já vistos</span></div><div><b>${learned}</b><span>firmes (≥7 dias)</span></div></div>`;
   if(FQ.i >= FQ.ids.length){
+    if(S.spot && S.spot.kind === 'flash' && typeof clearSpot === 'function') clearSpot();
     m.innerHTML = head + `<div class="card empty"><div style="font-size:40px">✅</div><b>Fila concluída${FQ.done ? ` (${FQ.done} revisões)` : ''}.</b><p>Volte amanhã para as próximas revisões.</p>
      <div class="row" style="justify-content:center"><button class="btn" id="free">Treino livre (sem alterar a agenda)</button><button class="btn" id="more">+10 cartões novos</button></div></div>`;
     $('#free', m).onclick = () => { FQ = {ids:shuffle(D.flashcards.map(c => c.id)), i:0, show:false, free:true, done:0}; render(); };
@@ -820,8 +987,8 @@ VIEWS.flashcards = m => {
    ${FQ.show ? `<div class="grade"><button class="btn bad" data-g="0">Errei<small>${FQ.free ? 'repetir' : preview(c, 0)}</small></button><button class="btn warn" data-g="1">Difícil<small>${FQ.free ? '&nbsp;' : preview(c, 1)}</small></button><button class="btn ok" data-g="2">Fácil<small>${FQ.free ? '&nbsp;' : preview(c, 2)}</small></button></div>`
    : '<button class="btn p w" id="show">Mostrar resposta</button>'}
    <p class="small mut c">Errei = volta em 1 min · Difícil = intervalo curto · Fácil = intervalo cresce (SM-2 leve).</p>`;
-  const sh = $('#show', m); if(sh){ sh.onclick = () => { FQ.show = true; render(); }; $('#fcard', m).onclick = sh.onclick; }
-  $$('[data-g]', m).forEach(b => b.onclick = () => { const g = +b.dataset.g; if(!FQ.free) schedule(c, g); else { activity(); save(); } if(g === 0) FQ.ids.push(c.id); FQ.i++; FQ.done++; FQ.show = false; render(); });
+  const sh = $('#show', m); if(sh){ sh.onclick = () => { FQ.show = true; if(typeof putSpot === 'function') putSpot({kind:'flash', ids:FQ.ids.slice(), i:FQ.i, show:true, free:!!FQ.free, done:FQ.done}); render(); }; $('#fcard', m).onclick = sh.onclick; }
+  $$('[data-g]', m).forEach(b => b.onclick = () => { const g = +b.dataset.g; if(!FQ.free) schedule(c, g); else { activity(); save(); } if(g === 0) FQ.ids.push(c.id); FQ.i++; FQ.done++; FQ.show = false; if(typeof putSpot === 'function') putSpot({kind:'flash', ids:FQ.ids.slice(), i:FQ.i, show:false, free:!!FQ.free, done:FQ.done}); render(); });
 };
 
 /* ---------- Caderno de erros ---------- */
@@ -885,6 +1052,11 @@ VIEWS.resumos = m => {
   if(t){
     const list = D.topics, i = list.indexOf(t), qs = D.questions.filter(q => q.topic === id), st = S.tck[id] || [];
     setTitle(t.title, t.modTitle);
+    if(typeof putSpot === 'function'){
+      const p = S.spot;
+      const busy = (p && p.kind === 'questoes' && p.ids && (p.i || 0) < p.ids.length) || (p && p.kind === 'flash' && p.ids && (p.i || 0) < p.ids.length) || (typeof runningSim === 'function' && runningSim());
+      if(!busy) putSpot({kind:'modulo', topic:id});
+    }
     m.innerHTML = `<div class="card"><div class="qmeta"><span class="tag">${t.mod}</span><span class="tag ${t.prio === 'Alta' ? 'alta' : 'media'}">${t.prio}</span></div>
      <div class="chips" id="tck">${TCK.map((k, j) => `<span class="chip ${st[j] ? 'on' : ''}" data-j="${j}">${st[j] ? '✔ ' : ''}${k}</span>`).join('')}</div>
      <div class="content" style="margin-top:10px">${t.html}</div>
@@ -1445,6 +1617,24 @@ function editalShort(it){
   const cut = t.split(':')[0];
   return cut.length > 42 ? cut.slice(0, 40) + '…' : cut;
 }
+function editalRevisarHoje(){
+  const today = typeof dk === 'function' ? dk() : '';
+  const rows = [];
+  EDITAL_ITENS.forEach(it => {
+    const e = editalRead(it.id);
+    if(!e.t || !e.te) return;
+    let pick = null;
+    [0, 1, 2].forEach(i => {
+      if(e.r[i]) return;
+      const d = editalRevDate(e.te, [1, 7, 30][i]);
+      if(!d || d > today) return;
+      if(!pick || d < pick.d) pick = {it:it, i:i, d:d, late:d < today};
+    });
+    if(pick) rows.push(pick);
+  });
+  rows.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : (a.i - b.i));
+  return rows;
+}
 function editalLateCount(){
   let n = 0;
   EDITAL_ITENS.forEach(it => { const e = editalRead(it.id); if([0,1,2].some(i => editalLate(e, i))) n++; });
@@ -1554,6 +1744,7 @@ if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
     <div class="chips" id="edFilt">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div>
     <div id="edTot">${editalBars(sum)}</div></div><div id="edList"></div><div id="edSheet" class="sheet-back" hidden></div>`;
   editalDraw(m);
+  if(editalOpen) editalSheet(editalOpen);
   $('#edBusca', m).oninput = e => { editalBusca = e.target.value; editalDraw(m); };
   $$('#edFilt .chip', m).forEach(c => c.onclick = () => { editalFilt = c.dataset.f; $$('#edFilt .chip', m).forEach(x => x.classList.toggle('on', x === c)); editalDraw(m); });
 };
@@ -1901,7 +2092,7 @@ function loadContent(){
 }
 async function enterApp(){
   if(!Sync.user){ showLanding('home'); return; }
-  try { await loadContent(); }
+  try { await loadContent(); if(typeof hydrateSpot === 'function') hydrateSpot(); }
   catch(e){ showLanding('conteudo'); return; }
   document.body.classList.remove('gated');
   shell();
