@@ -1,4 +1,4 @@
-import asyncio, json, os, sys, threading
+import asyncio, json, os, sys, threading, time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from playwright.async_api import async_playwright
 
@@ -38,16 +38,75 @@ else:
     httpd, URL = start_server()
 errs = []; log = []
 def ok(c, m): log.append(("OK " if c else "FAIL ") + m)
+USER_ID = "11111111-1111-4111-8111-111111111111"
+def session_obj(email="aluno@example.com"):
+    exp = int(time.time()) + 3600
+    user = {"id": USER_ID, "aud": "authenticated", "role": "authenticated", "email": email,
+            "email_confirmed_at": "2026-01-01T00:00:00Z", "app_metadata": {"provider": "email", "providers": ["email"]},
+            "user_metadata": {}, "created_at": "2026-01-01T00:00:00Z", "updated_at": "2026-01-01T00:00:00Z"}
+    return {"access_token": "test-access-token", "token_type": "bearer", "expires_in": 3600,
+            "expires_at": exp, "refresh_token": "test-refresh-token", "user": user}
+async def mock_sb(route):
+    url, method = route.request.url, route.request.method
+    if "/auth/v1/token" in url:
+        await route.fulfill(status=200, content_type="application/json", body=json.dumps(session_obj()))
+    elif "/auth/v1/user" in url:
+        await route.fulfill(status=200, content_type="application/json", body=json.dumps(session_obj()["user"]))
+    elif "/auth/v1/logout" in url:
+        await route.fulfill(status=204, body="")
+    elif "/rest/v1/transpetro_progress" in url:
+        await route.fulfill(status=200 if method == "GET" else 201, content_type="application/json", body="null")
+    else:
+        await route.continue_()
+SEED = "localStorage.setItem('tp7-supabase-auth', %s)" % json.dumps(json.dumps(session_obj()))
 async def run():
   async with async_playwright() as p:
     b = await p.chromium.launch(executable_path="/usr/bin/google-chrome", args=["--autoplay-policy=no-user-gesture-required", "--no-sandbox", "--disable-dev-shm-usage"])
+    shot = "/opt/cursor/artifacts/screenshots"
+    os.makedirs(shot, exist_ok=True)
+    ctx0 = await b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, device_scale_factor=2)
+    await ctx0.route("**/*supabase.co/**", mock_sb)
+    pg0 = await ctx0.new_page()
+    asked = []
+    pg0.on("request", lambda r: asked.append(r.url))
+    pg0.on("console", lambda m: m.type == "error" and errs.append("gate console: " + m.text))
+    pg0.on("pageerror", lambda e: errs.append("gate pageerror: " + str(e)))
+    await pg0.goto(URL + "#/questoes")
+    await pg0.wait_for_selector("#landIn", timeout=20000)
+    ok(await pg0.locator("nav.bot a").count() == 0, "sem sessão não há barra")
+    ok("Entrar" in await pg0.inner_text("#main") and "Compreensão de textos" not in await pg0.inner_text("#main"), "hash direto continua na landing")
+    idx = await (await pg0.request.get(URL)).text()
+    cont = await (await pg0.request.get(URL + "conteudo.js")).text()
+    ok("sessões TLS" not in idx and "sessões TLS" in cont, "enunciado sai do HTML e fica em conteudo.js")
+    ok(not any("/conteudo.js" in u for u in asked), "não pede o conteúdo antes do login")
+    await pg0.screenshot(path=shot + "/landing_mobile.png")
+    await pg0.click("#landIn")
+    await pg0.wait_for_selector("#sync-email")
+    await pg0.wait_for_selector("#sync-up")
+    ok("Criar conta" in await pg0.inner_text("#main") and "voltar ao app e entrar" in await pg0.inner_text("#main"), "login na landing")
+    await pg0.screenshot(path=shot + "/login_mobile.png")
+    await pg0.evaluate("location.hash = '#/home'")
+    await pg0.fill("#sync-email", "aluno@example.com")
+    await pg0.fill("#sync-pass", "senha123")
+    await pg0.click("#sync-in")
+    await pg0.wait_for_selector("#cd", timeout=20000)
+    ok(await pg0.locator("nav.bot a").count() == 5, "barra depois do login")
+    ok(any("/conteudo.js" in u for u in asked), "conteúdo pedido depois do login")
+    await pg0.screenshot(path=shot + "/app_mobile.png")
+    await pg0.goto(URL + "#/mais")
+    await pg0.click("#sairApp")
+    await pg0.wait_for_selector("#landIn", timeout=20000)
+    ok(await pg0.locator("nav.bot a").count() == 0, "sair volta para a landing")
+    await ctx0.close()
     for name, vp, mob in [("mobile", {"width":390, "height":844}, True), ("desktop", {"width":1280, "height":800}, False)]:
       ctx = await b.new_context(viewport=vp, is_mobile=mob, has_touch=mob, device_scale_factor=2 if mob else 1, accept_downloads=True)
+      await ctx.route("**/*supabase.co/**", mock_sb)
+      await ctx.add_init_script(SEED)
       pg = await ctx.new_page()
       pg.on("console", lambda m: m.type == "error" and errs.append(f"{name} console: {m.text}"))
       pg.on("pageerror", lambda e: errs.append(f"{name} pageerror: {e}"))
       pg.on("dialog", lambda d: asyncio.ensure_future(d.accept()))
-      await pg.goto(URL); await pg.wait_for_timeout(400)
+      await pg.goto(URL); await pg.wait_for_selector("#cd", timeout=20000)
       ok(await pg.locator("#main .card").count() > 0, f"{name} home renders")
       if mob: await pg.screenshot(path=SH + "01_home_mobile.png", full_page=False)
       # all screens
@@ -84,7 +143,7 @@ async def run():
           await pg.click("#next"); await pg.wait_for_timeout(40)
         pill = await pg.inner_text("#tpill"); ok(pill.startswith("⏱ 4:"), f"timer pill {pill}")
         await pg.screenshot(path=SH + "05_simulado_mobile.png")
-        await pg.reload(); await pg.wait_for_timeout(300)
+        await pg.reload(); await pg.wait_for_selector("#next", timeout=20000)
         st = await pg.evaluate("JSON.parse(localStorage.getItem('tp7:progresso'))")
         ok(len(st["sims"]["s1"]["cur"]["ans"]) == 25, "simulado answers persisted after reload: %d" % len(st["sims"]["s1"]["cur"]["ans"]))
         ok(len(st["answers"]) >= 4 and len(st["cards"]) >= 3 and len(st["errors"]) >= 1, f"persisted answers={len(st['answers'])} cards={len(st['cards'])} errors={len(st['errors'])}")
@@ -96,7 +155,7 @@ async def run():
         ok("para hoje" in await pg.inner_text("#main"), "erros view")
         t = await pg.inner_text("#main"); ok("Rodadas diárias" in t and "LSASS" in t and "29/10: 6/13" in t, "rodadas pré-carregadas no caderno")
         await pg.evaluate("(() => { const s = JSON.parse(localStorage.getItem('tp7:progresso')); s.rod = {r20261029_1:{stage:0, due:'2026-10-01', done:false}}; localStorage.setItem('tp7:progresso', JSON.stringify(s)); })()")
-        await pg.reload(); await pg.wait_for_timeout(300); await pg.click("[data-rok='r20261029_1']"); await pg.wait_for_timeout(200)
+        await pg.reload(); await pg.wait_for_selector("[data-rok='r20261029_1']", timeout=20000); await pg.click("[data-rok='r20261029_1']"); await pg.wait_for_timeout(200)
         st = await pg.evaluate("JSON.parse(localStorage.getItem('tp7:progresso')).rod.r20261029_1"); ok(st["stage"] == 1, f"rodada revisada -> {st}")
         # Simulado 2
         await pg.goto(URL + "#/simulado"); await pg.wait_for_timeout(150); await pg.click("[data-start='s2']"); await pg.wait_for_timeout(200)
@@ -162,12 +221,12 @@ async def run():
         await pg.locator(".ed-pill").first.click()
         await pg.wait_for_selector("#edSheet")
         ok("Resolver no TEC" in await pg.inner_text("#edSheet"), "ficha do item abre o TEC")
-      await pg.goto(URL + "#/sincronizar"); await pg.wait_for_selector("#sync-email"); await pg.wait_for_selector("#sync-in"); await pg.wait_for_selector("#sync-up")
+      await pg.goto(URL + "#/sincronizar"); await pg.wait_for_selector("#sync-out")
       t = await pg.inner_text("#main")
-      ok("voltar ao app e entrar" in t and "Criar conta" in t, f"{name} tela Sincronizar")
+      ok("Sair" in t and "aluno@example.com" in t, f"{name} tela da conta")
       ok(await pg.locator("#syncBtn").count() == 1, f"{name} indicador de sync")
       st = await pg.locator("#syncState").get_attribute("data-status")
-      ok(st in ("local", "offline"), f"{name} sem login o estado é local/offline ({st})")
+      ok(st in ("sincronizado", "pendente", "offline", "erro", "local"), f"{name} estado da conta ({st})")
       await ctx.close()
     await b.close()
 try:

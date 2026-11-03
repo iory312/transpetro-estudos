@@ -1,6 +1,5 @@
 /* Links públicos do TEC Concursos. Sem API: só abre a página do assunto. */
 const TEC = {};
-((D.tec && D.tec.topicos) || []).forEach(t => { TEC[t.topic_id] = t; });
 function tecObs(t){
   return String(t && t.obs || '').replace(/\s*filtrar banca Cesgranrio[\s\S]*$/i, '').trim();
 }

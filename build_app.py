@@ -15,13 +15,14 @@ data = json.loads((A / "data.json").read_text(encoding="utf-8"))
 tec = json.loads((A / "tec_links.json").read_text(encoding="utf-8"))
 data["tec"] = {"topicos": tec["topicos"], "gerais": tec["gerais"]}
 dj = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+(A / "conteudo.js").write_text("globalThis.TP7_DATA=" + dj + ";\n", encoding="utf-8")
 js_files = ["storage.js", "merge.js", "a1.js", "a2.js", "a3.js", "a4.js", "tec.js", "plano.js", "edital.js", "a5.js", "sync.js"]
 js = "\n".join((S / f).read_text(encoding="utf-8") for f in js_files)
 assert "</script" not in js.lower()
 icon = (S / "icon.svg").read_text(encoding="utf-8").strip()
 html = (S / "template.html").read_text(encoding="utf-8")
 html = html.replace("__ICON__", urllib.parse.quote(icon)).replace("__CSS__", (S / "style.css").read_text(encoding="utf-8"))
-html = html.replace("__DATA__", dj).replace("__JS__", "(function(){\n" + js + "\n})();")
+html = html.replace("__JS__", "(function(){\n" + js + "\n})();")
 (A / "index.html").write_text(html, encoding="utf-8")
 shutil.copy(S / "icon.svg", A / "icon.svg")
 (A / "manifest.webmanifest").write_text(json.dumps({
@@ -31,7 +32,7 @@ shutil.copy(S / "icon.svg", A / "icon.svg")
   "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
 }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 template = (S / "sw.template.js").read_text(encoding="utf-8")
-ver = data["meta"]["versao"] + "-" + hashlib.sha256((html + template).encode("utf-8")).hexdigest()[:12]
+ver = data["meta"]["versao"] + "-" + hashlib.sha256((html + template + dj).encode("utf-8")).hexdigest()[:12]
 audios = ["./" + a["file"] for a in data["audios"] if (A / a["file"]).exists()]
 sw = template.replace("__CACHE__", "tp7-" + ver).replace("__AUDIOS__", json.dumps(audios, ensure_ascii=False))
 (A / "sw.js").write_text(sw, encoding="utf-8")
