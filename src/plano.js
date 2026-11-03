@@ -252,7 +252,7 @@ function bindPlano(root){
   $$('[data-plano]', root).forEach(cb => cb.onchange = () => {
     S.plano = S.plano || {};
     S.plano[cb.dataset.plano] = cb.checked;
-    if(cb.checked) activity();
+    if(cb.checked){ activity(); if(typeof editalFromPlano === 'function') editalFromPlano(cb.dataset.plano); }
     save();
     const row = cb.closest('.li'); if(row) row.classList.toggle('done', cb.checked);
     const bar = document.getElementById('planoBar');

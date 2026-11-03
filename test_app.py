@@ -51,7 +51,7 @@ async def run():
       ok(await pg.locator("#main .card").count() > 0, f"{name} home renders")
       if mob: await pg.screenshot(path=SH + "01_home_mobile.png", full_page=False)
       # all screens
-      for r in ["home","questoes","simulado","flashcards","mais","erros","bizus","resumos","leitura","glossario","cronograma","prova","ouvir","sobre","sobre/raiox","backup","sincronizar","tec","resumos/of1","bizus/m/Ofensiva","resumos/le1"]:
+      for r in ["home","questoes","simulado","flashcards","mais","erros","bizus","resumos","leitura","glossario","cronograma","edital","prova","ouvir","sobre","sobre/raiox","backup","sincronizar","tec","resumos/of1","bizus/m/Ofensiva","resumos/le1"]:
         await pg.goto(URL + "#/" + r); await pg.wait_for_timeout(150)
         t = await pg.inner_text("#main"); ok("Erro ao abrir" not in t and len(t) > 30, f"{name} #{r} ({len(t)} chars)")
       if name == "mobile":
@@ -155,6 +155,10 @@ async def run():
         ct = await pg.inner_text("#main")
         ok("Reprogramar atrasados" in ct and "03/11" in ct and "06/12" in ct, "cronograma de 03/11 até a prova")
         ok("Resolver no TEC" in ct, "blocos do cronograma reusam o TEC")
+        await pg.goto(URL + "#/edital"); await pg.wait_for_selector("text=Compreensão de textos")
+        et = await pg.inner_text("#main")
+        ok("MITRE ATT&CK" in et and "LÍNGUA INGLESA" in et and "Resolver no TEC" in et, "edital verticalizado com específicos, inglês e TEC")
+        ok("john the ripper" in et and "Formjacking" in et, "texto do edital preservado")
       await pg.goto(URL + "#/sincronizar"); await pg.wait_for_selector("#sync-email"); await pg.wait_for_selector("#sync-in"); await pg.wait_for_selector("#sync-up")
       t = await pg.inner_text("#main")
       ok("voltar ao app e entrar" in t and "Criar conta" in t, f"{name} tela Sincronizar")

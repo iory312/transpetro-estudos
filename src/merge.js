@@ -1,7 +1,23 @@
 /* União do progresso local com outro aparelho ou com a conta.
    Não descarta respostas. Por item, o registro mais recente vence.
    Tema, filtros de questão e velocidade do áudio ficam no aparelho que está mesclando. */
-function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, edital:{}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function mergeEdital(a, b){
+  const o = {}, ids = new Set([].concat(Object.keys(a || {}), Object.keys(b || {})));
+  ids.forEach(id => {
+    const x = (a && a[id]) || {}, y = (b && b[id]) || {};
+    const r = [0, 1, 2].map(i => !!((x.r && x.r[i]) || (y.r && y.r[i])));
+    const q = Math.max(+x.q || 0, +y.q || 0);
+    const ok = Math.min(q, Math.max(+x.ok || 0, +y.ok || 0));
+    const t = !!(x.t || y.t);
+    const tes = [x.te, y.te].filter(Boolean).sort();
+    const te = t ? (tes[0] || '') : (tes[0] || '');
+    const u = (x.u || '') >= (y.u || '') ? (x.u || '') : (y.u || '');
+    const n = (x.u || '') > (y.u || '') ? (x.n || y.n || '') : ((y.u || '') > (x.u || '') ? (y.n || x.n || '') : ((x.n || '').length >= (y.n || '').length ? (x.n || '') : (y.n || '')));
+    if(t || r.some(Boolean) || q || ok || n || u) o[id] = {t:t, te:te, r:r, q:q, ok:ok, n:n, u:u};
+  });
+  return o;
+}
 function cloneState(v){ return v == null ? v : JSON.parse(JSON.stringify(v)); }
 function mergeBoolMap(a, b){
   const o = Object.assign({}, a || {});
@@ -83,6 +99,7 @@ function mergeState(a, b){
   o.dia = mergeBoolMap(a.dia, b.dia);
   o.tec = mergeBoolMap(a.tec, b.tec);
   o.plano = mergeBoolMap(a.plano, b.plano);
+  o.edital = mergeEdital(a.edital, b.edital);
   o.planoH = (b.planoH && (b.planoH.t || 0) >= ((a.planoH && a.planoH.t) || 0)) ? Object.assign({sem:3, fim:5, t:0}, b.planoH) : Object.assign({sem:3, fim:5, t:0}, a.planoH || {});
   const am = a.planoMove || {t:0, ids:{}}, bm = b.planoMove || {t:0, ids:{}};
   o.planoMove = (bm.t || 0) >= (am.t || 0) ? {t: bm.t || 0, ids: Object.assign({}, bm.ids || {})} : {t: am.t || 0, ids: Object.assign({}, am.ids || {})};
