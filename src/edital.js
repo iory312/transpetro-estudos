@@ -118,6 +118,24 @@ function editalShort(it){
   const cut = t.split(':')[0];
   return cut.length > 42 ? cut.slice(0, 40) + '…' : cut;
 }
+function editalRevisarHoje(){
+  const today = typeof dk === 'function' ? dk() : '';
+  const rows = [];
+  EDITAL_ITENS.forEach(it => {
+    const e = editalRead(it.id);
+    if(!e.t || !e.te) return;
+    let pick = null;
+    [0, 1, 2].forEach(i => {
+      if(e.r[i]) return;
+      const d = editalRevDate(e.te, [1, 7, 30][i]);
+      if(!d || d > today) return;
+      if(!pick || d < pick.d) pick = {it:it, i:i, d:d, late:d < today};
+    });
+    if(pick) rows.push(pick);
+  });
+  rows.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : (a.i - b.i));
+  return rows;
+}
 function editalLateCount(){
   let n = 0;
   EDITAL_ITENS.forEach(it => { const e = editalRead(it.id); if([0,1,2].some(i => editalLate(e, i))) n++; });
@@ -227,6 +245,7 @@ if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
     <div class="chips" id="edFilt">${[['todos','Todos'],['pendentes','Pendentes'],['atrasada','Revisão atrasada'],['baixo','% baixo']].map(([v,l]) => `<button type="button" class="chip ${editalFilt === v ? 'on' : ''}" data-f="${v}">${l}</button>`).join('')}</div>
     <div id="edTot">${editalBars(sum)}</div></div><div id="edList"></div><div id="edSheet" class="sheet-back" hidden></div>`;
   editalDraw(m);
+  if(editalOpen) editalSheet(editalOpen);
   $('#edBusca', m).oninput = e => { editalBusca = e.target.value; editalDraw(m); };
   $$('#edFilt .chip', m).forEach(c => c.onclick = () => { editalFilt = c.dataset.f; $$('#edFilt .chip', m).forEach(x => x.classList.toggle('on', x === c)); editalDraw(m); });
 };

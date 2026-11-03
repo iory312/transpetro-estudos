@@ -1,4 +1,4 @@
-// Service worker do app (só em http/https). Cache rev gate-7: o nome muda a cada build.
+// Service worker do app (só em http/https). Cache rev home-8: o nome muda a cada build.
 // Página, manifest e ícone: rede primeiro, para um deploy novo não ficar na versão antiga.
 // Áudios: cache primeiro. conteudo.js não entra no pré-cache: só é pedido depois do login.
 // Pedidos de outro site (Supabase, CDN) não são interceptados.

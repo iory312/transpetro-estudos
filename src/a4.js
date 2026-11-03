@@ -24,6 +24,11 @@ VIEWS.resumos = m => {
   if(t){
     const list = D.topics, i = list.indexOf(t), qs = D.questions.filter(q => q.topic === id), st = S.tck[id] || [];
     setTitle(t.title, t.modTitle);
+    if(typeof putSpot === 'function'){
+      const p = S.spot;
+      const busy = (p && p.kind === 'questoes' && p.ids && (p.i || 0) < p.ids.length) || (p && p.kind === 'flash' && p.ids && (p.i || 0) < p.ids.length) || (typeof runningSim === 'function' && runningSim());
+      if(!busy) putSpot({kind:'modulo', topic:id});
+    }
     m.innerHTML = `<div class="card"><div class="qmeta"><span class="tag">${t.mod}</span><span class="tag ${t.prio === 'Alta' ? 'alta' : 'media'}">${t.prio}</span></div>
      <div class="chips" id="tck">${TCK.map((k, j) => `<span class="chip ${st[j] ? 'on' : ''}" data-j="${j}">${st[j] ? '✔ ' : ''}${k}</span>`).join('')}</div>
      <div class="content" style="margin-top:10px">${t.html}</div>

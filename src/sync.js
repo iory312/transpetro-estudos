@@ -240,7 +240,7 @@ function loadContent(){
 }
 async function enterApp(){
   if(!Sync.user){ showLanding('home'); return; }
-  try { await loadContent(); }
+  try { await loadContent(); if(typeof hydrateSpot === 'function') hydrateSpot(); }
   catch(e){ showLanding('conteudo'); return; }
   document.body.classList.remove('gated');
   shell();

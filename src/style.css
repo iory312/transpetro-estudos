@@ -273,6 +273,21 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .land-feats b{display:block}
 .land-feats span{color:var(--mut);font-size:14px}
 .land-go{width:100%;min-height:48px;margin-top:8px}
+.resume{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:var(--pri);color:#fff;border:0;border-radius:18px;padding:16px 18px;min-height:72px;box-shadow:var(--sh);cursor:pointer}
+.resume b{font-size:20px;letter-spacing:-.03em;line-height:1.2}
+.resume small{font-size:14px;font-weight:620;opacity:.92}
+[data-theme=dark] .resume{color:#062029}
+.rev-item{display:flex;justify-content:space-between;gap:10px;align-items:center;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:44px;margin-top:8px;cursor:pointer}
+.rev-item b{font-weight:700}
+.rev-item span{flex:none;font-size:12px;font-weight:750;color:var(--bad)}
+.corte-card.bad{border-color:color-mix(in srgb, var(--bad) 45%, var(--line))}
+.corte-card.mid{border-color:color-mix(in srgb, var(--warn) 45%, var(--line))}
+.corte-card.ok{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.corte-top{display:flex;align-items:center;gap:12px}
+.corte-pct{font-size:36px;line-height:1;letter-spacing:-.04em}
+.corte-card.bad .corte-pct{color:var(--bad)}
+.corte-card.mid .corte-pct{color:var(--warn)}
+.corte-card.ok .corte-pct{color:var(--ok)}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}

@@ -1,7 +1,13 @@
 /* União do progresso local com outro aparelho ou com a conta.
    Não descarta respostas. Por item, o registro mais recente vence.
    Tema, filtros de questão e velocidade do áudio ficam no aparelho que está mesclando. */
-function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, edital:{}, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function blank(){ return {v:1, created:Date.now(), answers:{}, errors:{}, cards:{}, sims:{}, crono:{}, dia:{}, days:{}, tck:{}, settings:{}, audio:{}, rod:{}, tec:{}, plano:{}, planoH:{sem:3, fim:5, t:0}, planoMove:{t:0, ids:{}}, edital:{}, spot:null, qf:{mod:[], topic:'', prio:'', only:'all', src:'fix', order:'seq'}, newToday:{}}; }
+function mergeSpot(a, b){
+  const ok = x => x && typeof x === 'object' && x.t;
+  if(!ok(a)) return ok(b) ? b : null;
+  if(!ok(b)) return a;
+  return b.t >= a.t ? b : a;
+}
 function mergeEdital(a, b){
   const o = {}, ids = new Set([].concat(Object.keys(a || {}), Object.keys(b || {})));
   ids.forEach(id => {
@@ -100,6 +106,7 @@ function mergeState(a, b){
   o.tec = mergeBoolMap(a.tec, b.tec);
   o.plano = mergeBoolMap(a.plano, b.plano);
   o.edital = mergeEdital(a.edital, b.edital);
+  o.spot = mergeSpot(a.spot, b.spot);
   o.planoH = (b.planoH && (b.planoH.t || 0) >= ((a.planoH && a.planoH.t) || 0)) ? Object.assign({sem:3, fim:5, t:0}, b.planoH) : Object.assign({sem:3, fim:5, t:0}, a.planoH || {});
   const am = a.planoMove || {t:0, ids:{}}, bm = b.planoMove || {t:0, ids:{}};
   o.planoMove = (bm.t || 0) >= (am.t || 0) ? {t: bm.t || 0, ids: Object.assign({}, bm.ids || {})} : {t: am.t || 0, ids: Object.assign({}, am.ids || {})};

@@ -16,7 +16,7 @@ function submitSim(id, auto){
   const st = simSt(id), cur = st.cur; if(!cur) return;
   const att = {start:cur.start, end:Date.now(), ans:cur.ans, flags:cur.flags || {}}; st.hist.push(att); st.cur = null;
   SIM[id].questions.forEach(q => { const c = cur.ans[q.n]; if(c) (S.answers[q.id] = S.answers[q.id] || []).push({t:att.end, c, ok:c === q.ans, ctx:'simulado'}); if(c !== q.ans) addError(q.id); });
-  activity(); save(); if(auto) alert('Tempo esgotado! O simulado foi entregue automaticamente.');
+  activity(); save(); if(typeof clearSpot === 'function') clearSpot(); if(auto) alert('Tempo esgotado! O simulado foi entregue automaticamente.');
   go(`#/simulado/${id}/r/${st.hist.length - 1}`);
 }
 VIEWS.simulado = m => {
@@ -30,13 +30,14 @@ VIEWS.simulado = m => {
         ${res.length ? `<label class="lb">Tentativas</label>${res.map(([r, i]) => `<a class="li" href="#/simulado/${s.id}/r/${i}"><div class="f1"><div class="t">${new Date(st.hist[i].end).toLocaleDateString('pt-BR')} · ${r.total}/70</div><div class="s">Específicos ${r.esp}/50 · Gerais ${r.ger}/20</div></div><span class="tag ${r.elim.length ? 'alta' : ''}">${r.elim.length ? 'Eliminado' : 'Aprovado'}</span></a>`).join('')}` : ''}</div>`; }).join('') +
       `<div class="card small mut">Novos simulados (ex.: Simulado 2) entram pela lista <code>simulados</code> do <code>data.json</code> e aparecem aqui automaticamente.</div>`;
     $$('[data-start]', m).forEach(b => b.onclick = () => { if(runningSim()){ toast('Já existe um simulado em andamento.'); return; } if(!confirm('Iniciar o simulado agora? O cronômetro de 4h30 começa e não pausa (como na prova).')) return;
-      simSt(b.dataset.start).cur = {start:Date.now(), ans:{}, flags:{}, i:0}; activity(); save(); go(`#/simulado/${b.dataset.start}/run`); });
+      simSt(b.dataset.start).cur = {start:Date.now(), ans:{}, flags:{}, i:0}; activity(); save(); if(typeof putSpot === 'function') putSpot({kind:'simulado', sim:b.dataset.start, i:0}); go(`#/simulado/${b.dataset.start}/run`); });
     return;
   }
   const sim = SIM[id]; if(!sim){ go('#/simulado'); return; } const st = simSt(id);
   if(route[2] === 'r') return simResult(m, sim, st.hist[+route[3]], +route[3]);
   if(!st.cur){ go('#/simulado'); return; }
   const cur = st.cur, N = sim.questions.length, view = route[3] === 'folha' ? 'folha' : 'q', q = sim.questions[cur.i || 0];
+  if(typeof putSpot === 'function') putSpot({kind:'simulado', sim:id, i:cur.i || 0});
   setTitle(sim.nome, `Questão ${q.n} de ${N}`);
   const sheet = () => `<div class="sheet">${sim.questions.map(x => `${[1, 11, 21].includes(x.n) ? `<div class="sep">${x.n === 1 ? 'Português' : x.n === 11 ? 'Inglês' : 'Específicos'}</div>` : ''}<button data-go="${x.n - 1}" class="${cur.ans[x.n] ? 'ans' : ''} ${x.n === q.n ? 'cur' : ''} ${cur.flags[x.n] ? 'flag' : ''}">${pad(x.n)}<b>${cur.ans[x.n] || '·'}</b></button>`).join('')}</div>`;
   m.innerHTML = `<div class="card row sp"><div><div class="small mut">Tempo restante</div><div class="big-timer" id="bigtimer">${hms(remaining(cur))}</div></div><div class="c"><div class="small mut">Marcadas</div><b style="font-size:20px" id="cnt">${Object.keys(cur.ans).length}/${N}</b></div>
@@ -99,6 +100,7 @@ VIEWS.flashcards = m => {
   const learned = D.flashcards.filter(c => cs(c.id) && cs(c.id).iv >= 7).length, seen = D.flashcards.filter(c => cs(c.id)).length;
   const head = `<div class="stat" style="margin-bottom:12px"><div><b>${FQ.ids.length - FQ.i}</b><span>na fila</span></div><div><b>${seen}</b><span>já vistos</span></div><div><b>${learned}</b><span>firmes (≥7 dias)</span></div></div>`;
   if(FQ.i >= FQ.ids.length){
+    if(S.spot && S.spot.kind === 'flash' && typeof clearSpot === 'function') clearSpot();
     m.innerHTML = head + `<div class="card empty"><div style="font-size:40px">✅</div><b>Fila concluída${FQ.done ? ` (${FQ.done} revisões)` : ''}.</b><p>Volte amanhã para as próximas revisões.</p>
      <div class="row" style="justify-content:center"><button class="btn" id="free">Treino livre (sem alterar a agenda)</button><button class="btn" id="more">+10 cartões novos</button></div></div>`;
     $('#free', m).onclick = () => { FQ = {ids:shuffle(D.flashcards.map(c => c.id)), i:0, show:false, free:true, done:0}; render(); };
@@ -110,8 +112,8 @@ VIEWS.flashcards = m => {
    ${FQ.show ? `<div class="grade"><button class="btn bad" data-g="0">Errei<small>${FQ.free ? 'repetir' : preview(c, 0)}</small></button><button class="btn warn" data-g="1">Difícil<small>${FQ.free ? '&nbsp;' : preview(c, 1)}</small></button><button class="btn ok" data-g="2">Fácil<small>${FQ.free ? '&nbsp;' : preview(c, 2)}</small></button></div>`
    : '<button class="btn p w" id="show">Mostrar resposta</button>'}
    <p class="small mut c">Errei = volta em 1 min · Difícil = intervalo curto · Fácil = intervalo cresce (SM-2 leve).</p>`;
-  const sh = $('#show', m); if(sh){ sh.onclick = () => { FQ.show = true; render(); }; $('#fcard', m).onclick = sh.onclick; }
-  $$('[data-g]', m).forEach(b => b.onclick = () => { const g = +b.dataset.g; if(!FQ.free) schedule(c, g); else { activity(); save(); } if(g === 0) FQ.ids.push(c.id); FQ.i++; FQ.done++; FQ.show = false; render(); });
+  const sh = $('#show', m); if(sh){ sh.onclick = () => { FQ.show = true; if(typeof putSpot === 'function') putSpot({kind:'flash', ids:FQ.ids.slice(), i:FQ.i, show:true, free:!!FQ.free, done:FQ.done}); render(); }; $('#fcard', m).onclick = sh.onclick; }
+  $$('[data-g]', m).forEach(b => b.onclick = () => { const g = +b.dataset.g; if(!FQ.free) schedule(c, g); else { activity(); save(); } if(g === 0) FQ.ids.push(c.id); FQ.i++; FQ.done++; FQ.show = false; if(typeof putSpot === 'function') putSpot({kind:'flash', ids:FQ.ids.slice(), i:FQ.i, show:false, free:!!FQ.free, done:FQ.done}); render(); });
 };
 
 /* ---------- Caderno de erros ---------- */

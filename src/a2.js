@@ -18,6 +18,136 @@ function cutAlerts(st){
   return out.join('');
 }
 const tile = ([k, t, i, s]) => `<a class="tile" href="#/${k}">${ic(i)}<b>${t}</b><span>${s}</span></a>`;
+function topicNick(id){
+  const t = TOP[id];
+  if(!t) return 'estudo';
+  if(/nmap/i.test(t.title)) return 'nmap';
+  const cut = t.title.replace(/^\d+(\.\d+)?([–-]\d+(\.\d+)?)?\s*/, '').split('—')[0].split('+')[0].split(':')[0].trim();
+  return cut.length > 32 ? cut.slice(0, 30) + '…' : (cut || t.title);
+}
+function putSpot(next){
+  const prev = S.spot || {};
+  const same = prev.kind === next.kind && prev.i === next.i && prev.sim === next.sim && prev.topic === next.topic && prev.show === next.show && JSON.stringify(prev.ids || []) === JSON.stringify(next.ids || []) && JSON.stringify(prev.ans || {}) === JSON.stringify(next.ans || {});
+  if(same) return;
+  next.t = Date.now();
+  S.spot = next;
+  save();
+}
+function clearSpot(){
+  if(!S.spot || S.spot.kind === 'none') return;
+  S.spot = {t:Date.now(), kind:'none'};
+  save();
+}
+function spotFromQuiz(){
+  const q = Q[QS.ids[QS.i]];
+  return {kind:'questoes', ids:QS.ids.slice(), i:QS.i, ans:JSON.parse(JSON.stringify(QS.ans || {})), ctx:QS.ctx, title:QS.title, back:QS.back, topic:q && q.topic || ''};
+}
+function hydrateSpot(){
+  const p = S.spot;
+  if(!p || p.kind === 'none') return;
+  if(p.kind === 'questoes' && Array.isArray(p.ids)){
+    const ids = p.ids.filter(id => Q[id]);
+    if(!ids.length) return;
+    QS = {ids:ids, i:Math.min(p.i || 0, ids.length - 1), ctx:p.ctx || 'estudo', title:p.title || 'Questões', back:p.back || '#/questoes', ans:Object.assign({}, p.ans || {})};
+  }
+  if(p.kind === 'flash' && Array.isArray(p.ids) && typeof D !== 'undefined' && D.flashcards){
+    const ids = p.ids.filter(id => D.flashcards.some(c => c.id === id));
+    if(!ids.length) return;
+    FQ = {ids:ids, i:Math.min(p.i || 0, ids.length), show:!!p.show, free:!!p.free, done:p.done || 0};
+  }
+}
+function proximoBloco(){
+  if(typeof buildPlano !== 'function') return null;
+  const today = dk();
+  const day = buildPlano(planoHoras(), S.planoMove || {ids:{}}).find(d => d.date === today);
+  if(!day) return null;
+  return day.blocks.find(b => b.tipo !== 'marco' && !(S.plano && S.plano[b.id])) || null;
+}
+function resumeTarget(){
+  const sim = typeof runningSim === 'function' ? runningSim() : null;
+  if(sim){
+    const cur = (S.sims[sim.id] || {}).cur || {}, n = sim.questions.length, i = Math.min(cur.i || 0, n - 1), q = sim.questions[i];
+    return {kind:'simulado', href:'#/simulado/' + sim.id + '/run', sub:sim.nome + ' — questão ' + q.n + ' de ' + n};
+  }
+  const p = S.spot;
+  if(p && p.kind === 'questoes' && p.ids && p.ids.length && (p.i || 0) < p.ids.length){
+    const q = Q[p.ids[p.i]];
+    const name = q ? topicNick(q.topic) : (p.title || 'Questões');
+    return {kind:'questoes', href:'#/questoes/run', sub:'Questões · ' + name + ' — questão ' + ((p.i || 0) + 1) + ' de ' + p.ids.length};
+  }
+  if(p && p.kind === 'flash' && p.ids && p.ids.length && (p.i || 0) < p.ids.length){
+    return {kind:'flash', href:'#/flashcards', sub:'Flashcards — cartão ' + ((p.i || 0) + 1) + ' de ' + p.ids.length};
+  }
+  if(p && p.kind === 'modulo' && p.topic && TOP[p.topic]){
+    return {kind:'modulo', href:'#/resumos/' + p.topic, sub:'Resumo · ' + topicNick(p.topic)};
+  }
+  const b = proximoBloco();
+  if(b){
+    const href = b.href || (b.topic ? '#/questoes/t/' + b.topic : '#/cronograma');
+    return {kind:'crono', href:href, sub:'Hoje · ' + b.title};
+  }
+  return {kind:'crono', href:'#/cronograma', sub:'Próximo bloco do cronograma'};
+}
+function revisarHojeHTML(){
+  const rows = editalRevisarHoje();
+  if(!rows.length) return '<div class="card"><h3>Revisar hoje</h3><p class="mut" style="margin:0">Nada pra revisar hoje 🎉</p></div>';
+  const shown = rows.slice(0, 6);
+  const more = rows.length - shown.length;
+  return `<div class="card"><h3>Revisar hoje <span class="r">${rows.length}</span></h3>${shown.map(r => {
+    const nome = ['R1', 'R2', 'R3'][r.i];
+    return `<button type="button" class="rev-item" data-rev="${esc(r.it.id)}"><b>${esc(r.it.num)} ${esc(editalShort(r.it))}</b><span>${nome} ${r.late ? 'atrasada' : 'hoje'}</span></button>`;
+  }).join('')}${more ? `<a class="small" href="#/edital">e mais ${more} no edital</a>` : ''}</div>`;
+}
+function corteFonte(){
+  const st = {};
+  MODS.forEach(m => st[m] = {ok:0, n:0});
+  const base = modStats();
+  MODS.forEach(m => { st[m].ok = base[m].ok; st[m].n = base[m].n; });
+  const map = {pt:'Português', en:'Inglês', of:'Ofensiva', df:'Defensiva', cp:'Compliance'};
+  EDITAL_ITENS.forEach(it => {
+    const mod = map[it.id.split('-')[0]];
+    if(!mod || !st[mod]) return;
+    const e = editalRead(it.id);
+    let appN = 0, appOk = 0;
+    (it.quiz || []).forEach(topic => {
+      for(const id in S.answers){
+        const q = Q[id];
+        if(!q || q.topic !== topic) continue;
+        (S.answers[id] || []).forEach(a => { appN++; if(a.ok) appOk++; });
+      }
+    });
+    const extraN = Math.max(0, e.q - appN);
+    const extraOk = Math.max(0, Math.min(extraN, e.ok - appOk));
+    st[mod].n += extraN; st[mod].ok += extraOk;
+  });
+  return st;
+}
+function corteAlvo(){
+  const d = corteFonte();
+  const sum = names => names.reduce((a, m) => ({ok:a.ok + d[m].ok, n:a.n + d[m].n}), {ok:0, n:0});
+  const child = names => {
+    const known = names.filter(m => d[m].n > 0).sort((a, b) => pct(d[a].ok, d[a].n) - pct(d[b].ok, d[b].n));
+    return known[0] || names[0];
+  };
+  const items = MODS.map(m => ({key:m, label:m, train:m, kind:'matéria', ok:d[m].ok, n:d[m].n})).concat([
+    {key:'Específicos', label:'Específicos', train:child(ESP), kind:'bloco', ok:sum(ESP).ok, n:sum(ESP).n},
+    {key:'Gerais', label:'Gerais', train:child(GER), kind:'bloco', ok:sum(GER).ok, n:sum(GER).n}
+  ]);
+  const known = items.filter(x => x.n > 0);
+  if(!known.length) return null;
+  known.forEach(x => { x.pct = pct(x.ok, x.n); x.zero = (x.key === 'Português' || x.key === 'Inglês') && x.ok === 0; });
+  known.sort((a, b) => (b.zero - a.zero) || (a.pct - b.pct) || (b.n - a.n));
+  return known[0];
+}
+function corteHTML(){
+  const x = corteAlvo();
+  if(!x) return `<div class="card"><h3>Mais perto do corte</h3><p class="mut">Ainda não dá para medir. Faça pelo menos 5 questões de uma disciplina.</p><a class="btn p" href="#/questoes/m/Ofensiva">Treinar agora</a></div>`;
+  const tone = x.zero || x.pct < 50 ? 'bad' : x.pct < 70 ? 'mid' : 'ok';
+  const gap = 50 - x.pct;
+  const dist = x.zero ? 'Nota zero em ' + x.label + ' elimina.' : (gap > 0 ? gap + ' pontos abaixo de 50%.' : (gap === 0 ? 'No limite de 50%.' : (-gap) + ' pontos acima de 50%.'));
+  const poucos = x.n < 5 ? `<p class="small mut">Por enquanto são só ${x.n} ${x.n === 1 ? 'questão' : 'questões'}. Dá para ver a direção, mas ainda é cedo para cravar.</p>` : '';
+  return `<div class="card corte-card ${tone}"><h3>Mais perto do corte</h3><div class="corte-top"><b class="corte-pct">${x.pct}%</b><div><b>${esc(x.label)}</b><div class="small">${x.kind === 'bloco' ? 'Bloco' : 'Disciplina'} · ${x.ok}/${x.n} acertos</div></div></div><p style="margin:8px 0">${dist}</p>${poucos}<a class="btn p" href="#/questoes/m/${encodeURIComponent(x.train)}">Treinar agora</a></div>`;
+}
 VIEWS.home = m => {
   setTitle('Transpetro 2026 · Ênfase 7', 'Segurança Cibernética · Cesgranrio');
   const n = diffDays(D.meta.prova, dk()), st = modStats(), sk = streak();
@@ -26,7 +156,11 @@ VIEWS.home = m => {
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
   const ed = editalSum(), lateN = editalLateCount(), hj = hojeResumo();
   const ac = ed.pct == null ? '—' : ed.pct + '%';
+  const goOn = resumeTarget();
   m.innerHTML = `<div class="home">
+  <button type="button" class="resume" id="resumeBtn"><b>Retomar de onde parei</b><small>${esc(goOn.sub)}</small></button>
+  ${revisarHojeHTML()}
+  ${corteHTML()}
   <div class="ringgrid">
    <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${n > 0 ? Math.max(4, Math.min(100, Math.round(100 * (34 - Math.min(n, 34)) / 34))) : 100}"><b id="cd">${n > 0 ? n : n === 0 ? '0' : '—'}</b></div><span>dias para a prova</span></a>
    <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${hj.n ? Math.round(100 * hj.ok / hj.n) : 0}"><b>${hj.ok}/${hj.n || 0}</b></div><span>hoje</span></a>
@@ -48,6 +182,12 @@ VIEWS.home = m => {
   <div class="tiles">${MORE.slice(0, 6).map(tile).join('')}</div>
   </div>`;
   bindPlano(m);
+  $('#resumeBtn', m).onclick = () => {
+    const t = resumeTarget();
+    if(t.kind === 'questoes' || t.kind === 'flash') hydrateSpot();
+    go(t.href);
+  };
+  $$('[data-rev]', m).forEach(b => b.onclick = () => { editalOpen = b.dataset.rev; go('#/edital'); });
 };
 
 /* ---------- Questões ---------- */
@@ -63,10 +203,11 @@ function poolFor(f){
   return pool;
 }
 function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-function startSession(ids, ctx, title, back){ if(!ids.length){ toast('Nenhuma questão com esses filtros.'); return; } QS = {ids, i:0, ctx, title, back, ans:{}}; go('#/questoes/run'); }
+function startSession(ids, ctx, title, back){ if(!ids.length){ toast('Nenhuma questão com esses filtros.'); return; } QS = {ids, i:0, ctx, title, back, ans:{}}; putSpot(spotFromQuiz()); go('#/questoes/run'); }
 VIEWS.questoes = m => {
   if(route[1] === 't' && route[2]){ S.qf = Object.assign(S.qf, {topic:route[2], mod:[], prio:'', only:'all', src:route[2].startsWith('le') ? 'leit' : 'fix'}); save(); history.replaceState(null, '', '#/questoes'); }
-  if(route[1] === 'run'){ if(!QS){ go('#/questoes'); return; } return runQ(m); }
+  if(route[1] === 'm' && route[2]){ S.qf = Object.assign(S.qf, {mod:[decodeURIComponent(route[2])], topic:'', prio:'', only:'all', src:'fix', order:'seq'}); save(); history.replaceState(null, '', '#/questoes'); }
+  if(route[1] === 'run'){ if(!QS) hydrateSpot(); if(!QS){ go('#/questoes'); return; } return runQ(m); }
   setTitle('Questões', 'Estudo reverso · correção imediata');
   const f = S.qf, pool = poolFor(f);
   const topics = D.topics.filter(t => (!f.mod.length || f.mod.includes(t.mod)) && D.questions.some(q => q.topic === t.id && (f.src === 'all' || f.src === 'sim' || q.src === f.src)));
@@ -124,12 +265,14 @@ function runQ(m){
     $('#fb', m).innerHTML = feedbackHTML(q, L, r.msg); bindReason(m); $('#next', m).classList.add('p');
     $('.prog', m).textContent = `${s.i + 1}/${s.ids.length} · ${Object.keys(s.ans).length} respondidas · ${correct + (r.ok ? 1 : 0)} certas`;
     if(!r.ok) $('#fb', m).scrollIntoView({behavior:'smooth', block:'start'});
+    putSpot(spotFromQuiz());
   });
-  $('#prev', m).onclick = () => { s.i--; render(); };
-  $('#next', m).onclick = () => { if(s.i < s.ids.length - 1){ s.i++; render(); } else summaryQ(m); };
+  $('#prev', m).onclick = () => { s.i--; putSpot(spotFromQuiz()); render(); };
+  $('#next', m).onclick = () => { if(s.i < s.ids.length - 1){ s.i++; putSpot(spotFromQuiz()); render(); } else summaryQ(m); };
 }
 function summaryQ(m){
   const s = QS, n = Object.keys(s.ans).length, ok = Object.entries(s.ans).filter(([id, a]) => Q[id].ans === a.c).length;
+  clearSpot();
   setTitle(s.title, 'Resumo da sessão');
   m.innerHTML = `<div class="card c"><h3>Sessão concluída</h3><div class="big-timer">${ok}/${n}</div><div class="mut">${pct(ok, n)}% de acerto · ${n - ok} erro(s) no caderno de erros</div>
    <div class="row" style="justify-content:center;margin-top:12px"><a class="btn p" href="${s.back || '#/questoes'}">Voltar</a><a class="btn" href="#/erros">Caderno de erros</a></div></div>`;
