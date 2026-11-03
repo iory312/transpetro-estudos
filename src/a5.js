@@ -75,7 +75,7 @@ function shell(){
   $('#side').innerHTML = `<div class="brand"><span class="mark" aria-hidden="true">E7</span><div>Transpetro<small>Ênfase 7 · Cibernética</small></div></div>
    <div class="side-sec">Estudar</div>${['home','questoes','simulado','flashcards','erros'].map(link).join('')}
    <div class="side-sec">Conteúdo</div>${['bizus','resumos','tec','leitura','glossario','ouvir'].map(link).join('')}
-   <div class="side-sec">Plano</div>${['cronograma','prova','sobre'].map(link).join('')}
+   <div class="side-sec">Plano</div>${['cronograma','edital','prova','sobre'].map(link).join('')}
    <div class="side-sec">Conta</div>${['backup','sincronizar'].map(link).join('')}`;
   $('#themeBtn').onclick = () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
   window.addEventListener('hashchange', render);

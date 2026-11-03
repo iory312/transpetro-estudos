@@ -41,6 +41,10 @@ Em Authentication → URL Configuration, se o link de confirmação ainda não a
 - Site URL: `https://iory312.github.io/transpetro-estudos/`
 - Redirect URLs: `https://iory312.github.io/transpetro-estudos/**`
 
+## Edital verticalizado
+
+Mais → Edital (também no card da entrada). O texto é o do Anexo IV da ênfase 7, com a numeração original. Em cada item: Teoria, Rev. 1/2/3 (datas +1, +7 e +30 a partir do dia em que a teoria foi marcada, no máximo 06/12), questões feitas e acertos, anotação e os links do tópico no app e no TEC. O progresso fica em `edital` e sincroniza: teoria e revisões se unem; nas questões fica o maior total. Uma resposta no app soma na linha principal daquele tópico.
+
 ## Cronograma
 
 O item Cronograma (e o card Hoje na entrada) é o plano de 03/11/2026 até a prova de 06/12. Cada dia tem de 2 a 4 blocos, com minutos, link do TEC ou do próprio app e a caixa **feito**. O feito entra no progresso (`plano`) e sincroniza: marcado em qualquer aparelho continua marcado. As horas (padrão 3h no dia útil e 5h no fim de semana) ficam em `planoH`; vale o ajuste mais recente. **Reprogramar atrasados** empurra o que ficou para trás sem marcar, sem passar de 4 blocos no dia.

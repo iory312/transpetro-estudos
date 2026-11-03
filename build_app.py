@@ -15,7 +15,7 @@ data = json.loads((A / "data.json").read_text(encoding="utf-8"))
 tec = json.loads((A / "tec_links.json").read_text(encoding="utf-8"))
 data["tec"] = {"topicos": tec["topicos"], "gerais": tec["gerais"]}
 dj = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-js_files = ["storage.js", "merge.js", "a1.js", "a2.js", "a3.js", "a4.js", "tec.js", "plano.js", "a5.js", "sync.js"]
+js_files = ["storage.js", "merge.js", "a1.js", "a2.js", "a3.js", "a4.js", "tec.js", "plano.js", "edital.js", "a5.js", "sync.js"]
 js = "\n".join((S / f).read_text(encoding="utf-8") for f in js_files)
 assert "</script" not in js.lower()
 icon = (S / "icon.svg").read_text(encoding="utf-8").strip()

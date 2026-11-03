@@ -1,7 +1,7 @@
-// Service worker do app (só em http/https). Cache rev plano-4: o nome muda a cada build.
+// Service worker do app (só em http/https). Cache rev edital-5: o nome muda a cada build.
 // Página, manifest e ícone: rede primeiro, para um deploy novo não ficar na versão antiga.
 // Áudios: cache primeiro. Pedidos de outro site (Supabase, CDN) não são interceptados.
-const C = 'tp7-2026-10-29-8b5b42692ec5';
+const C = 'tp7-2026-10-29-0e36a2165ee3';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 const AUD = ["./audios/01_Ofensiva_BIZUs.mp3", "./audios/02_Defensiva_BIZUs.mp3", "./audios/03_Compliance_BIZUs.mp3", "./audios/04_Portugues_BIZUs.mp3", "./audios/05_Ingles_BIZUs.mp3", "./audios/06_Top_BIZUs.mp3"];
 

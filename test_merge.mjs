@@ -31,6 +31,7 @@ local.tec = {of1:true, of2:false};
 local.plano = {of2:true};
 local.planoH = {sem:3, fim:5, t:1};
 local.planoMove = {t:1, ids:{of2:'2026-11-04'}};
+local.edital = {'of-1.4':{t:true, te:'2026-11-03', r:[true,false,false], q:4, ok:3, n:'flags', u:'2026-11-03'}};
 local.sims = {s1:{cur:{start:50, ans:{1:'A'}, flags:{}}, hist:[{start:10, end:20, ans:{1:'B'}}]}};
 
 const remote = blank();
@@ -51,6 +52,7 @@ remote.tec = {of2:true, df1:true};
 remote.plano = {of8:true};
 remote.planoH = {sem:4, fim:6, t:9};
 remote.planoMove = {t:5, ids:{of8:'2026-11-10'}};
+remote.edital = {'of-1.4':{t:false, te:'', r:[false,true,false], q:2, ok:1, n:'', u:'2026-11-01'}, 'en-1':{t:true, te:'2026-11-02', r:[false,false,false], q:5, ok:5, n:'leitura', u:'2026-11-02'}};
 remote.sims = {s1:{cur:{start:40, ans:{1:'C', 2:'D'}, flags:{2:true}}, hist:[{start:10, end:20, ans:{1:'B'}}, {start:30, end:35, ans:{3:'A'}}]}};
 
 const m = mergeState(local, remote);
@@ -75,6 +77,8 @@ eq(m.tec.of1 === true && m.tec.of2 === true && m.tec.df1 === true, 'feito no TEC
 eq(m.plano.of2 === true && m.plano.of8 === true, 'feito do cronograma é união');
 eq(m.planoH.sem === 4 && m.planoH.fim === 6, 'horas do plano mais recentes vencem');
 eq(m.planoMove.ids.of8 === '2026-11-10' && !m.planoMove.ids.of2, 'reprogramação mais recente substitui a anterior');
+eq(m.edital['of-1.4'].t && m.edital['of-1.4'].r[0] && m.edital['of-1.4'].r[1] && m.edital['of-1.4'].q === 4 && m.edital['of-1.4'].ok === 3, 'edital une teoria, revisões e o maior total de questões');
+eq(m.edital['en-1'].ok === 5 && m.edital['of-1.4'].n === 'flags', 'item de edital só remoto entra e a anotação mais recente fica');
 
 const again = mergeState(m, remote);
 eq(JSON.stringify(again.answers) === JSON.stringify(m.answers), 'mesclar de novo não duplica respostas');

@@ -37,6 +37,7 @@ VIEWS.home = m => {
    ${hojeCardHTML()}
    <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>
   </div>
+  ${editalCardHTML()}
   <div class="home-bot">
    <div class="card"><h3>Cortes de eliminação</h3>${cutAlerts(st)}<div class="small mut">${esc(D.meta.nota)}</div></div>
    ${weak.length ? `<div class="card"><h3>Tópicos mais fracos</h3>${weak.map(([t, p]) => `<a class="li" href="#/questoes/t/${t}"><div class="f1"><div class="t">${esc(TOP[t].title)}</div><div class="s">${TOP[t].mod}</div></div><span class="tag ${p < 50 ? 'alta' : 'media'}">${p}%</span></a>`).join('')}</div>` : `<div class="card empty">Quando você responder algumas questões, os tópicos mais fracos aparecem aqui.</div>`}
