@@ -256,13 +256,19 @@ function teoriaDoBloco(b){
   if(b.topic === 'en1') return /conect|conjun/i.test(title) ? T['en-gram'] : T['en-leit'];
   return b.topic && T[b.topic] || null;
 }
+function teoriaPorResumo(id){
+  const T = teoriaCatalogo() || {};
+  return Object.keys(T).map(k => T[k]).find(r => r && r.resumo === id) || null;
+}
 function teoriaRotulo(r){
+  if(r.resumo) return '📖 Resumo Lory · 5 min';
   const ico = r.tipo === 'artigo' ? '📄 Leitura' : '▶ Teoria rápida';
   return ico + ' · ' + r.tempo + (r.lang === 'en' ? ' 🇺🇸' : '');
 }
 function teoriaChip(r, itemId){
   if(!r) return '';
   const ed = itemId ? ` data-ed="${esc(itemId)}"` : '';
+  if(r.resumo) return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="#/resumo-lory/${esc(r.resumo)}" title="${esc(r.titulo)}">📖 Resumo Lory · 5 min</a> `;
   return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" title="${esc(r.titulo + ' · ' + r.fonte)}">${teoriaRotulo(r)}</a> `;
 }
 function marcarTeoria(rec, itemId){
@@ -385,4 +391,18 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     planoSem = pMonday(today);
     render();
   };
+};
+if(typeof VIEWS !== 'undefined') VIEWS['resumo-lory'] = m => {
+  const id = route[1];
+  const pack = globalThis.TP7_LORY && TP7_LORY[id];
+  const rec = typeof teoriaPorResumo === 'function' ? teoriaPorResumo(id) : null;
+  if(!pack){ setTitle('Resumo', ''); m.innerHTML = '<div class="card empty">Esse resumo não está disponível.</div>'; return; }
+  setTitle(pack.titulo, 'Resumo Lory · 5 min');
+  if(rec) marcarTeoria(rec, '');
+  const alt = rec && rec.alt;
+  const fonte = alt ? `<a class="btn sm" href="${esc(alt.url)}" target="_blank" rel="noopener noreferrer">${alt.lang === 'en' ? 'Fonte oficial 🇺🇸' : 'Fonte oficial'}</a>` : '';
+  m.innerHTML = `<article class="card leitor"><p class="eyebrow">Resumo Lory · leitura de cerca de 5 min</p><h2>${esc(pack.titulo)}</h2>${pack.html}</article>
+    <div class="row">${fonte}<button type="button" class="btn p" id="loryDone">Concluí a leitura</button></div>
+    <div class="row"><a class="btn sm" href="#/cronograma">Cronograma</a><a class="btn sm" href="#/edital">Edital</a></div>`;
+  $('#loryDone', m).onclick = () => { if(rec) marcarTeoria(rec); toast('Leitura concluída. A teoria do item está marcada.'); };
 };

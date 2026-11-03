@@ -32,6 +32,7 @@ jobs:
           test -f _site/index.html
           test -f _site/conteudo.js
           test -f _site/teoria.js
+          test -f _site/resumos-lory.js
           test -f _site/sw.js
           test -f _site/manifest.webmanifest
           test -f _site/audios/01_Ofensiva_BIZUs.mp3

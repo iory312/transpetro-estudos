@@ -239,6 +239,7 @@ function loadContent(){
       indexStudy();
     }
     if(!globalThis.TP7_TEORIA){ try { await loadScript('./teoria.js'); } catch(e){} }
+    if(!globalThis.TP7_LORY){ try { await loadScript('./resumos-lory.js'); } catch(e){} }
   })();
 }
 async function enterApp(){

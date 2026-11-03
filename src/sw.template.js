@@ -1,6 +1,6 @@
-// Service worker do app (só em http/https). Cache rev teoria-9: o nome muda a cada build.
+// Service worker do app (só em http/https). Cache rev lory-10: o nome muda a cada build.
 // Página, manifest e ícone: rede primeiro, para um deploy novo não ficar na versão antiga.
-// Áudios: cache primeiro. conteudo.js e teoria.js não entram no pré-cache: só depois do login.
+// Áudios: cache primeiro. conteudo.js, teoria.js e resumos-lory.js só depois do login.
 // Pedidos de outro site (Supabase, CDN) não são interceptados.
 const C = '__CACHE__';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
