@@ -217,25 +217,28 @@ function leaveApp(){
   showLanding('home');
   toast('Você saiu. O progresso continua neste aparelho.');
 }
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = () => resolve(); s.onerror = () => reject(new Error(src));
+    document.head.appendChild(s);
+  });
+}
 function loadContent(){
-  if(D && D.questions && D.questions.length) return Promise.resolve();
   return (async () => {
-    if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
-      try {
-        await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
-        await navigator.serviceWorker.ready;
-      } catch(e){}
+    if(!(D && D.questions && D.questions.length)){
+      if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+        try {
+          await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
+          await navigator.serviceWorker.ready;
+        } catch(e){}
+      }
+      await loadScript('./conteudo.js');
+      if(!globalThis.TP7_DATA || !globalThis.TP7_DATA.questions) throw new Error('conteudo vazio');
+      D = globalThis.TP7_DATA;
+      indexStudy();
     }
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = './conteudo.js';
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error('conteudo'));
-      document.head.appendChild(s);
-    });
-    if(!globalThis.TP7_DATA || !globalThis.TP7_DATA.questions) throw new Error('conteudo vazio');
-    D = globalThis.TP7_DATA;
-    indexStudy();
+    if(!globalThis.TP7_TEORIA){ try { await loadScript('./teoria.js'); } catch(e){} }
   })();
 }
 async function enterApp(){

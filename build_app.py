@@ -32,7 +32,9 @@ shutil.copy(S / "icon.svg", A / "icon.svg")
   "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
 }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 template = (S / "sw.template.js").read_text(encoding="utf-8")
-ver = data["meta"]["versao"] + "-" + hashlib.sha256((html + template + dj).encode("utf-8")).hexdigest()[:12]
+teoria = (S / "teoria.js").read_text(encoding="utf-8")
+(A / "teoria.js").write_text(teoria, encoding="utf-8")
+ver = data["meta"]["versao"] + "-" + hashlib.sha256((html + template + dj + teoria).encode("utf-8")).hexdigest()[:12]
 audios = ["./" + a["file"] for a in data["audios"] if (A / a["file"]).exists()]
 sw = template.replace("__CACHE__", "tp7-" + ver).replace("__AUDIOS__", json.dumps(audios, ensure_ascii=False))
 (A / "sw.js").write_text(sw, encoding="utf-8")

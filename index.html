@@ -298,6 +298,8 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .corte-card.bad .corte-pct{color:var(--bad)}
 .corte-card.mid .corte-pct{color:var(--warn)}
 .corte-card.ok .corte-pct{color:var(--ok)}
+a.teoria{background:var(--pri-bg);border-color:transparent;color:var(--pri);font-weight:750}
+.teoria-linha{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:8px}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
@@ -1399,9 +1401,62 @@ function planoStats(days){
 const TIPO_L = {'questões':'Questões', 'revisão':'Revisão', 'vídeo':'Vídeo', 'simulado':'Simulado', 'marco':'Marco'};
 const TIPO_C = {'questões':'tipo-q', 'revisão':'tipo-r', 'vídeo':'tipo-v', 'simulado':'tipo-s', 'marco':'tipo-m'};
 const FASE_L = {1:'Fase 1 · específicos, do mais fraco', 2:'Fase 2 · segunda passagem', 3:'Fase 3 · revisão', 4:'Depois da prova'};
+function teoriaCatalogo(){ return globalThis.TP7_TEORIA || null; }
+function teoriaDoBloco(b){
+  const T = teoriaCatalogo(); if(!T || !b) return null;
+  const id = b.id || '';
+  if(id === 'df2a' || id === 'df2c' || id === 'p2-df2a') return T.df2a;
+  if(id === 'df2b' || id === 'df2d' || id === 'p2-df2b') return T.df2b;
+  if(id === 'cp5a' || id === 'p3-cp5') return T.cp5cis;
+  if(id === 'cp5b') return T.cp5nist;
+  const title = b.title || '';
+  if(title.indexOf('Português') === 0 || id.indexOf('pt-') === 0){
+    if(/Interpreta/.test(title)) return T['pt-interp'];
+    if(/Concord/.test(title)) return T['pt-conc'];
+    if(/Regênc/.test(title)) return T['pt-reg'];
+    if(/Crase/.test(title)) return T['pt-crase'];
+    if(/Pontua/.test(title)) return T['pt-pont'];
+  }
+  if((b.topic || '').indexOf('le') === 0) return T['en-leit'];
+  if(b.topic === 'en2' || /conect|conjun/i.test(title)) return T['en-gram'];
+  if(b.topic === 'en1') return /conect|conjun/i.test(title) ? T['en-gram'] : T['en-leit'];
+  return b.topic && T[b.topic] || null;
+}
+function teoriaRotulo(r){
+  const ico = r.tipo === 'artigo' ? '📄 Leitura' : '▶ Teoria rápida';
+  return ico + ' · ' + r.tempo + (r.lang === 'en' ? ' 🇺🇸' : '');
+}
+function teoriaChip(r, itemId){
+  if(!r) return '';
+  const ed = itemId ? ` data-ed="${esc(itemId)}"` : '';
+  return `<a class="btn sm teoria" data-teoria="${esc(r.id)}"${ed} href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" title="${esc(r.titulo + ' · ' + r.fonte)}">${teoriaRotulo(r)}</a> `;
+}
+function marcarTeoria(rec, itemId){
+  if(typeof editalGet !== 'function' || !rec) return;
+  const ids = itemId ? [itemId] : (rec.itens || []);
+  let mudou = false;
+  ids.forEach(id => {
+    const e = editalGet(id);
+    if(!e.t){ e.t = true; if(!e.te) e.te = dk(); mudou = true; }
+    e.u = dk(); mudou = true;
+  });
+  if(mudou) save();
+}
+function bindTeoria(root){
+  $$('a[data-teoria]', root).forEach(a => {
+    if(a.dataset.teoriaBound) return;
+    a.dataset.teoriaBound = '1';
+    a.addEventListener('click', ev => {
+      ev.stopPropagation();
+      const T = teoriaCatalogo(); const rec = T && T[a.dataset.teoria];
+      marcarTeoria(rec, a.dataset.ed || '');
+    });
+  });
+}
 function planoLinks(b){
   let h = '';
   const tec = b.topic && typeof TEC !== 'undefined' && TEC[b.topic];
+  h += teoriaChip(teoriaDoBloco(b));
   if(tec) h += `<a class="btn sm" data-tec="${esc(b.topic)}" href="${esc(tec.url)}" target="_blank" rel="noopener noreferrer">Resolver no TEC</a> `;
   if(b.href) h += `<a class="btn sm" href="${esc(b.href)}">${esc(b.hrefLabel || 'Abrir no app')}</a> `;
   else if(b.topic) h += `<a class="btn sm" href="#/questoes/t/${esc(b.topic)}">Questões no app</a> `;
@@ -1423,6 +1478,7 @@ function bindPlano(root){
     if(bar){ const st = planoStats(buildPlano(planoHoras(), S.planoMove)); bar.style.width = pct(st.ok, st.n) + '%'; const lab = document.getElementById('planoLab'); if(lab) lab.textContent = st.ok + ' de ' + st.n + ' blocos · ' + pct(st.ok, st.n) + '%'; }
   });
   if(typeof tecBind === 'function') tecBind(root);
+  if(typeof bindTeoria === 'function') bindTeoria(root);
 }
 let planoSem = '', planoDia = '';
 function hojeResumo(){
@@ -1717,6 +1773,7 @@ function editalSheet(id){
   host.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(it.num)}"><div class="sheet-grab"></div>
     <div class="row sp"><b>${esc(it.num)}</b><button type="button" class="btn sm" id="edClose">Fechar</button></div>
     <p class="ed-txt">${esc(it.txt)}</p>
+    ${typeof teoriaDoItem === 'function' ? teoriaDoItem(it) : ''}
     <div class="ed-togs" style="margin:8px 0">${editalToggles(it)}</div>
     <div class="step"><span>Feitas</span><button type="button" class="btn" data-step="q" data-d="-1" aria-label="Menos feitas">−</button><b id="edQv">${e.q}</b><button type="button" class="btn" data-step="q" data-d="1" aria-label="Mais feitas">+</button></div>
     <div class="step"><span>Acertos</span><button type="button" class="btn" data-step="ok" data-d="-1" aria-label="Menos acertos">−</button><b id="edOv">${e.ok}</b><button type="button" class="btn" data-step="ok" data-d="1" aria-label="Mais acertos">+</button></div>
@@ -1735,6 +1792,18 @@ function editalSheet(id){
   $$('[data-ed-t]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.t = !row.t; if(row.t && !row.te) row.te = dk(); row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
   $$('[data-ed-r]', host).forEach(b => b.onclick = ev => { ev.stopPropagation(); const row = editalGet(id); row.r[+b.dataset.i] = !row.r[+b.dataset.i]; row.u = dk(); save(); editalSheet(id); editalDraw(document.getElementById('main')); });
   if(typeof tecBind === 'function') tecBind(host);
+  if(typeof bindTeoria === 'function') bindTeoria(host);
+}
+function teoriaDoItem(it){
+  const T = globalThis.TP7_TEORIA; if(!T) return '';
+  const vistos = {};
+  const lista = [];
+  Object.keys(T).forEach(k => {
+    const r = T[k];
+    if(r && r.itens && r.itens.indexOf(it.id) >= 0 && !vistos[r.id]){ vistos[r.id] = 1; lista.push(r); }
+  });
+  if(!lista.length) return '';
+  return `<div class="ed-links" style="margin-top:8px">${lista.map(r => `<div class="teoria-linha">${teoriaChip(r, it.id)}${r.nota ? `<span class="small mut">${esc(r.nota)}</span>` : ''}${r.alt ? `<a class="small" data-teoria="${esc(r.id)}" data-ed="${esc(it.id)}" href="${esc(r.alt.url)}" target="_blank" rel="noopener noreferrer">Alternativa: ${esc(r.alt.titulo)} · ${esc(r.alt.tempo)}</a>` : ''}</div>`).join('')}</div>`;
 }
 function editalClose(){ editalOpen = ''; const host = document.getElementById('edSheet'); if(host){ host.hidden = true; host.innerHTML = ''; } }
 if(typeof VIEWS !== 'undefined') VIEWS.edital = m => {
@@ -2069,25 +2138,28 @@ function leaveApp(){
   showLanding('home');
   toast('Você saiu. O progresso continua neste aparelho.');
 }
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = () => resolve(); s.onerror = () => reject(new Error(src));
+    document.head.appendChild(s);
+  });
+}
 function loadContent(){
-  if(D && D.questions && D.questions.length) return Promise.resolve();
   return (async () => {
-    if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
-      try {
-        await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
-        await navigator.serviceWorker.ready;
-      } catch(e){}
+    if(!(D && D.questions && D.questions.length)){
+      if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+        try {
+          await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
+          await navigator.serviceWorker.ready;
+        } catch(e){}
+      }
+      await loadScript('./conteudo.js');
+      if(!globalThis.TP7_DATA || !globalThis.TP7_DATA.questions) throw new Error('conteudo vazio');
+      D = globalThis.TP7_DATA;
+      indexStudy();
     }
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = './conteudo.js';
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error('conteudo'));
-      document.head.appendChild(s);
-    });
-    if(!globalThis.TP7_DATA || !globalThis.TP7_DATA.questions) throw new Error('conteudo vazio');
-    D = globalThis.TP7_DATA;
-    indexStudy();
+    if(!globalThis.TP7_TEORIA){ try { await loadScript('./teoria.js'); } catch(e){} }
   })();
 }
 async function enterApp(){

@@ -288,6 +288,8 @@ body.gated header.top,body.gated main{margin-left:0 !important}
 .corte-card.bad .corte-pct{color:var(--bad)}
 .corte-card.mid .corte-pct{color:var(--warn)}
 .corte-card.ok .corte-pct{color:var(--ok)}
+a.teoria{background:var(--pri-bg);border-color:transparent;color:var(--pri);font-weight:750}
+.teoria-linha{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:8px}
 .land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
