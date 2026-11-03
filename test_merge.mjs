@@ -28,6 +28,9 @@ local.days = {'2026-10-29':2};
 local.audio = {rate:1.5, last:'01', p01:12};
 local.rod = {r1:{stage:1, last:'2026-10-02', done:false}};
 local.tec = {of1:true, of2:false};
+local.plano = {of2:true};
+local.planoH = {sem:3, fim:5, t:1};
+local.planoMove = {t:1, ids:{of2:'2026-11-04'}};
 local.sims = {s1:{cur:{start:50, ans:{1:'A'}, flags:{}}, hist:[{start:10, end:20, ans:{1:'B'}}]}};
 
 const remote = blank();
@@ -45,6 +48,9 @@ remote.days = {'2026-10-29':5, '2026-10-28':1};
 remote.audio = {rate:1, last:'02', p01:40, p02:3};
 remote.rod = {r1:{stage:0, last:'2026-10-01', done:false}, r2:{stage:2, last:'2026-10-09', done:false}};
 remote.tec = {of2:true, df1:true};
+remote.plano = {of8:true};
+remote.planoH = {sem:4, fim:6, t:9};
+remote.planoMove = {t:5, ids:{of8:'2026-11-10'}};
 remote.sims = {s1:{cur:{start:40, ans:{1:'C', 2:'D'}, flags:{2:true}}, hist:[{start:10, end:20, ans:{1:'B'}}, {start:30, end:35, ans:{3:'A'}}]}};
 
 const m = mergeState(local, remote);
@@ -66,6 +72,9 @@ eq(m.settings.theme === 'dark', 'tema fica no aparelho local');
 eq(m.qf.topic === 'of1' && m.qf.src === 'fix', 'filtros de questão ficam no aparelho local');
 eq(m.created === 500 && m.updated === 30, 'created mais antigo e updated mais novo');
 eq(m.tec.of1 === true && m.tec.of2 === true && m.tec.df1 === true, 'feito no TEC é união dos dois lados');
+eq(m.plano.of2 === true && m.plano.of8 === true, 'feito do cronograma é união');
+eq(m.planoH.sem === 4 && m.planoH.fim === 6, 'horas do plano mais recentes vencem');
+eq(m.planoMove.ids.of8 === '2026-11-10' && !m.planoMove.ids.of2, 'reprogramação mais recente substitui a anterior');
 
 const again = mergeState(m, remote);
 eq(JSON.stringify(again.answers) === JSON.stringify(m.answers), 'mesclar de novo não duplica respostas');

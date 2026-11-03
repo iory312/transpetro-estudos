@@ -41,6 +41,10 @@ Em Authentication → URL Configuration, se o link de confirmação ainda não a
 - Site URL: `https://iory312.github.io/transpetro-estudos/`
 - Redirect URLs: `https://iory312.github.io/transpetro-estudos/**`
 
+## Cronograma
+
+O item Cronograma (e o card Hoje na entrada) é o plano de 03/11/2026 até a prova de 06/12. Cada dia tem de 2 a 4 blocos, com minutos, link do TEC ou do próprio app e a caixa **feito**. O feito entra no progresso (`plano`) e sincroniza: marcado em qualquer aparelho continua marcado. As horas (padrão 3h no dia útil e 5h no fim de semana) ficam em `planoH`; vale o ajuste mais recente. **Reprogramar atrasados** empurra o que ficou para trás sem marcar, sem passar de 4 blocos no dia.
+
 ## TEC Concursos
 
 Mais → TEC Concursos, ou Conteúdo na barra lateral. Não há API: cada tópico abre a página pública do assunto no TEC, em outra aba. No resumo e na lista de questões do tópico, o botão é **Resolver no TEC**. A dica “No TEC, filtre a banca CESGRANRIO” aparece em todos. Se o assunto é aproximado, o app mostra o porquê. Os três cadernos guia oficiais da Transpetro 2026 ficam no topo: abra logado e clique em Salvar. O checkbox “feito no TEC” entra no progresso (`tec` no mesmo JSON) e sincroniza com o resto; no merge, marcado em qualquer aparelho continua marcado. Sem internet, o app avisa e não abre o link.

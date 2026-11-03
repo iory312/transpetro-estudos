@@ -67,16 +67,7 @@ VIEWS.glossario = m => {
   $$('#gt .chip', m).forEach(c => c.onclick = () => { glT = c.dataset.t; render(); });
 };
 
-/* ---------- Cronograma ---------- */
-VIEWS.cronograma = m => {
-  const t = dk(), done = D.cronograma.filter(c => S.crono[c.i]).length;
-  setTitle('Cronograma', `${done}/${D.cronograma.length} dias concluídos`);
-  m.innerHTML = `<div class="card"><div class="bar"><i style="width:${pct(done, D.cronograma.length)}%"></i></div><div class="small mut" style="margin-top:6px">R1/R7/R14 = revisões espaçadas dos tópicos estudados 1, 7 e 14 dias antes.</div></div>
-   <div class="card">${D.cronograma.map(c => `<label class="li ${c.date === t ? 'today' : ''} ${S.crono[c.i] ? 'done' : ''} ${c.kind}" id="cd${c.date}"><input type="checkbox" data-i="${c.i}" ${S.crono[c.i] ? 'checked' : ''}>
-     <div class="f1"><div class="t">${fmtD(c.date)} ${c.dow}${c.date === t ? ' · <b>HOJE</b>' : ''} — ${esc(c.task)}</div><div class="s">${c.rev.length ? 'Revisões: ' + c.rev.map(esc).join(' · ') : ''}${c.topic && TOP[c.topic] ? ` <a href="#/resumos/${c.topic}">abrir resumo →</a>` : ''}</div></div></label>`).join('')}</div>`;
-  $$('[data-i]', m).forEach(b => b.onchange = () => { S.crono[b.dataset.i] = b.checked; if(b.checked) activity(); save(); b.closest('.li').classList.toggle('done', b.checked); setTitle('Cronograma', `${D.cronograma.filter(c => S.crono[c.i]).length}/${D.cronograma.length} dias concluídos`); });
-  const td = document.getElementById('cd' + t); if(td) setTimeout(() => td.scrollIntoView({block:'center'}), 30);
-};
+/* Cronograma novo fica em src/plano.js */
 
 /* ---------- Dia da prova ---------- */
 VIEWS.prova = m => {
