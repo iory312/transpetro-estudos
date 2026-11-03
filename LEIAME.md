@@ -8,18 +8,21 @@ Conteúdo: 46 tópicos/resumos · 73 caixas BIZU/pegadinha · 97 questões de fi
 
 ## Progresso neste aparelho
 
-Tudo passa por `Storage` (`src/storage.js`: `get`, `set`, `onChange`, `useAdapter`, `pull`). A chave no navegador é `tp7:progresso`. Dá para exportar e importar em Mais → Progresso. Sem conta e sem internet o app continua inteiro, só com esse armazenamento local.
+Tudo passa por `Storage` (`src/storage.js`: `get`, `set`, `onChange`, `useAdapter`, `pull`). A chave no navegador é `tp7:progresso`. Dá para exportar e importar em Mais → Progresso. Sem sessão o site mostra só a entrada e o login. Com sessão, o material (questões, flashcards, resumos) é carregado de `conteudo.js`.
 
-## Sincronização (opcional)
+## Entrada e conta
 
-Mais → Sincronizar, ou o botão ao lado do tema. Login por e-mail e senha (criar conta ou entrar). A biblioteca é `@supabase/supabase-js` 2.118.0, carregada por CDN só quando existe sessão ou quando a tela de sincronizar precisa falar com o servidor.
+A landing pede login antes de Início, Edital, Cronograma, Questões e Mais. Sem sessão, a barra inferior não aparece e um endereço direto (`#/questoes`, por exemplo) continua na landing. Quem já tem sessão no navegador entra direto. Sair, em Mais ou em Conta, volta para a landing e não apaga o `tp7:progresso` deste aparelho.
+
+Login por e-mail e senha (criar conta ou entrar), o mesmo Supabase Auth de antes. A biblioteca é `@supabase/supabase-js` 2.118.0, carregada por CDN.
 
 - Projeto: `https://epmvolilhwlgpitnhrck.supabase.co`
 - Tabela já existente: `public.transpetro_progress` (`user_id`, `data` jsonb, `updated_at`). O app não altera o schema.
 - A chave no cliente é a publishable (pública). O RLS só deixa o usuário autenticado ler e gravar a própria linha.
 - O link de confirmação usa `emailRedirectTo` igual à URL atual (sem o hash). Depois de confirmar o e-mail, é só voltar ao app e entrar.
 - Com sessão, o app baixa a linha remota, mescla com o local e faz upsert da união. Novas alterações esperam cerca de 1,5 s e também disparam ao voltar o foco, ao ficar visível de novo ou quando a rede volta. Se a gravação falhar, o app mostra o erro e segue no aparelho.
-- Indicador: **sincronizado**, **pendente**, **offline**, **erro**. Sem sessão: **neste aparelho**. Sair não apaga o progresso local.
+- Indicador: **sincronizado**, **pendente**, **offline**, **erro**. Sair não apaga o progresso local; a próxima entrada mescla de novo.
+- `conteudo.js` não vai no pré-cache do service worker. O arquivo continua público, porque o repositório e o GitHub Pages são públicos. Esconder o texto na página inicial não impede quem abre o arquivo ou o código. Para proteger de verdade seria preciso um repositório privado (e um host que não publique o arquivo) ou guardar o material no Supabase com RLS para usuário autenticado, sem mexer em `public.user_storage` nem no formato de `transpetro_progress`.
 
 ### Como o merge funciona
 

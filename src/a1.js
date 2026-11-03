@@ -1,5 +1,5 @@
 'use strict';
-const D = JSON.parse(document.getElementById('data').textContent);
+let D = null;
 const LET = 'ABCDE', SKEY = 'progresso', DAY = 864e5;
 const MODS = ['Ofensiva','Defensiva','Compliance','Português','Inglês'];
 const ESP = ['Ofensiva','Defensiva','Compliance'], GER = ['Português','Inglês'];
@@ -28,10 +28,21 @@ function activity(){ const k = dk(); S.days[k] = (S.days[k]||0) + 1; }
 
 /* ---------- índices ---------- */
 const Q = {}, TOP = {}, BZT = {}, SIM = {};
-D.topics.forEach(t => TOP[t.id] = t);
-D.questions.forEach(q => Q[q.id] = q);
-D.simulados.forEach(s => { SIM[s.id] = s; s.questions.forEach(q => Q[q.id] = q); });
-D.bizus.forEach(b => (BZT[b.topic] = BZT[b.topic] || []).push(b));
+function indexStudy(){
+  Object.keys(Q).forEach(k => delete Q[k]);
+  Object.keys(TOP).forEach(k => delete TOP[k]);
+  Object.keys(BZT).forEach(k => delete BZT[k]);
+  Object.keys(SIM).forEach(k => delete SIM[k]);
+  (D.topics || []).forEach(t => TOP[t.id] = t);
+  (D.questions || []).forEach(q => Q[q.id] = q);
+  (D.simulados || []).forEach(s => { SIM[s.id] = s; s.questions.forEach(q => Q[q.id] = q); });
+  (D.bizus || []).forEach(b => (BZT[b.topic] = BZT[b.topic] || []).push(b));
+  RODS = D.rodadas || [];
+  if(typeof TEC === 'object' && TEC){
+    Object.keys(TEC).forEach(k => delete TEC[k]);
+    ((D.tec && D.tec.topicos) || []).forEach(t => { TEC[t.topic_id] = t; });
+  }
+}
 
 /* ---------- UI util ---------- */
 let toastT;
@@ -94,7 +105,7 @@ function addError(id){
 function reviewOk(id){ const e = S.errors[id]; if(!e || e.done || e.due > dk()) return false; e.stage++; e.last = dk(); if(e.stage >= STAGES.length){ e.done = true; e.due = null; } else e.due = addDays(dk(), STAGES[e.stage]); return true; }
 function dueErrors(){ const t = dk(); return Object.keys(S.errors).filter(id => Q[id] && !S.errors[id].done && S.errors[id].due <= t); }
 /* erros das rodadas diárias (planilha) — sem enunciado, só registro + BIZU */
-const RODS = D.rodadas || [];
+let RODS = [];
 function rodSt(r){ return (S.rod = S.rod || {})[r.id] || {stage:0, due:addDays(r.date, 1), done:false}; }
 function dueRod(){ const t = dk(); return RODS.filter(r => !r.ok && !rodSt(r).done && rodSt(r).due <= t); }
 function rodOk(r){ const e = Object.assign({}, rodSt(r)); e.stage++; e.last = dk(); if(e.stage >= STAGES.length){ e.done = true; e.due = null; } else e.due = addDays(dk(), STAGES[e.stage]); S.rod[r.id] = e; activity(); save(); }
@@ -108,11 +119,15 @@ function recordAnswer(q, choice, ctx){
 }
 
 /* ---------- roteamento ---------- */
-let route = [], timerI = null;
+let route = [], timerI = null, navBuilt = false, gateMode = 'home';
 function go(h){ location.hash = h; }
 window.addEventListener('hashchange', render);
 function setTitle(t, sub){ $('#ttl').innerHTML = esc(t) + (sub ? `<small>${esc(sub)}</small>` : ''); document.title = t + ' · Transpetro Ênfase 7'; }
 function render(){
+  if(!navBuilt || !Sync.user){
+    if(typeof showLanding === 'function') showLanding(gateMode);
+    return;
+  }
   route = (location.hash.replace(/^#\/?/, '') || 'home').split('/');
   const v = route[0], main = $('#main');
   const navKey = NAV.some(n => n[0] === v) ? v : (MORE.some(m => m[0] === v) ? 'mais' : 'home');

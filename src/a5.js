@@ -32,7 +32,9 @@ VIEWS.sobre = m => {
 VIEWS.mais = m => {
   setTitle('Mais', 'Todas as ferramentas');
   const badge = {erros:dueErrors().length + dueRod().length};
-  m.innerHTML = `<div class="tiles">${MORE.map(([k, l, i, s]) => `<a class="tile" href="#/${k}">${ic(i)}<b>${l}${badge[k] ? ` <span class="tag alta">${badge[k]}</span>` : ''}</b><span>${s}</span></a>`).join('')}</div>`;
+  m.innerHTML = `<div class="tiles">${MORE.map(([k, l, i, s]) => `<a class="tile" href="#/${k}">${ic(i)}<b>${l}${badge[k] ? ` <span class="tag alta">${badge[k]}</span>` : ''}</b><span>${s}</span></a>`).join('')}</div>
+   <button class="btn" id="sairApp" type="button">Sair</button>`;
+  $('#sairApp', m).onclick = () => { if(typeof signOutAccount === 'function') signOutAccount(); };
 };
 
 /* ---------- Progresso (backup) ---------- */
@@ -47,7 +49,7 @@ VIEWS.backup = m => {
   setTitle('Progresso', 'Exportar · importar · tema');
   const nA = Object.values(S.answers).reduce((a, x) => a + x.length, 0), payload = () => JSON.stringify({app:'tp7', exported:new Date().toISOString(), state:S});
   m.innerHTML = `<div class="card"><h3>Seu progresso</h3><div class="stat"><div><b>${nA}</b><span>respostas</span></div><div><b>${Object.keys(S.errors).length}</b><span>no caderno</span></div><div><b>${Object.keys(S.cards).length}</b><span>cartões vistos</span></div></div>
-   <div class="small mut" style="margin-top:8px">Tudo fica salvo neste navegador (armazenamento local${Storage.available() ? '' : ' — <b>indisponível agora</b>'}). Exporte com frequência para não perder nada ao trocar de aparelho ou limpar o navegador. <a href="#/sincronizar">Sincronizar com uma conta</a> é opcional e não é necessário para estudar offline.</div></div>
+   <div class="small mut" style="margin-top:8px">O progresso fica neste navegador (armazenamento local${Storage.available() ? '' : ' — <b>indisponível agora</b>'}) e, com a sessão aberta, também na conta. Exporte uma cópia se for limpar o navegador. <a href="#/sincronizar">Ver a conta</a>.</div></div>
    <div class="card"><h3>Exportar</h3><div class="row"><button class="btn p" id="exp">Baixar backup (.json)</button><button class="btn" id="cpy">Copiar como texto</button></div></div>
    <div class="card"><h3>Importar</h3><label class="lb">Modo</label><div class="chips" id="im"><span class="chip on" data-v="merge">Mesclar com o atual</span><span class="chip" data-v="replace">Substituir tudo</span></div>
     <input type="file" id="fil" accept=".json,application/json" style="margin-top:10px"><label class="lb">…ou cole o texto do backup</label><textarea id="txt" rows="4" placeholder='{"app":"tp7",...}'></textarea><button class="btn" id="imp" style="margin-top:8px">Importar texto colado</button></div>
@@ -69,6 +71,8 @@ VIEWS.backup = m => {
 
 /* ---------- shell ---------- */
 function shell(){
+  const first = !navBuilt;
+  navBuilt = true;
   $('#bnav').innerHTML = NAV.map(([k, l, i]) => `<a href="#/${k}" data-k="${k}">${ic(i)}<span>${l}</span></a>`).join('');
   const by = k => NAV.find(x => x[0] === k) || MORE.find(x => x[0] === k);
   const link = k => { const it = by(k); return `<a href="#/${it[0]}" data-k="${it[0]}">${ic(it[2])}<span>${it[1]}</span></a>`; };
@@ -78,9 +82,10 @@ function shell(){
    <div class="side-sec">Plano</div>${['cronograma','edital','prova','sobre'].map(link).join('')}
    <div class="side-sec">Conta</div>${['backup','sincronizar'].map(link).join('')}`;
   $('#themeBtn').onclick = () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-  window.addEventListener('hashchange', render);
-  window.addEventListener('storage', e => { if(e.key === Storage.prefix + SKEY){ loadState(); theme(); render(); } });
-  if(/^https?:$/.test(location.protocol)){
+  if(first){
+    window.addEventListener('storage', e => { if(e.key === Storage.prefix + SKEY){ loadState(); theme(); render(); } });
+  }
+  if(first && /^https?:$/.test(location.protocol)){
     const l = document.createElement('link'); l.rel = 'manifest'; l.href = 'manifest.webmanifest'; document.head.appendChild(l);
     if('serviceWorker' in navigator){
       let had = !!navigator.serviceWorker.controller;
@@ -93,4 +98,3 @@ function shell(){
   }
   theme(); render();
 }
-shell();

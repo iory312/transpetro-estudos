@@ -257,6 +257,23 @@ a.chip{text-decoration:none}a.chip:not(.on){color:inherit}#fb{scroll-margin-top:
 .daylist .li{min-height:52px}
 .bigck{width:22px;height:22px;accent-color:var(--pri)}
 @media(max-width:430px){main{padding:12px} .tiles{grid-template-columns:1fr 1fr}}
+body.gated{padding-bottom:env(safe-area-inset-bottom)}
+body.gated nav.bot,body.gated aside.side,body.gated #tpill,body.gated #syncBtn{display:none !important}
+body.gated header.top,body.gated main{margin-left:0 !important}
+.land{max-width:440px;margin:0 auto;padding:12px 2px 28px}
+.land h1{font-size:40px;line-height:1.05;letter-spacing:-.045em;margin:0 0 8px}
+.land .lead{margin:0 0 16px;font-size:17px;color:var(--mut)}
+.land .eyebrow{margin:0 0 6px;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--pri2)}
+.land-count{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--sh)}
+.land-count b{font-size:44px;line-height:1;letter-spacing:-.04em;color:var(--pri)}
+.land-count span{display:flex;flex-direction:column;font-weight:700}
+.land-count small{font-weight:600;color:var(--mut)}
+.land-feats{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.land-feats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--sh)}
+.land-feats b{display:block}
+.land-feats span{color:var(--mut);font-size:14px}
+.land-go{width:100%;min-height:48px;margin-top:8px}
+.land .card{box-shadow:var(--sh)}
 .grid{display:grid;gap:12px}
 @media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
 @media (prefers-reduced-motion: reduce){

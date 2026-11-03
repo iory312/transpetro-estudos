@@ -1,6 +1,7 @@
-// Service worker do app (só em http/https). Cache rev mobile-6: o nome muda a cada build.
+// Service worker do app (só em http/https). Cache rev gate-7: o nome muda a cada build.
 // Página, manifest e ícone: rede primeiro, para um deploy novo não ficar na versão antiga.
-// Áudios: cache primeiro. Pedidos de outro site (Supabase, CDN) não são interceptados.
+// Áudios: cache primeiro. conteudo.js não entra no pré-cache: só é pedido depois do login.
+// Pedidos de outro site (Supabase, CDN) não são interceptados.
 const C = '__CACHE__';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 const AUD = __AUDIOS__;

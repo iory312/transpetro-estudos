@@ -79,11 +79,16 @@ async function ensureClient(){
   syncClient.auth.onAuthStateChange((event, session) => {
     try {
       const next = session && session.user ? session.user : null;
-      if(event === 'SIGNED_OUT'){ Sync.user = null; Sync.email = ''; dirty = false; setSyncStatus(navigator.onLine ? 'local' : 'offline'); return; }
+      if(event === 'SIGNED_OUT'){
+        Sync.user = null; Sync.email = ''; dirty = false;
+        setSyncStatus(navigator.onLine ? 'local' : 'offline');
+        if(navBuilt) leaveApp();
+        return;
+      }
       if(next && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED')){
         const first = !Sync.user;
         Sync.user = next; Sync.email = next.email || '';
-        if(first && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) pullAndMerge(true);
+        if(navBuilt && first && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) pullAndMerge(true);
       }
     } catch(e){ setSyncStatus('erro'); Sync.lastErr = humanSync(e); paintSync(); }
   });
@@ -97,6 +102,7 @@ function unwrapRemote(data){
   return data;
 }
 function refreshIfSafe(){
+  if(!navBuilt || !Sync.user) return;
   const v = (location.hash.replace(/^#\/?/, '') || 'home').split('/')[0];
   const typing = document.activeElement && document.activeElement.closest && document.activeElement.closest('#syncForm');
   if(typing) return;
@@ -181,8 +187,7 @@ function readCreds(){
 }
 
 VIEWS.sincronizar = m => {
-  setTitle('Sincronizar', 'Opcional · o app funciona sem conta');
-  const online = navigator.onLine;
+  setTitle('Conta', 'Sincronização');
   if(Sync.user){
     m.innerHTML = `<div class="card"><h3>Conta</h3><div class="small">Conectado como <b>${esc(Sync.email || 'sua conta')}</b></div>
       <div class="row" style="margin-top:10px"><span class="mut small">Estado:</span> <b id="syncState" data-status="${esc(Sync.status)}">${esc(syncLabel(Sync.status))}</b></div>
@@ -191,62 +196,158 @@ VIEWS.sincronizar = m => {
       <button class="btn" id="sync-out" type="button">Sair</button></div>
       <div class="card small mut">A união não descarta respostas. Se os dois lados tiverem o mesmo item, fica o mais recente. Itens marcados no cronograma, no checklist e nas etapas dos resumos permanecem marcados se estiverem marcados em qualquer um dos lados.</div>`;
     paintSync();
-    $('#sync-out', m).onclick = () => withSyncBusy(async () => {
+    $('#sync-out', m).onclick = () => signOutAccount();
+    return;
+  }
+  showLanding('login');
+};
+
+function signOutAccount(){
+  return withSyncBusy(async () => {
+    const client = await ensureClient();
+    await client.auth.signOut();
+  });
+}
+function leaveApp(){
+  document.body.classList.add('gated');
+  const nav = $('#bnav'); if(nav) nav.innerHTML = '';
+  const side = $('#side'); if(side) side.innerHTML = '';
+  const sb = document.getElementById('syncBtn'); if(sb) sb.remove();
+  const pill = document.getElementById('tpill'); if(pill) pill.style.display = 'none';
+  showLanding('home');
+  toast('Você saiu. O progresso continua neste aparelho.');
+}
+function loadContent(){
+  if(D && D.questions && D.questions.length) return Promise.resolve();
+  return (async () => {
+    if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+      try {
+        await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
+        await navigator.serviceWorker.ready;
+      } catch(e){}
+    }
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = './conteudo.js';
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('conteudo'));
+      document.head.appendChild(s);
+    });
+    if(!globalThis.TP7_DATA || !globalThis.TP7_DATA.questions) throw new Error('conteudo vazio');
+    D = globalThis.TP7_DATA;
+    indexStudy();
+  })();
+}
+async function enterApp(){
+  if(!Sync.user){ showLanding('home'); return; }
+  try { await loadContent(); }
+  catch(e){ showLanding('conteudo'); return; }
+  document.body.classList.remove('gated');
+  shell();
+  if(!document.getElementById('syncBtn')) mountSyncButton();
+  try { await pullAndMerge(true); }
+  catch(e){ Sync.lastErr = humanSync(e); setSyncStatus(navigator.onLine ? 'erro' : 'offline'); }
+}
+function showLanding(mode){
+  document.body.classList.add('gated');
+  const next = mode || 'home';
+  const tb = $('#themeBtn');
+  if(tb) tb.onclick = () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  if(document.getElementById('land') && gateMode === next) return;
+  gateMode = next;
+  const n = diffDays('2026-12-06', dk());
+  const num = n > 0 ? String(n) : '0';
+  const unit = n === 1 ? 'dia para a prova' : 'dias para a prova';
+  const feats = [
+    ['Edital verticalizado', 'Teoria, revisões e questões em cada item.'],
+    ['Cronograma até 06/12', 'O dia de estudo, com o que fazer agora.'],
+    ['Questões no estilo Cesgranrio', 'Fixação, leitura em inglês e simulados.'],
+    ['Sincronização entre dispositivos', 'O mesmo progresso na conta e neste aparelho.']
+  ];
+  if(next === 'login'){
+    setTitle('Entrar', 'Ênfase 7');
+    $('#main').innerHTML = `<div class="land" id="land"><p class="eyebrow">Ênfase 7</p><h1>Entrar</h1>
+      <p class="lead">Use o e-mail e a senha da sua conta para abrir o plano, o edital e as questões.</p>
+      <form id="syncForm" class="card" action="javascript:void(0)">
+        <label class="lb" for="sync-email">E-mail</label><input id="sync-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+        <label class="lb" for="sync-pass">Senha</label><input id="sync-pass" name="password" type="password" autocomplete="current-password" minlength="6" required>
+        <div id="syncMsg" class="alert info" style="display:none"></div>
+        <button class="btn p land-go" id="sync-in" type="button">Entrar</button>
+        <button class="btn land-go" id="sync-up" type="button">Criar conta</button>
+        <p class="small mut">Ao criar a conta, chega um e-mail de confirmação. Depois de confirmar o e-mail, é só voltar ao app e entrar. O link pode abrir esta mesma página; se ele não entrar sozinho, use o e-mail e a senha aqui.</p>
+        <button class="btn sm" id="landBack" type="button">Voltar</button>
+      </form></div>`;
+    if(Sync.message) showSyncMsg(Sync.message, Sync.kind);
+    $('#landBack').onclick = () => showLanding('home');
+    $('#sync-in').onclick = () => withSyncBusy(async () => {
+      const creds = readCreds(); if(!creds) return;
+      showSyncMsg('', 'info');
       const client = await ensureClient();
-      await client.auth.signOut();
-      Sync.user = null; Sync.email = ''; dirty = false; Sync.message = '';
-      setSyncStatus(navigator.onLine ? 'local' : 'offline');
-      toast('Você saiu. O progresso continua neste aparelho.');
-      render();
+      const {data, error} = await client.auth.signInWithPassword(creds);
+      if(error) throw error;
+      if(!data.session || !data.user){ showSyncMsg('Falta confirmar o e-mail. Depois de confirmar, é só voltar ao app e entrar.', 'warn'); return; }
+      Sync.user = data.user; Sync.email = data.user.email || creds.email;
+      toast('Entrou. O progresso local e o da conta foram unidos.');
+      await enterApp();
+    });
+    $('#sync-up').onclick = () => withSyncBusy(async () => {
+      const creds = readCreds(); if(!creds) return;
+      const client = await ensureClient();
+      const {data, error} = await client.auth.signUp({email:creds.email, password:creds.password, options:{emailRedirectTo:redirectTo()}});
+      if(error) throw error;
+      if(data && data.session && data.user){
+        Sync.user = data.user; Sync.email = data.user.email || creds.email;
+        toast('Conta criada. Você já entrou.');
+        await enterApp();
+        return;
+      }
+      Sync.message = 'Conta criada. Enviamos um e-mail de confirmação. Depois de confirmar o e-mail, é só voltar ao app e entrar.';
+      Sync.kind = 'ok';
+      showSyncMsg(Sync.message, 'ok');
     });
     return;
   }
-  m.innerHTML = `<div class="card"><h3>Progresso na conta</h3>
-    <p class="small">O estudo continua salvo neste aparelho, com ou sem login. Se você entrar, o progresso também fica na sua conta e pode ser aberto em outro dispositivo.</p>
-    ${online ? '' : '<div class="alert warn">Você está offline. Dá para estudar normalmente; a entrada na conta espera a conexão.</div>'}
-    <div class="small mut">Estado: <b id="syncState" data-status="${esc(Sync.status)}">${esc(syncLabel(Sync.status))}</b></div></div>
-    <div class="card"><form id="syncForm" action="javascript:void(0)">
-      <label class="lb" for="sync-email">E-mail</label><input id="sync-email" name="email" type="email" autocomplete="email" inputmode="email" required>
-      <label class="lb" for="sync-pass">Senha</label><input id="sync-pass" name="password" type="password" autocomplete="current-password" minlength="6" required>
-      <div id="syncMsg" class="alert info" style="display:none"></div>
-      <div class="row" style="margin-top:12px"><button class="btn p" id="sync-in" type="button">Entrar</button><button class="btn" id="sync-up" type="button">Criar conta</button></div>
-      <p class="small mut" style="margin-bottom:0">Ao criar a conta, chega um e-mail de confirmação. Depois de confirmar o e-mail, é só voltar ao app e entrar. O link pode abrir esta mesma página; se ele não entrar sozinho, use o e-mail e a senha aqui.</p>
-    </form></div>`;
-  if(Sync.message) showSyncMsg(Sync.message, Sync.kind);
-  paintSync();
-  $('#sync-in', m).onclick = () => withSyncBusy(async () => {
-    const creds = readCreds(); if(!creds) return;
-    showSyncMsg('', 'info');
+  if(next === 'conteudo'){
+    setTitle('Ênfase 7', 'Material');
+    $('#main').innerHTML = `<div class="land" id="land"><h1>Ênfase 7</h1><div class="card alert warn">Não foi possível carregar o material agora. Confira a conexão e tente de novo.</div>
+      <button class="btn p land-go" id="landRetry" type="button">Tentar de novo</button>
+      <button class="btn land-go" id="landOut" type="button">Sair</button></div>`;
+    $('#landRetry').onclick = () => enterApp();
+    $('#landOut').onclick = () => signOutAccount();
+    return;
+  }
+  setTitle('Ênfase 7', 'Preparação');
+  $('#main').innerHTML = `<div class="land" id="land">
+    <p class="eyebrow">Estudo</p>
+    <h1>Ênfase 7</h1>
+    <p class="lead">Sua preparação para a Transpetro 2026 – Ênfase 7 Segurança Cibernética</p>
+    <div class="land-count"><b>${num}</b><span>${unit}<small>06/12/2026</small></span></div>
+    <div class="land-feats">${feats.map(([t, s]) => `<div><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join('')}</div>
+    <button class="btn p land-go" id="landIn" type="button">Entrar</button>
+  </div>`;
+  $('#landIn').onclick = () => showLanding('login');
+}
+async function bootGate(){
+  document.body.classList.add('gated');
+  const tb = $('#themeBtn');
+  if(tb) tb.onclick = () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  theme();
+  try {
     const client = await ensureClient();
-    const {data, error} = await client.auth.signInWithPassword(creds);
+    const {data, error} = await client.auth.getSession();
     if(error) throw error;
-    Sync.user = data.user; Sync.email = data.user && data.user.email || creds.email;
-    await pullAndMerge(false);
-    if(!dirty) setSyncStatus(navigator.onLine ? 'sincronizado' : 'offline');
-    toast('Entrou. O progresso local e o da conta foram unidos.');
-    render();
-  });
-  $('#sync-up', m).onclick = () => withSyncBusy(async () => {
-    const creds = readCreds(); if(!creds) return;
-    const client = await ensureClient();
-    const {data, error} = await client.auth.signUp({email:creds.email, password:creds.password, options:{emailRedirectTo:redirectTo()}});
-    if(error) throw error;
-    if(data && data.session && data.user){
-      Sync.user = data.user; Sync.email = data.user.email || creds.email;
-      await pullAndMerge(true);
-      toast('Conta criada. Você já entrou.');
-      render();
+    const user = data && data.session && data.session.user;
+    if(user){
+      Sync.user = user;
+      Sync.email = user.email || '';
+      await enterApp();
       return;
     }
-    Sync.message = 'Conta criada. Enviamos um e-mail de confirmação. Depois de confirmar o e-mail, é só voltar ao app e entrar.';
-    Sync.kind = 'ok';
-    showSyncMsg(Sync.message, 'ok');
-  });
-};
-
+  } catch(e){ Sync.lastErr = humanSync(e); }
+  showLanding('home');
+}
 function bootSync(){
   try {
-    mountSyncButton();
     Storage.useAdapter({
       push(k){ if(k === SKEY && Sync.user && !suspend) schedulePush(); },
       async pull(){
@@ -263,18 +364,8 @@ function bootSync(){
     window.addEventListener('focus', () => { onWake(); });
     document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') onWake(); if(document.visibilityState === 'hidden' && dirty) flushSync(); });
     window.addEventListener('pagehide', () => { if(dirty) flushSync(); });
-    const resume = authCallbackPending() || (function(){ try { return !!localStorage.getItem('tp7-supabase-auth'); } catch(e){ return false; } })();
-    if(resume){
-      ensureClient().then(async client => {
-        if(!authCallbackPending()) return;
-        try { await client.auth.getSession(); }
-        catch(e){ Sync.lastErr = humanSync(e); setSyncStatus('erro'); }
-        history.replaceState(null, '', location.pathname + '#/sincronizar');
-        render();
-      }).catch(e => { Sync.lastErr = humanSync(e); setSyncStatus('erro'); paintSync(); });
-    } else setSyncStatus(navigator.onLine ? 'local' : 'offline');
-    const v = (location.hash.replace(/^#\/?/, '') || 'home').split('/')[0];
-    if(v === 'sincronizar') render();
+    setSyncStatus(navigator.onLine ? 'local' : 'offline');
   } catch(e){ Sync.lastErr = humanSync(e); setSyncStatus('erro'); }
+  bootGate();
 }
 bootSync();
