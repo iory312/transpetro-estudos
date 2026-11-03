@@ -24,15 +24,18 @@ VIEWS.home = m => {
   const de = dueErrors().length + dueRod().length, dc = dueCards().length;
   let heat = ''; for(let i = 13; i >= 0; i--){ const k = addDays(dk(), -i); heat += `<i class="${S.days[k] ? 'on' : ''} ${i === 0 ? 'today' : ''}" title="${fmtD(k)}"></i>`; }
   const weak = Object.entries(topicStats()).filter(([, s]) => s.n >= 3).map(([t, s]) => [t, pct(s.ok, s.n)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
+  const ed = editalSum(), lateN = editalLateCount(), hj = hojeResumo();
+  const ac = ed.pct == null ? '—' : ed.pct + '%';
   m.innerHTML = `<div class="home">
-  <div class="home-top">
-   <div class="card hero"><div class="eyebrow">Prova · domingo, 06/12/2026 · 4h30 · 70 questões</div>
-    <div class="hero-row"><div><div class="big" id="cd">${n > 0 ? n : n === 0 ? 'HOJE' : '—'}</div><div class="hero-sub">${n > 1 ? 'dias para a prova' : n === 1 ? 'dia para a prova — amanhã!' : n === 0 ? 'Boa prova, Allan!' : 'prova realizada'}</div></div>
-    <div class="streak-box"><div class="mut">Sequência</div><div class="big" id="streak">${sk}</div><div class="mut">${sk === 1 ? 'dia seguido' : 'dias seguidos'}</div></div></div>
-    <div class="heat" aria-label="Dias estudados nas últimas duas semanas">${heat}</div></div>
-   <div class="card kpi"><h3>Para revisar hoje</h3><div class="stat"><div><b>${de}</b><span>erros pendentes</span></div><div><b>${dc}</b><span>flashcards</span></div><div><b>${Object.keys(S.answers).length}</b><span>questões feitas</span></div></div>
-    <div class="row" style="margin-top:14px"><a class="btn sm ${de ? 'p' : ''}" href="#/erros/revisar">Revisar erros</a><a class="btn sm ${dc ? 'p' : ''}" href="#/flashcards">Flashcards</a><a class="btn sm" href="#/questoes">Questões</a></div></div>
+  <div class="ringgrid">
+   <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${n > 0 ? Math.max(4, Math.min(100, Math.round(100 * (34 - Math.min(n, 34)) / 34))) : 100}"><b id="cd">${n > 0 ? n : n === 0 ? '0' : '—'}</b></div><span>dias para a prova</span></a>
+   <a class="ringcard" href="#/cronograma"><div class="ring" style="--p:${hj.n ? Math.round(100 * hj.ok / hj.n) : 0}"><b>${hj.ok}/${hj.n || 0}</b></div><span>hoje</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${lateN ? Math.min(100, lateN * 8) : 0}"><b>${lateN}</b></div><span>revisões atrasadas</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${ed.teoria}"><b>${ed.teoria}%</b></div><span>edital concluído</span></a>
+   <a class="ringcard" href="#/edital"><div class="ring" style="--p:${ed.pct || 0}"><b>${ac}</b></div><span>% acerto</span></a>
+   <a class="ringcard" href="#/home"><div class="ring" style="--p:${Math.min(100, sk * 14)}"><b id="streak">${sk}</b></div><span>dias seguidos</span></a>
   </div>
+  <div class="heat homeheat" aria-label="Dias estudados nas últimas duas semanas">${heat}</div>
   <div class="home-mid">
    ${hojeCardHTML()}
    <div class="card"><h3>Acerto por módulo</h3>${chartHTML(st)}</div>

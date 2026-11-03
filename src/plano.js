@@ -246,7 +246,7 @@ function planoLinks(b){
 function planoItem(b, today){
   const on = planoFeito(b.id);
   const min = b.tipo === 'marco' ? '' : `<span class="mut">${b.min} min</span>`;
-  return `<label class="li ${on ? 'done' : ''} ${b.date === today ? 'today' : ''}" style="align-items:flex-start"><input type="checkbox" data-plano="${esc(b.id)}" ${on ? 'checked' : ''} aria-label="Feito: ${esc(b.title)}"><div class="f1"><div class="t"><span class="tipo ${TIPO_C[b.tipo] || ''}">${TIPO_L[b.tipo] || ''}</span> ${min ? ' · ' + min : ''} · ${esc(b.title)}</div>${b.note ? `<div class="s">${esc(b.note)}</div>` : ''}<div class="row" style="margin-top:6px">${planoLinks(b)}</div></div></label>`;
+  return `<label class="li ${on ? 'done' : ''} ${b.date === today ? 'today' : ''}" style="align-items:flex-start"><input class="bigck" type="checkbox" data-plano="${esc(b.id)}" ${on ? 'checked' : ''} aria-label="Feito: ${esc(b.title)}"><div class="f1"><div class="t"><span class="tipo ${TIPO_C[b.tipo] || ''}">${TIPO_L[b.tipo] || ''}</span> ${min ? ' · ' + min : ''} · ${esc(b.title)}</div>${b.note ? `<div class="s">${esc(b.note)}</div>` : ''}<div class="row" style="margin-top:6px">${planoLinks(b)}</div></div></label>`;
 }
 function bindPlano(root){
   $$('[data-plano]', root).forEach(cb => cb.onchange = () => {
@@ -260,7 +260,13 @@ function bindPlano(root){
   });
   if(typeof tecBind === 'function') tecBind(root);
 }
-let planoSem = '';
+let planoSem = '', planoDia = '';
+function hojeResumo(){
+  const today = (typeof dk === 'function') ? dk() : pISO(new Date());
+  const day = buildPlano(planoHoras(), (typeof S !== 'undefined' && S.planoMove) || {ids:{}}).find(d => d.date === today);
+  const blocks = day ? day.blocks : [];
+  return {n:blocks.length, ok:blocks.filter(b => planoFeito(b.id)).length};
+}
 function hojeCardHTML(){
   const today = (typeof dk === 'function') ? dk() : pISO(new Date());
   const horas = planoHoras();
@@ -287,19 +293,26 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
   const wok = wall.filter(b => planoFeito(b.id)).length;
   const fase = shown.length ? FASE_L[shown[0].fase] : '';
   setTitle('Cronograma', pFmt(week[0] || planoSem) + ' – ' + pFmt(week[week.length - 1] || planoSem));
-  m.innerHTML = `<div class="card"><h3>Progresso</h3>
-    <div class="bar" style="height:12px"><i id="planoBar" style="width:${pct(st.ok, st.n)}%"></i></div>
-    <div class="small" id="planoLab" style="margin-top:6px">${st.ok} de ${st.n} blocos · ${pct(st.ok, st.n)}% no total</div>
-    <div class="small mut">Esta semana: ${wok} de ${wall.length} · ${pct(wok, wall.length)}%. ${esc(fase)}</div>
-    <div class="small mut">Prova em 06/12, em Manaus. Gabarito em 07/12 e recursos em 07–08/12.</div></div>
-   <div class="card"><h3>Horas por dia</h3>
-    <p class="small mut">Padrão: 3h nos dias úteis e 5h no sábado e no domingo. Os blocos do dia crescem ou encolhem junto com essas horas. A ordem dos tópicos fica.</p>
+  if(!planoDia || !shown.some(d => d.date === planoDia)) planoDia = (shown.find(d => d.date === today) || shown[0] || {}).date || today;
+  const day = days.find(d => d.date === planoDia) || shown[0];
+  const strip = pRange(planoSem, pAdd(planoSem, 6)).map(k => {
+    const has = days.some(d => d.date === k);
+    return `<button type="button" class="wday ${k === planoDia ? 'on' : ''} ${k === today ? 'today' : ''}" data-day="${k}" ${has ? '' : 'disabled'}>${pWd(k)}<b>${pFmt(k).slice(0, 2)}</b></button>`;
+  }).join('');
+  m.innerHTML = `<div class="card"><h3>Semana</h3>
+    <div class="bar" style="height:8px"><i id="planoBar" style="width:${pct(wok, wall.length)}%"></i></div>
+    <div class="small" id="planoLab" style="margin-top:6px">Esta semana: ${wok} de ${wall.length} · ${pct(wok, wall.length)}% · plano ${pct(st.ok, st.n)}%</div>
+    <div class="small mut">${esc(fase)}. Prova em 06/12, em Manaus.</div>
+    <div class="wstrip" id="wStrip">${strip}</div>
+    <div class="weeknav"><button class="btn sm" id="wPrev" type="button">← Semana</button><button class="btn sm" id="wNext" type="button">Semana →</button></div></div>
+   <div class="card" id="cd${day ? day.date : ''}"><h3>${day ? pWd(day.date) + ' ' + pFmt(day.date) : ''}${day && day.date === today ? ' · HOJE' : ''} <span class="r">${day ? day.blocks.reduce((s, b) => s + (b.min || 0), 0) + ' min' : ''}</span></h3>
+    <div class="daylist">${day && day.blocks.length ? day.blocks.map(b => planoItem(b, today)).join('') : '<p class="mut">Nenhum bloco neste dia.</p>'}</div></div>
+   <div class="row" style="margin-bottom:12px"><button class="btn sm" id="reprog" type="button">Reprogramar atrasados</button></div>
+   <details class="card"><summary><b>Horas por dia</b></summary>
+    <p class="small mut">Padrão: 3h nos dias úteis e 5h no sábado e no domingo. Os blocos crescem ou encolhem com essas horas.</p>
     <div class="row"><label class="lb" style="margin:0">Dia útil</label><input id="hSem" type="number" min="1" max="12" step="0.5" value="${horas.sem}" aria-label="Horas por dia útil">
      <label class="lb" style="margin:0">Sábado e domingo</label><input id="hFim" type="number" min="1" max="12" step="0.5" value="${horas.fim}" aria-label="Horas no fim de semana">
-     <button class="btn sm p" id="hApply" type="button">Atualizar tempos</button></div></div>
-   <div class="weeknav"><button class="btn sm" id="wPrev" type="button">← Semana</button><div class="small"><b>${pFmt(planoSem)} – ${pFmt(pAdd(planoSem, 6))}</b></div><button class="btn sm" id="wNext" type="button">Semana →</button></div>
-   <div class="row" style="margin:-4px 0 12px"><button class="btn sm" id="reprog" type="button">Reprogramar atrasados</button><span class="small mut">Leva o que ficou sem “feito” para hoje em diante, sem passar de 4 blocos no dia.</span></div>
-   ${shown.map(d => `<div class="card" id="cd${d.date}"><h3>${pWd(d.date)} ${pFmt(d.date)}${d.date === today ? ' · HOJE' : ''} <span class="r">${d.blocks.reduce((s, b) => s + (b.min || 0), 0)} min</span></h3>${d.blocks.map(b => planoItem(b, today)).join('') || '<p class="mut">Nenhum bloco neste dia.</p>'}</div>`).join('')}`;
+     <button class="btn sm p" id="hApply" type="button">Atualizar tempos</button></div></details>`;
   bindPlano(m);
   $('#hApply', m).onclick = () => {
     let sem = Number($('#hSem', m).value), fim = Number($('#hFim', m).value);
@@ -307,8 +320,9 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     S.planoH = {sem:sem, fim:fim, t:Date.now()};
     save(); toast('Tempos atualizados.'); render();
   };
-  $('#wPrev', m).onclick = () => { const n = pAdd(planoSem, -7); if(n >= pMonday('2026-11-03')){ planoSem = n; render(); } };
-  $('#wNext', m).onclick = () => { const n = pAdd(planoSem, 7); if(n <= '2026-12-08'){ planoSem = n; render(); } };
+  $$('#wStrip .wday', m).forEach(b => b.onclick = () => { if(b.disabled) return; planoDia = b.dataset.day; render(); });
+  $('#wPrev', m).onclick = () => { const n = pAdd(planoSem, -7); if(n >= pMonday('2026-11-03')){ planoSem = n; planoDia = ''; render(); } };
+  $('#wNext', m).onclick = () => { const n = pAdd(planoSem, 7); if(n <= '2026-12-08'){ planoSem = n; planoDia = ''; render(); } };
   $('#reprog', m).onclick = () => {
     const r = planoReprogramar(planoHoras(), S.planoMove, S.plano || {}, today);
     if(!r.n){ toast('Nenhum bloco atrasado.'); return; }
@@ -317,5 +331,4 @@ if(typeof VIEWS !== 'undefined') VIEWS.cronograma = m => {
     planoSem = pMonday(today);
     render();
   };
-  const td = document.getElementById('cd' + today); if(td) setTimeout(() => td.scrollIntoView({block:'start'}), 30);
 };
